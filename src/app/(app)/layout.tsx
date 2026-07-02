@@ -5,6 +5,8 @@ import { getCurrentPlan, planHasFeature } from "@/lib/plans";
 import { AppNav } from "@/components/AppNav";
 import { CommandPaletteProvider } from "@/components/CommandPalette";
 
+export const dynamic = "force-dynamic";
+
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await getServerSession();
 
