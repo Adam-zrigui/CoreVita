@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CornerstoneViewport } from "@/components/viewer/CornerstoneViewport";
 import { MedicalToolbar } from "@/components/viewer/MedicalToolbar";
 import { StudySidebar } from "@/components/viewer/StudySidebar";
@@ -8,10 +8,13 @@ import { MetadataPanel } from "@/components/viewer/MetadataPanel";
 import { StatusBar } from "@/components/viewer/StatusBar";
 import { ToolDock } from "@/components/viewer/ToolDock";
 import { KeyboardOverlay } from "@/components/viewer/KeyboardOverlay";
-import { ReportModal } from "@/components/viewer/ReportModal";
 import { toast } from "sonner";
+import dynamic from "next/dynamic";
+
+const ReportModal = dynamic(() => import("@/components/viewer/ReportModal").then((m) => ({ default: m.ReportModal })), { ssr: false });
 import type { Types } from "@cornerstonejs/core";
-import { ArrowLeft, ChevronLeft, ChevronRight, Crown } from "lucide-react";
+import JSZip from "jszip";
+import { ArrowLeft, ChevronLeft, ChevronRight, Crown, Key, Code, X, Copy, Check } from "lucide-react";
 
 type Series = {
   id: string;
@@ -37,6 +40,8 @@ export function ViewerShell({
   plan = "starter",
   backHref,
   headerExtra,
+  onDownload,
+  apiKey,
 }: {
   study: {
     studyUid: string;
@@ -50,24 +55,29 @@ export function ViewerShell({
   plan?: "starter" | "pro" | "enterprise";
   backHref?: string;
   headerExtra?: React.ReactNode;
+  onDownload?: () => void;
+  apiKey?: string;
 }) {
   const [activeTool, setActiveTool] = useState("wl");
   const [sliceIndex, setSliceIndex] = useState(0);
   const [cinePlaying, setCinePlaying] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  const canReport = plan !== "starter";
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [apiKeyCopied, setApiKeyCopied] = useState(false);
   const [viewport, setViewport] = useState<Types.IStackViewport | null>(null);
   const viewportRef = useRef<Types.IStackViewport | null>(null);
   const elementRef = useRef<HTMLDivElement | null>(null);
   const maxSlice = Math.max(total - 1, 0);
 
-  const activeSeriesIndex = (() => {
+  const activeSeriesIndex = useMemo(() => {
     let acc = 0;
     for (let i = 0; i < study.series.length; i++) {
       acc += study.series[i]?.instanceCount ?? 0;
       if (sliceIndex < acc) return i;
     }
     return 0;
-  })();
+  }, [study.series, sliceIndex]);
 
   const goToSlice = useCallback((nextIndex: number) => {
     setCinePlaying(false);
@@ -86,39 +96,57 @@ export function ViewerShell({
   }, [sliceIndex, study.studyUid]);
 
   const downloadDicom = useCallback(() => {
-    const ids = imageIds
-      .map((id) => id.split("/").pop())
-      .filter(Boolean) as string[];
-
-    if (ids.length === 0) {
-      toast.error("No DICOM files available for download");
-      return;
-    }
-
     (async () => {
-      for (const id of ids) {
+      const zip = new JSZip();
+      let downloaded = 0;
+      for (const raw of imageIds) {
         try {
-          const res = await fetch(`/api/dicom/instance/${id}?download=1`);
+          const withoutPrefix = raw.replace(/^wadouri:/, "");
+          const url = new URL(withoutPrefix, "http://localhost");
+          const id = url.pathname.split("/").filter(Boolean).pop();
+          if (!id) continue;
+
+          const token = url.searchParams.get("token");
+          const downloadUrl = token
+            ? `/api/dicom/instance/${id}?token=${token}&download=1`
+            : `/api/dicom/instance/${id}?download=1`;
+
+          const res = await fetch(downloadUrl);
           if (!res.ok) continue;
           const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = id;
-          a.click();
-          URL.revokeObjectURL(url);
-          await new Promise((r) => setTimeout(r, 300));
+          zip.file(id, blob);
+          downloaded++;
         } catch {
           // skip failed downloads
         }
       }
-      toast.success("DICOM download started");
+      if (downloaded === 0) {
+        toast.error("Failed to download any DICOM files");
+        return;
+      }
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `corevita-${study.studyUid}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success(`Downloaded ${downloaded} DICOM file${downloaded === 1 ? "" : "s"}`);
     })();
-  }, [imageIds]);
+  }, [imageIds, study.studyUid]);
+
+  const snapshotRef = useRef(exportSnapshot);
+  const goToSliceRef = useRef(goToSlice);
+  const sliceIndexRef = useRef(sliceIndex);
+  const reportOpenRef = useRef(reportOpen);
+  snapshotRef.current = exportSnapshot;
+  goToSliceRef.current = goToSlice;
+  sliceIndexRef.current = sliceIndex;
+  reportOpenRef.current = reportOpen;
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (reportOpen) return;
+      if (reportOpenRef.current) return;
       if (e.key === "1") setActiveTool("wl");
       if (e.key === "2") setActiveTool("pan");
       if (e.key === "3") setActiveTool("zoom");
@@ -128,26 +156,26 @@ export function ViewerShell({
       if (e.key === "f" || e.key === "F") {
         const el = elementRef.current;
         if (el && document.fullscreenElement !== el) {
-          el.requestFullscreen().catch(() => {});
+          el.requestFullscreen().catch((e) => console.warn("[viewer] fullscreen failed:", e));
         } else {
           document.exitFullscreen?.();
         }
       }
-      if (e.key === "e" || e.key === "E") exportSnapshot();
-      if (e.key === "r" || e.key === "R") setReportOpen((v) => !v);
+      if (e.key === "e" || e.key === "E") snapshotRef.current();
+      if ((e.key === "r" || e.key === "R") && canReport) setReportOpen((v) => !v);
       if (e.key === "ArrowRight" || e.key === "ArrowDown") {
         e.preventDefault();
-        goToSlice(sliceIndex + 1);
+        goToSliceRef.current(sliceIndexRef.current + 1);
       }
       if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
         e.preventDefault();
-        goToSlice(sliceIndex - 1);
+        goToSliceRef.current(sliceIndexRef.current - 1);
       }
       if (e.key === "Escape") { setActiveTool("wl"); setCinePlaying(false); }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [exportSnapshot, goToSlice, sliceIndex, reportOpen]);
+  }, [canReport]);
 
   const handleViewportReady = useCallback((vp: Types.IStackViewport) => {
     viewportRef.current = vp;
@@ -158,10 +186,18 @@ export function ViewerShell({
     elementRef.current = el;
   }, []);
 
-  const handleToolbarAction = (action: string) => {
-    if (action === "download") { downloadDicom(); return; }
+  const handleToolbarAction = useCallback((action: string) => {
+    if (action === "download") {
+      if (onDownload) { onDownload(); return; }
+      downloadDicom();
+      return;
+    }
     if (action === "export") { exportSnapshot(); return; }
-    if (action === "report") { setReportOpen(true); return; }
+    if (action === "report") {
+      if (!canReport) { toast.error("Reports require the Pro plan"); return; }
+      setReportOpen(true);
+      return;
+    }
     const viewport = viewportRef.current;
     if (action === "fullscreen") {
       const el = elementRef.current;
@@ -193,10 +229,11 @@ export function ViewerShell({
       viewport.render();
       return;
     }
-  };
+  }, [canReport, downloadDicom, exportSnapshot]);
 
   return (
-    <main className="mx-auto flex min-h-screen flex-col bg-slate-950">
+    <main className="relative mx-auto flex min-h-screen flex-col">
+      <div className="pointer-events-none absolute top-0 left-0 right-0 z-10 h-0.5 bg-gradient-to-r from-emerald-400/40 via-sky-400/20 to-transparent" />
       <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3">
         <div className="flex items-center gap-4">
           <a
@@ -216,7 +253,7 @@ export function ViewerShell({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="rounded-md border border-white/[0.06] bg-white/[0.02] px-2.5 py-1 text-[11px] text-slate-500 tabular-nums">
+          <span className="rounded-md border border-emerald-500/15 bg-emerald-500/[0.04] px-2.5 py-1 text-[11px] font-medium text-emerald-400 tabular-nums">
             {total} images
           </span>
           {headerExtra}
@@ -241,21 +278,32 @@ export function ViewerShell({
 
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div className="flex items-center justify-between">
-            <MedicalToolbar onAction={handleToolbarAction} />
+            <MedicalToolbar onAction={handleToolbarAction} plan={plan} />
             <div className="flex items-center gap-2">
             {plan === "pro" && (
-                <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400">
+                <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-gradient-to-r from-emerald-500/10 to-emerald-500/5 px-2.5 py-1 text-[11px] font-medium text-emerald-400 shadow-sm">
                   <Crown className="h-3 w-3" />
                   Pro
                 </span>
               )}
               {plan === "enterprise" && (
-                <span className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/20 bg-violet-500/10 px-2.5 py-1 text-[11px] font-medium text-violet-400">
+                <span className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/20 bg-gradient-to-r from-violet-500/10 to-violet-500/5 px-2.5 py-1 text-[11px] font-medium text-violet-400 shadow-sm">
                   <Crown className="h-3 w-3" />
                   Enterprise
                 </span>
               )}
               <KeyboardOverlay />
+              {apiKey && (
+                <button
+                  type="button"
+                  onClick={() => setShowApiKey(true)}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.06] bg-white/[0.04] px-2.5 py-1 text-[11px] text-slate-400 transition-colors hover:bg-white/[0.08] hover:text-slate-200"
+                  title="API Access"
+                >
+                  <Key className="h-3 w-3" />
+                  <span className="hidden sm:inline">API</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -277,7 +325,7 @@ export function ViewerShell({
               type="button"
               onClick={() => goToSlice(sliceIndex - 1)}
               disabled={sliceIndex <= 0}
-              className="inline-flex h-8 items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 text-xs font-medium text-slate-400 transition-colors hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-30"
+              className="inline-flex h-8 items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 text-xs font-medium text-slate-400 transition-all hover:border-emerald-500/20 hover:bg-emerald-500/[0.04] hover:text-emerald-400 active:scale-95 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.06] disabled:hover:bg-white/[0.02] disabled:hover:text-slate-400 disabled:active:scale-100"
             >
               <ChevronLeft className="h-3.5 w-3.5" />
               Prev
@@ -290,14 +338,15 @@ export function ViewerShell({
                 value={sliceIndex}
                 disabled={total <= 1}
                 onChange={(e) => goToSlice(Number(e.target.value))}
-                className="h-1 w-full cursor-pointer appearance-none rounded-full bg-white/[0.06] accent-emerald-500"
+                aria-label="Slice selector"
+                className="h-1 w-full cursor-pointer appearance-none rounded-full bg-white/[0.06] accent-emerald-500 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-400 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-emerald-500/30"
               />
             </div>
             <button
               type="button"
               onClick={() => goToSlice(sliceIndex + 1)}
               disabled={sliceIndex >= maxSlice}
-              className="inline-flex h-8 items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 text-xs font-medium text-slate-400 transition-colors hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-30"
+              className="inline-flex h-8 items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 text-xs font-medium text-slate-400 transition-all hover:border-emerald-500/20 hover:bg-emerald-500/[0.04] hover:text-emerald-400 active:scale-95 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.06] disabled:hover:bg-white/[0.02] disabled:hover:text-slate-400 disabled:active:scale-100"
             >
               Next
               <ChevronRight className="h-3.5 w-3.5" />
@@ -336,6 +385,55 @@ export function ViewerShell({
         onClose={() => setReportOpen(false)}
         studyId={study.studyUid}
       />
+
+      {showApiKey && apiKey && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowApiKey(false)}>
+          <div className="relative w-full max-w-lg rounded-2xl border border-white/[0.06] bg-slate-900 p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setShowApiKey(false)} aria-label="Close" className="absolute top-4 right-4 rounded-lg p-1.5 text-slate-600 transition-colors hover:bg-white/[0.06] hover:text-slate-400">
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/5 text-cyan-400 shadow-sm ring-1 ring-white/[0.04] mb-4">
+              <Code className="h-5 w-5" />
+            </div>
+            <h2 className="text-lg font-semibold text-white">API Access</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Use this token to access the shared study programmatically.
+            </p>
+            <div className="mt-5 space-y-3">
+              <div>
+                <label className="text-xs font-medium text-slate-400 mb-1.5 block">Token</label>
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap rounded-lg bg-white/[0.04] px-3 py-2 text-[11px] font-mono text-slate-300">
+                    {apiKey}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(apiKey);
+                      setApiKeyCopied(true);
+                      setTimeout(() => setApiKeyCopied(false), 2000);
+                    }}
+                    aria-label={apiKeyCopied ? "Copied" : "Copy API key"}
+                    className="shrink-0 rounded-lg bg-white/[0.06] p-2 text-slate-400 transition-colors hover:bg-white/[0.1] hover:text-slate-200"
+                  >
+                    {apiKeyCopied ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-slate-400 mb-1.5 block">Example usage</label>
+                <pre className="overflow-x-auto rounded-lg bg-white/[0.03] p-3 text-[11px] font-mono text-slate-400 leading-relaxed">
+                  <span className="text-slate-600"># Fetch shared study data</span>{"\n"}
+                  curl <span className="text-emerald-400">{typeof window !== "undefined" ? window.location.origin : ""}/api/share/{apiKey}</span>{"\n\n"}
+                  <span className="text-slate-600"># Include token header</span>{"\n"}
+                  curl -H <span className="text-amber-400">"Authorization: Bearer {apiKey}"</span> {"\n"}
+                  &nbsp;&nbsp;&nbsp;{typeof window !== "undefined" ? window.location.origin : ""}/api/share/{apiKey}
+                </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

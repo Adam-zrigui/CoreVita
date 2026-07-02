@@ -15,9 +15,9 @@ function toDate(ts: number | null | undefined): Date {
 export default async function CheckoutSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ session_id?: string }>;
+  searchParams: Promise<{ session_id?: string; return?: string }>;
 }) {
-  const { session_id } = await searchParams;
+  const { session_id, return: returnPath } = await searchParams;
   if (!session_id) redirect("/login");
 
   const checkout = await stripe.checkout.sessions.retrieve(session_id);
@@ -63,5 +63,5 @@ export default async function CheckoutSuccessPage({
     redirect("/login");
   }
 
-  return <ActivateSession customToken={customToken} userId={userId} />;
+  return <ActivateSession customToken={customToken} userId={userId} returnPath={returnPath ?? undefined} />;
 }

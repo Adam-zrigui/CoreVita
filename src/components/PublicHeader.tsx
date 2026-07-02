@@ -19,8 +19,8 @@ export function PublicHeader() {
           href="/"
           className="flex items-center gap-2.5 transition active:scale-95"
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-400 text-sm font-bold shadow-lg shadow-emerald-500/10">
-            CV
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 shadow-lg shadow-emerald-500/10">
+            <img src="/favicon.png" alt="" className="h-6 w-6" />
           </div>
           <span className="text-sm font-semibold text-white">CoreVita</span>
         </Link>
@@ -34,14 +34,14 @@ export function PublicHeader() {
           {user ? (
             <Link
               href="/dashboard"
-              className="rounded-lg bg-blue-500/10 px-4 py-1.5 text-xs font-semibold text-blue-400 transition-colors hover:bg-blue-500/20"
+              className="rounded-lg bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold text-emerald-400 transition-colors hover:bg-emerald-500/20"
             >
               Dashboard
             </Link>
           ) : (
             <Link
               href="/register"
-              className="rounded-lg bg-blue-500/10 px-4 py-1.5 text-xs font-semibold text-blue-400 transition-colors hover:bg-blue-500/20"
+              className="rounded-lg bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold text-emerald-400 transition-colors hover:bg-emerald-500/20"
             >
               Get started
             </Link>

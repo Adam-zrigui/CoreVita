@@ -11,6 +11,7 @@ import {
   createUserWithEmailAndPassword as fbCreateUser,
   signInWithEmailAndPassword as fbSignInEmail,
   sendPasswordResetEmail as fbSendPasswordReset,
+  sendEmailVerification as fbSendEmailVerification,
   updateProfile,
   GoogleAuthProvider,
   type User,
@@ -49,6 +50,12 @@ type FirebaseSession = {
   };
   token: Promise<string>;
   role: "ADMIN" | "RADIOLOGIST" | "VIEWER";
+};
+
+export const sendVerificationEmail = async () => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("No authenticated user");
+  await fbSendEmailVerification(user);
 };
 
 export const signUpWithEmail = async (email: string, password: string, displayName: string) => {

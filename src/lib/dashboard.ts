@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { getStudyWindowFilter } from "@/lib/plans";
+import type { PlanTier } from "@/lib/plans";
 
 export type DashboardData = {
   totalStudies: number;
@@ -27,15 +29,16 @@ export type DashboardData = {
   }>;
 };
 
-export async function getDashboardData(tenantId: string, take = 20): Promise<DashboardData> {
+export async function getDashboardData(tenantId: string, take = 20, plan?: PlanTier): Promise<DashboardData> {
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const studyWhere = { tenantId, ...getStudyWindowFilter(plan ?? "starter") };
 
   const [totalStudies, studiesByStatus, totalReports, teamMembers, imageAgg, recentStudies, activeShares, sharesThisMonth, recentShares] =
     await Promise.all([
-      prisma.study.count({ where: { tenantId } }),
+      prisma.study.count({ where: studyWhere }),
       prisma.study.groupBy({
         by: ["status"],
-        where: { tenantId },
+        where: studyWhere,
         _count: true,
       }),
       prisma.report.count({
@@ -43,11 +46,11 @@ export async function getDashboardData(tenantId: string, take = 20): Promise<Das
       }),
       prisma.membership.count({ where: { tenantId } }),
       prisma.study.aggregate({
-        where: { tenantId },
+        where: studyWhere,
         _sum: { slices: true },
       }),
       prisma.study.findMany({
-        where: { tenantId },
+        where: studyWhere,
         select: {
           id: true,
           studyUid: true,

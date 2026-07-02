@@ -33,20 +33,24 @@ model Tenant {
   members      Membership[]
   studies      Study[]
   subscription Subscription?
+  auditLogs    AuditLog[]
+  apiKeys      ApiKey[]
+  branding     Branding?
 }
 
 model User {
-  id            String       @id @default(cuid())
-  name          String?
-  email         String?      @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  memberships   Membership[]
-  reports       Report[]     @relation("ReportAuthor")
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  id                    String                  @id @default(cuid())
+  name                  String?
+  email                 String?                 @unique
+  emailVerified         DateTime?
+  image                 String?
+  accounts              Account[]
+  sessions              Session[]
+  memberships           Membership[]
+  reports               Report[]                @relation("ReportAuthor")
+  notificationPreference NotificationPreference?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
 }
 
 model Membership {
@@ -59,6 +63,8 @@ model Membership {
   createdAt DateTime @default(now())
 
   @@unique([userId, tenantId])
+  @@index([tenantId])
+  @@index([userId])
 }
 
 model Account {
@@ -138,6 +144,9 @@ model Instance {
   seriesId       String
   series         Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
   createdAt      DateTime @default(now())
+
+  @@index([seriesId])
+  @@index([storageKey])
 }
 
 model Subscription {
@@ -162,6 +171,8 @@ model Report {
   createdAt DateTime     @default(now())
   study     Study        @relation(fields: [studyId], references: [id], onDelete: Cascade)
   author    User?        @relation("ReportAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([studyId])
 }
 
 model ShareToken {
@@ -173,4 +184,51 @@ model ShareToken {
   password      String?
   allowDownload Boolean  @default(false)
   createdAt     DateTime @default(now())
+
+  @@index([studyId])
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  prefix    String
+  hash      String   @unique
+  lastUsedAt DateTime?
+  createdAt DateTime @default(now())
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, createdAt(sort: Desc)])
+}
+
+model Branding {
+  id        String @id @default(cuid())
+  tenantId  String @unique
+  logoUrl   String?
+  primaryColor String?
+  accentColor String?
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model NotificationPreference {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  email        Boolean  @default(true)
+  browser      Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  tenantId  String
+  actorId   String
+  action    String
+  targetId  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, createdAt(sort: Desc)])
 }

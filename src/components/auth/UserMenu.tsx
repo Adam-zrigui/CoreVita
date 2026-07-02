@@ -56,7 +56,7 @@ export function UserMenu({ name, role }: { name?: string | null; role?: string |
           <hr className="my-1 border-white/[0.06]" />
           <button
             type="button"
-            onClick={signOut}
+            onClick={() => { signOut().catch((e) => console.error("[auth] sign out failed:", e)); }}
             className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-slate-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
           >
             <LogOut className="h-3.5 w-3.5" />

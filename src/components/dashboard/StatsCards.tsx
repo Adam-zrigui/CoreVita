@@ -34,16 +34,19 @@ async function StatsCardsContent() {
         icon={<BarChart3 className="h-4 w-4" />}
         label="Total Studies"
         value={data.totalStudies}
+        gradient="emerald"
       />
       <StatsCard
         icon={<ImageIcon className="h-4 w-4" />}
         label="Total Images"
         value={data.totalImages.toLocaleString()}
+        gradient="sky"
       />
       <StatsCard
         icon={<FileText className="h-4 w-4" />}
         label="Reports"
         value={data.totalReports}
+        gradient="violet"
         trend={
           data.totalReports > 0
             ? { direction: "up", label: `${data.reportedCount} completed` }
@@ -54,6 +57,7 @@ async function StatsCardsContent() {
         icon={<Share2 className="h-4 w-4" />}
         label="Active Shares"
         value={data.activeShares}
+        gradient="amber"
       />
     </div>
   );

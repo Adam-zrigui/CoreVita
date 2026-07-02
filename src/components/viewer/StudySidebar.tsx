@@ -73,10 +73,10 @@ export function StudySidebar({
               key={s.id}
               type="button"
               onClick={() => onSeriesClick(s.index)}
-              className={`w-full rounded-lg border p-2.5 text-left transition-all ${
+              className={`w-full rounded-lg border p-2.5 text-left transition-all hover:shadow-sm ${
                 s.index === activeSeriesIndex
-                  ? "border-blue-500/40 bg-blue-500/8"
-                  : "border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06]"
+                  ? "border-emerald-500/30 bg-emerald-500/[0.04] shadow-emerald-500/5"
+                  : "border-white/[0.06] bg-white/[0.03] hover:border-white/[0.1] hover:bg-white/[0.06]"
               }`}
             >
               {firstImageId && (

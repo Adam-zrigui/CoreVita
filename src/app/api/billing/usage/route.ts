@@ -21,7 +21,7 @@ export async function GET() {
   ]);
 
   const proPriceId = process.env.STRIPE_PRO_PRICE_ID;
-  const enterprisePriceId = process.env.STRIPE_ENTERPRISE_PRICE_ID;
+  const enterprisePriceId = process.env.STRIPE_CLINIC_PRICE_ID;
 
   const planTier = subscription?.priceId === enterprisePriceId ? "enterprise"
     : subscription?.priceId === proPriceId ? "pro"

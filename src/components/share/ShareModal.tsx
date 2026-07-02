@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Copy, Check, X, Lock, Globe } from "lucide-react";
 
 interface ShareModalProps {
@@ -46,11 +46,16 @@ export function ShareModal({ studyId, onClose, onShare, plan = "starter" }: Shar
     }
   };
 
+  const copyRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const mountedRef = useRef(true);
+  useEffect(() => { return () => { mountedRef.current = false; clearTimeout(copyRef.current); }; }, []);
+
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      clearTimeout(copyRef.current);
+      copyRef.current = setTimeout(() => { if (mountedRef.current) setCopied(false); }, 2000);
     } catch {
       const input = document.querySelector<HTMLInputElement>("#share-url-input");
       input?.select();
@@ -171,7 +176,7 @@ export function ShareModal({ studyId, onClose, onShare, plan = "starter" }: Shar
                   onClick={revokeLink}
                   className="flex-1 rounded-lg border border-white/[0.06] px-4 py-2 text-sm text-slate-400 transition-colors hover:bg-white/[0.04] hover:text-slate-300"
                 >
-                  Revoke & generate new
+                  Revoke link
                 </button>
                 <button
                   onClick={onClose}

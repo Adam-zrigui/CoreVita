@@ -59,11 +59,11 @@ export function DynamicViewer(props: ViewerProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
     import("@/components/viewer/ViewerShell")
-      .then((m) => setComp(() => m.ViewerShell))
-      .catch((e) => {
-        setError(formatUnknownError(e, "Failed to load DICOM viewer"));
-      });
+      .then((m) => { if (mounted) setComp(() => m.ViewerShell); })
+      .catch((e) => { if (mounted) setError(formatUnknownError(e, "Failed to load DICOM viewer")); });
+    return () => { mounted = false; };
   }, []);
 
   if (error) {

@@ -27,6 +27,12 @@ export async function POST(request: Request) {
     if (tenantId && stripeId) {
       const sub = await stripe.subscriptions.retrieve(stripeId) as unknown as SubscriptionWithPeriod;
 
+      // Cancel the old subscription if this tenant had one
+      const existing = await prisma.subscription.findUnique({ where: { tenantId } });
+      if (existing?.stripeId && existing.stripeId !== stripeId) {
+        await stripe.subscriptions.cancel(existing.stripeId);
+      }
+
       await prisma.subscription.upsert({
         where: { tenantId },
         create: {

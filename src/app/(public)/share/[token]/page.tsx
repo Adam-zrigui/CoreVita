@@ -73,7 +73,7 @@ export default async function SharePage({
 
 function ExpiredPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-950">
+    <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-sm text-center">
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-8 backdrop-blur-2xl shadow-2xl">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/10 text-red-400">
@@ -95,7 +95,7 @@ function ExpiredPage() {
           </p>
           <a
             href="/"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-500"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
           >
             Learn more
           </a>
@@ -107,10 +107,10 @@ function ExpiredPage() {
 
 function PasswordGate({ token, error }: { token: string; error?: string }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-950">
+    <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-sm">
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-8 text-center backdrop-blur-2xl shadow-2xl">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/15 to-sky-500/10 text-emerald-400 ring-1 ring-white/[0.06]">
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
             </svg>
@@ -126,14 +126,14 @@ function PasswordGate({ token, error }: { token: string; error?: string }) {
               placeholder="Enter password"
               required
               autoFocus
-              className="w-full rounded-lg border border-white/[0.06] bg-white/[0.04] px-4 py-2.5 text-sm text-white outline-none transition-colors placeholder:text-slate-600 focus:border-blue-500/50"
+              className="w-full rounded-lg border border-white/[0.06] bg-white/[0.04] px-4 py-2.5 text-sm text-white outline-none transition-colors placeholder:text-slate-600 focus:border-emerald-500/50"
             />
             {error && (
               <p className="text-xs text-red-400">{error}</p>
             )}
             <button
               type="submit"
-              className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-500"
+              className="w-full rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
             >
               View Study
             </button>

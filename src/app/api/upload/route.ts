@@ -2,14 +2,18 @@ import { NextResponse } from "next/server";
 import Busboy from "busboy";
 import { randomUUID } from "crypto";
 import { getServerSession } from "@/lib/auth";
-import { prisma, getDefaultTenant, withDbRetry } from "@/lib/db";
+import { prisma, withDbRetry } from "@/lib/db";
 import { getStorageDriver, uploadToB2, uploadDicomMetadata } from "@/lib/storage";
 import { readDicomSortMetadata } from "@/lib/dicom-validation";
 import { getRedis, clearStudiesCache } from "@/lib/redis";
 import { enqueueUpload } from "@/lib/queue";
 import { normalizeDicomPath, parseDicomdirStructured } from "@/lib/dicomdir";
 import { parseInstanceNumber, parseSeriesNumber, parseSeriesUid } from "@/lib/dicom-instance-number";
+import { isDicomPart10 } from "@/lib/dicom-validation";
+import { sanitizeDicomMetadata } from "@/lib/dicom-sanitize";
 import { getCurrentPlan } from "@/lib/plans";
+import { requireRole, getActorTenant } from "@/lib/rbac";
+import { logAudit } from "@/lib/audit";
 
 export const runtime = "nodejs";
 
@@ -32,6 +36,9 @@ export async function POST(req: Request) {
       }, { status: 402 });
     }
 
+    const roleCheck = await requireRole("upload", session);
+    if (roleCheck instanceof Response) return roleCheck;
+
   const contentType = req.headers.get("content-type");
   if (!contentType?.includes("multipart/form-data")) {
     return NextResponse.json({ error: "Expected multipart upload" }, { status: 400 });
@@ -42,13 +49,18 @@ export async function POST(req: Request) {
   if (storageDriver !== "b2") {
     return NextResponse.json({ error: "Storage driver must be b2" }, { status: 400 });
   }
-  const tenant = await getDefaultTenant();
+  const actorTenant = await getActorTenant(session);
+  if (actorTenant instanceof Response) return actorTenant;
+  const tenantId = actorTenant.tenantId;
 
   const files: { name: string; storageKey: string; driver: string; originalPath: string; instanceNumber?: number; seriesUid?: string; seriesNumber?: number }[] = [];
   const uploads: Promise<void>[] = [];
   let dicomdirBuffer: Buffer | null = null;
 
-  const bb = Busboy({ headers: { "content-type": contentType } });
+  const bb = Busboy({
+    headers: { "content-type": contentType },
+    limits: { fileSize: 500 * 1024 * 1024, files: 5000 },
+  } as any);
 
   const finished = new Promise<void>((resolve, reject) => {
     bb.on("file", (_name, file, info) => {
@@ -68,6 +80,9 @@ export async function POST(req: Request) {
       file.on("data", (chunk: Buffer | string) => chunks.push(Buffer.from(chunk)));
       file.on("end", () => {
         const buffer = Buffer.concat(chunks);
+        if (!isDicomPart10(buffer)) {
+          return;
+        }
         const instanceNumber = parseInstanceNumber(buffer);
         const seriesNumber = parseSeriesNumber(buffer);
         const seriesUid = parseSeriesUid(buffer);
@@ -186,6 +201,9 @@ export async function POST(req: Request) {
 
   const effectiveStudyUid = studyUidFromDir || studyUid;
 
+  const sanitizedPatientName = patientNameFromDir ? sanitizeDicomMetadata(patientNameFromDir) : "Unknown";
+  const sanitizedDescription = descriptionFromDir ? sanitizeDicomMetadata(descriptionFromDir) : "Imported Study";
+
   const queued = await enqueueUpload({
     studyUid: effectiveStudyUid,
     series: seriesGroups.map((s) => ({
@@ -201,17 +219,21 @@ export async function POST(req: Request) {
       modality: s.modality,
       sopMap: s.sopMap ? Array.from(s.sopMap.entries()) : undefined,
     })),
-    patientName: patientNameFromDir,
+    patientName: sanitizedPatientName,
     studyDate: studyDateFromDir,
-    description: descriptionFromDir,
+    description: sanitizedDescription,
   });
 
   if (queued) {
     try {
       const redis = getRedis();
       if (redis) await clearStudiesCache(redis);
-    } catch {
-      // cache invalidation failure is non-fatal
+    } catch (e) {
+      console.warn("[upload] cache invalidation failed:", e);
+    }
+    const actorInfo = await getActorTenant(session);
+    if (!(actorInfo instanceof Response)) {
+      logAudit(actorInfo.tenantId, actorInfo.actorId, "study.upload", effectiveStudyUid, { queued: true }).catch((e) => console.error("[audit] study.upload failed:", e));
     }
     return NextResponse.json({ ok: true, queued: true, studyUid: effectiveStudyUid });
   }
@@ -219,10 +241,10 @@ export async function POST(req: Request) {
   const study = await withDbRetry(() =>
     prisma.study.create({
       data: {
-        tenantId: tenant.id,
+        tenantId,
         studyUid: effectiveStudyUid,
-        patientName: patientNameFromDir ?? "Unknown",
-        description: descriptionFromDir ?? "Imported Study",
+        patientName: sanitizedPatientName,
+        description: sanitizedDescription,
         studyDate: studyDateFromDir,
         modality: "MR",
         slices: orderedFiles.length,
@@ -251,13 +273,18 @@ export async function POST(req: Request) {
   try {
     const redis2 = getRedis();
     if (redis2) await clearStudiesCache(redis2);
-  } catch {
-    // cache invalidation failure is non-fatal
+  } catch (e) {
+    console.warn("[upload] cache invalidation failed:", e);
+  }
+
+  const actorInfo = await getActorTenant(session);
+  if (!(actorInfo instanceof Response)) {
+    logAudit(actorInfo.tenantId, actorInfo.actorId, "study.upload", study.studyUid).catch((e) => console.error("[audit] study.upload failed:", e));
   }
 
   return NextResponse.json({ ok: true, studyUid: study.studyUid, queued: false });
   } catch (error) {
     console.error("Upload error:", error);
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Upload failed" }, { status: 500 });
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }

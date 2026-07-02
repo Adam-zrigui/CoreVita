@@ -1,3 +1,4 @@
+import { MarketingFooter } from "@/components/MarketingFooter";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -116,6 +117,7 @@ export default function TermsPage() {
           </section>
         </div>
       </div>
+      <MarketingFooter />
     </main>
   );
 }

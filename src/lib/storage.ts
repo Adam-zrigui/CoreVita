@@ -29,6 +29,7 @@ export function getB2Client() {
     endpoint,
     credentials: { accessKeyId, secretAccessKey },
     forcePathStyle: true,
+    requestHandler: { requestTimeout: 30_000 },
   });
 }
 
@@ -160,7 +161,7 @@ export async function uploadDicomMetadata(storageKey: string, metadata: DicomSor
       Body: JSON.stringify(metadata),
       ContentType: "application/json",
     })
-  ).catch(() => {});
+  ).catch((e) => console.error("[storage] metadata cleanup failed:", e));
 }
 
 export async function getDicomMetadata(storageKey: string): Promise<DicomSortMetadata | null> {

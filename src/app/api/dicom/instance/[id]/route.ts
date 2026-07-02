@@ -20,8 +20,8 @@ export async function GET(
   const instance = await prisma.instance.findUnique({
     where: { id },
   }).catch((error) => {
-    const message = `Database lookup failed: ${formatUnknownError(error)}`;
-    return new NextResponse(message, { status: 503 });
+    console.error("[dicom] instance lookup failed:", formatUnknownError(error));
+    return new NextResponse("Internal server error", { status: 503 });
   });
   if (instance instanceof NextResponse) return instance;
   if (!instance) return new NextResponse(null, { status: 404 });
@@ -30,8 +30,8 @@ export async function GET(
   }
 
   const obj = await getFromB2(instance.storageKey).catch((error) => {
-    const message = `Storage fetch failed: ${formatUnknownError(error)}`;
-    return new NextResponse(message, { status: 502 });
+    console.error("[dicom] B2 fetch failed:", formatUnknownError(error));
+    return new NextResponse("Internal server error", { status: 502 });
   });
   if (obj instanceof NextResponse) return obj;
   if (!obj) return new NextResponse(null, { status: 404 });

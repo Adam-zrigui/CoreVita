@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 
-export function SeriesThumbnail({ imageId }: { imageId: string }) {
+export const SeriesThumbnail = memo(function SeriesThumbnail({ imageId }: { imageId: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export function SeriesThumbnail({ imageId }: { imageId: string }) {
         ctx.clearRect(0, 0, cw, ch);
         const imageData = image.getPixelData();
         const minMax = imageData instanceof Float32Array
-          ? { min: Math.min(...imageData), max: Math.max(...imageData) }
+          ? (() => { let mn = Infinity, mx = -Infinity; for (let i = 0; i < imageData.length; i++) { const v = imageData[i]; if (v < mn) mn = v; if (v > mx) mx = v; } return { min: mn, max: mx }; })()
           : { min: 0, max: 255 };
 
         const range = minMax.max - minMax.min || 1;
@@ -70,4 +70,4 @@ export function SeriesThumbnail({ imageId }: { imageId: string }) {
       className="w-full aspect-square rounded-md bg-black/50 object-contain"
     />
   );
-}
+});

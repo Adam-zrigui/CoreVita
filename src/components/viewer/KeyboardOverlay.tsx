@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const shortcuts = [
   { key: "1-5", label: "Switch tool" },
@@ -16,17 +16,27 @@ const shortcuts = [
 export function KeyboardOverlay() {
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [open]);
+
   return (
     <div className="relative">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
         className="rounded-lg px-3 py-1.5 text-[11px] font-medium text-slate-500 transition-colors hover:bg-white/[0.04] hover:text-slate-300"
       >
         Shortcuts
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-white/[0.06] bg-slate-900 p-3 shadow-xl backdrop-blur-2xl z-50">
+        <div role="region" aria-label="Keyboard shortcuts" className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-white/[0.06] bg-slate-900 p-3 shadow-xl backdrop-blur-2xl z-50">
           <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
             Keyboard Shortcuts
           </div>

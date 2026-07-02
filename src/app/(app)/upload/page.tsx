@@ -3,7 +3,9 @@
 import { useCallback, useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { UploadZone } from "@/components/upload/UploadZone";
-import { UpgradeModal } from "@/components/UpgradeModal";
+import dynamic from "next/dynamic";
+
+const UpgradeModal = dynamic(() => import("@/components/UpgradeModal").then((m) => ({ default: m.UpgradeModal })), { ssr: false });
 import {
   FileText,
   Loader2,
@@ -266,13 +268,13 @@ export default function UploadPage() {
 
           <div className="flex-1 overflow-y-auto p-4">
             {files.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.03] text-slate-600">
-                  <ImageIcon className="h-5 w-5" />
+              <div className="flex flex-col items-center justify-center py-14 text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 text-emerald-500/70 ring-1 ring-white/[0.04]">
+                  <ImageIcon className="h-6 w-6" />
                 </div>
-                <p className="mt-3 text-sm font-medium text-slate-500">No files selected</p>
-                <p className="mt-0.5 text-[11px] text-slate-600">
-                  Drop DICOM files above to get started
+                <p className="mt-4 text-sm font-medium text-slate-400">No files selected</p>
+                <p className="mt-1 text-[11px] text-slate-600 max-w-[180px]">
+                  Drop DICOM files in the upload area to get started
                 </p>
               </div>
             ) : (
@@ -283,7 +285,7 @@ export default function UploadPage() {
                   return (
                     <div
                       key={key}
-                      className={`group flex items-center justify-between rounded-lg border px-3 py-2 transition-all ${
+                      className={`group relative flex items-center justify-between overflow-hidden rounded-lg border px-3 py-2.5 transition-all ${
                         s === "done"
                           ? "border-emerald-500/15 bg-emerald-500/[0.03]"
                           : s === "error"
@@ -293,7 +295,14 @@ export default function UploadPage() {
                               : "border-transparent bg-white/[0.03] hover:bg-white/[0.05]"
                       }`}
                     >
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                      {/* Status accent bar */}
+                      <div className={`absolute left-0 top-0 h-full w-0.5 transition-opacity ${
+                        s === "done" ? "bg-gradient-to-b from-emerald-400 to-emerald-600 opacity-100" :
+                        s === "error" ? "bg-gradient-to-b from-red-400 to-red-600 opacity-100" :
+                        s === "uploading" ? "bg-gradient-to-b from-emerald-400 to-emerald-600 opacity-60" :
+                        "opacity-0"
+                      }`} />
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1 pl-1">
                         {statusIcon(s)}
                         <span className="truncate text-xs text-slate-300">{f.name}</span>
                         {f.name.toUpperCase() === "DICOMDIR" && (
@@ -311,7 +320,11 @@ export default function UploadPage() {
                         {s === "error" && (
                           <button
                             type="button"
-                            className="flex h-5 w-5 items-center justify-center rounded text-red-500 transition-colors hover:bg-red-500/10"
+                            onClick={() => {
+                              statusMap.set(key, "pending");
+                              rerender();
+                            }}
+                            className="flex h-6 w-6 items-center justify-center rounded text-red-500 transition-all hover:bg-red-500/10 active:scale-90"
                             title="Retry"
                           >
                             <RefreshCw className="h-3 w-3" />
@@ -327,7 +340,7 @@ export default function UploadPage() {
                           <button
                             type="button"
                             onClick={() => removeFile(key)}
-                            className="flex h-5 w-5 items-center justify-center rounded text-slate-700 transition-colors hover:bg-white/[0.06] hover:text-slate-400"
+                            className="flex h-6 w-6 items-center justify-center rounded text-slate-700 transition-all hover:bg-white/[0.06] hover:text-slate-400 active:scale-90"
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -364,7 +377,7 @@ export default function UploadPage() {
                 </div>
                 <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
                   <div
-                    className="h-full rounded-full bg-emerald-500 transition-all duration-300"
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-300 shadow-[0_0_8px_-2px] shadow-emerald-500/40"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>

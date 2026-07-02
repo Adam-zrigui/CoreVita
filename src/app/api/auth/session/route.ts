@@ -2,8 +2,11 @@ import { cookies } from "next/headers";
 import { getAdminAuth } from "@/lib/firebase/admin";
 import { prisma } from "@/lib/prisma";
 import { getDefaultTenant } from "@/lib/db";
+import { z } from "zod";
 
 export const runtime = "nodejs";
+
+const sessionSchema = z.object({ idToken: z.string().min(1) });
 
 export async function POST(request: Request) {
   const expiresIn = 60 * 60 * 24 * 5 * 1000;
@@ -11,10 +14,8 @@ export async function POST(request: Request) {
   let idToken: string;
   try {
     const body = await request.json();
-    idToken = body.idToken;
-    if (!idToken) {
-      return Response.json({ error: "Missing idToken" }, { status: 400 });
-    }
+    const parsed = sessionSchema.parse(body);
+    idToken = parsed.idToken;
   } catch {
     return Response.json({ error: "Invalid request body" }, { status: 400 });
   }
@@ -34,59 +35,48 @@ export async function POST(request: Request) {
 
   const { uid, email, name, picture } = decoded;
 
+  const signInProvider = (decoded as any).firebase?.sign_in_provider;
+  const emailVerified = (decoded as any).email_verified;
+  if (signInProvider === "password" && !emailVerified) {
+    return Response.json({ error: "Please verify your email before signing in." }, { status: 403 });
+  }
+
   let tenant: { id: string };
   try {
     tenant = await getDefaultTenant();
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
     console.error("[auth/session] getDefaultTenant failed:", error);
-    return Response.json({ error: `Tenant error: ${msg.slice(0, 120)}` }, { status: 500 });
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 
+  let resolvedUserId = uid;
   try {
-    if (!email) {
-      await prisma.user.upsert({
+    let user = await prisma.user.findUnique({ where: { id: uid } });
+    if (user) {
+      user = await prisma.user.update({
         where: { id: uid },
-        update: { name, image: picture },
-        create: { id: uid, name, email, image: picture },
+        data: { name, email, image: picture },
       });
     } else {
-      const conflict = await prisma.user.findUnique({ where: { id: uid } });
-      if (conflict && conflict.email !== email) {
-        const byEmail = await prisma.user.findUnique({ where: { email } });
-        if (byEmail) {
-          await prisma.membership.updateMany({
-            where: { userId: uid },
-            data: { userId: byEmail.id },
-          });
-        }
-        await prisma.user.delete({ where: { id: uid } });
-      }
-      await prisma.user.upsert({
-        where: { email },
-        update: { id: uid, name, image: picture },
-        create: { id: uid, name, email, image: picture },
+      user = await prisma.user.create({
+        data: { id: uid, name, email, image: picture },
       });
     }
+    resolvedUserId = user.id;
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
     console.error("[auth/session] user upsert failed:", error);
-    return Response.json({ error: `User error: ${msg.slice(0, 120)}` }, { status: 500 });
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 
   try {
-    const resolvedUserId = email
-      ? (await prisma.user.findUnique({ where: { email } }))?.id ?? uid
-      : uid;
     await prisma.membership.upsert({
       where: { userId_tenantId: { userId: resolvedUserId, tenantId: tenant.id } },
       update: {},
       create: { userId: resolvedUserId, tenantId: tenant.id, role: "VIEWER" },
     });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
     console.error("[auth/session] membership upsert failed:", error);
-    return Response.json({ error: `Member error: ${msg.slice(0, 120)}` }, { status: 500 });
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 
   let sessionCookie: string;
@@ -99,11 +89,11 @@ export async function POST(request: Request) {
 
   try {
     const cookieStore = await cookies();
-    const isProd = process.env.NODE_ENV === "production";
-    cookieStore.set("__session", sessionCookie, {
+    const sameSite = (process.env.COOKIE_SAMESITE || "lax") as "lax" | "none" | "strict";
+    cookieStore.set("__Host-__session", sessionCookie, {
       httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "none" : "lax",
+      secure: true,
+      sameSite,
       path: "/",
       maxAge: expiresIn / 1000,
     });
@@ -125,17 +115,17 @@ export async function DELETE() {
         const decoded = await adminAuth.verifySessionCookie(sessionCookie, true);
         await adminAuth.revokeRefreshTokens(decoded.uid);
       }
-    } catch {
-      // best-effort revocation
+    } catch (e) {
+      console.error("[auth/session] Token revocation failed:", e);
     }
   }
 
   const cookieStore = await cookies();
-  const isProd = process.env.NODE_ENV === "production";
-  cookieStore.set("__session", "", {
+  const sameSite = (process.env.COOKIE_SAMESITE || "lax") as "lax" | "none" | "strict";
+  cookieStore.set("__Host-__session", "", {
     httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? "none" : "lax",
+    secure: true,
+    sameSite,
     path: "/",
     maxAge: 0,
   });

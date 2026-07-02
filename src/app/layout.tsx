@@ -5,7 +5,7 @@ import { GlobalErrorTrap } from "@/components/GlobalErrorTrap";
 
 export const metadata: Metadata = {
   title: "CoreVita",
-  description: "CoreVita Radiology Platform",
+  description: "CoreVita Radiology Platform"
 };
 
 export default function RootLayout({

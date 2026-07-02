@@ -6,14 +6,14 @@ import { X, Check, Crown } from "lucide-react";
 
 const tiers = [
   {
-    name: "Starter",
+    name: "Free",
     price: "€0",
     period: "/mo",
-    features: ["Up to 500 studies", "7-day link expiry", "Basic viewer tools", "1 user"],
+    features: ["Up to 3 studies/week", "7-day link expiry", "Basic viewer tools", "1 user"],
   },
   {
     name: "Pro",
-    price: "€29",
+    price: "€49",
     period: "/mo",
     features: [
       "Unlimited studies",
@@ -21,6 +21,7 @@ const tiers = [
       "No watermark",
       "Advanced viewer tools",
       "Measurement & annotation",
+      "Audit log tracking",
       "Up to 5 users",
     ],
     popular: true,
@@ -32,10 +33,11 @@ const tiers = [
     features: [
       "Everything in Pro",
       "Unlimited team members",
-      "AI-assisted triage",
-      "Structured reports",
+      "SSO authentication",
       "Priority support",
-      "On-premise option",
+      "Custom branding",
+      "API access",
+      "SLA guarantee",
     ],
   },
 ];
@@ -69,33 +71,37 @@ export function UpgradeModal({
   if (!open) return null;
 
   const currentName =
-    currentPlan === "enterprise" ? "Clinic" : currentPlan === "pro" ? "Pro" : "Starter";
+    currentPlan === "enterprise" ? "Clinic" : currentPlan === "pro" ? "Pro" : "Free";
 
   return (
     <div
       ref={overlayRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Upgrade your plan"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
       onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
     >
       <div className="relative w-full max-w-3xl rounded-2xl border border-white/[0.08] bg-slate-950 shadow-2xl">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
           <div className="flex items-center gap-2.5">
-            <Crown className="h-5 w-5 text-amber-400" />
+            <Crown className="h-5 w-5 text-amber-400" aria-hidden="true" />
             <h2 className="text-base font-semibold text-white">Upgrade your plan</h2>
           </div>
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close"
             className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-white/[0.06] hover:text-slate-400"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
 
         <div className="grid gap-4 p-6 lg:grid-cols-3">
           {tiers.map((tier) => {
             const isCurrent =
-              (tier.name === "Starter" && currentPlan === "starter") ||
+              (tier.name === "Free" && currentPlan === "starter") ||
               (tier.name === "Pro" && currentPlan === "pro") ||
               (tier.name === "Clinic" && currentPlan === "enterprise");
 
@@ -104,14 +110,14 @@ export function UpgradeModal({
                 key={tier.name}
                 className={`relative flex flex-col rounded-xl border p-5 ${
                   tier.popular
-                    ? "border-blue-500/30 bg-blue-500/[0.04]"
+                    ? "border-emerald-500/30 bg-emerald-500/[0.04]"
                     : isCurrent
                       ? "border-emerald-500/20 bg-emerald-500/[0.03]"
                       : "border-white/[0.06] bg-white/[0.02]"
                 }`}
               >
                 {tier.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-4 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-white shadow-lg whitespace-nowrap">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-white shadow-lg whitespace-nowrap">
                     Most Popular
                   </div>
                 )}
@@ -129,7 +135,7 @@ export function UpgradeModal({
                 <ul className="mt-4 flex-1 space-y-2">
                   {tier.features.map((f) => (
                     <li key={f} className="flex items-center gap-2 text-[11px] text-slate-400">
-                      <Check className={`h-3 w-3 shrink-0 ${tier.popular ? "text-blue-400" : "text-slate-500"}`} />
+                      <Check className={`h-3 w-3 shrink-0 ${tier.popular ? "text-emerald-400" : "text-slate-500"}`} />
                       {f}
                     </li>
                   ))}
@@ -139,13 +145,13 @@ export function UpgradeModal({
                   <div className="mt-5 w-full rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-center text-[10px] font-semibold text-emerald-400">
                     Current plan
                   </div>
-                ) : tier.name === "Starter" ? null : (
+                ) : tier.name === "Free" ? null : (
                   <Link
                     href="/services/pricing"
                     onClick={onClose}
-                    className={`mt-5 block w-full rounded-lg px-4 py-2 text-center text-xs font-semibold text-white transition-colors ${
+                    className={`mt-5 block w-full rounded-lg px-4 py-2 text-center text-xs font-semibold text-white shadow-lg transition-all active:scale-[0.98] ${
                       tier.popular
-                        ? "bg-emerald-500 hover:bg-emerald-400"
+                        ? "bg-gradient-to-r from-emerald-500 to-emerald-600 shadow-emerald-500/20 hover:from-emerald-400 hover:to-emerald-500"
                         : "bg-white/[0.08] hover:bg-white/[0.12]"
                     }`}
                   >

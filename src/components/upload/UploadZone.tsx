@@ -57,7 +57,7 @@ export function UploadZone({ onFiles, busy }: Props) {
         <div className="pointer-events-none absolute inset-0 rounded-xl ring-2 ring-emerald-400/20" />
       )}
 
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 transition-colors group-hover:bg-emerald-500/15">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 transition-colors">
         <div className={`transition-transform duration-200 ${dragging ? "scale-110" : ""}`}>
           <UploadCloud className="h-8 w-8" />
         </div>

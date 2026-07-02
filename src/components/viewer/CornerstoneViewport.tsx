@@ -22,11 +22,11 @@ export function CornerstoneViewport(props: Props) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
     import("./CornerstoneViewportImpl")
-      .then((m) => setViewportComponent(() => m.CornerstoneViewportImpl))
-      .catch((e) => {
-        setError(formatUnknownError(e, "Failed to load viewer engine"));
-      });
+      .then((m) => { if (mounted) setViewportComponent(() => m.CornerstoneViewportImpl); })
+      .catch((e) => { if (mounted) setError(formatUnknownError(e, "Failed to load viewer engine")); });
+    return () => { mounted = false; };
   }, []);
 
   if (error) {

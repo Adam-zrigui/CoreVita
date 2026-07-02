@@ -30,19 +30,16 @@ export async function getServerSession(): Promise<AuthSession> {
 
     const tenant = await getDefaultTenant();
 
-    const email = decodedClaims.email;
-    let user: { id: string; name?: string | null; email?: string | null; image?: string | null };
-    if (!email) {
-      user = await prisma.user.upsert({
+    const email = decodedClaims.email ?? null;
+    let user = await prisma.user.findUnique({ where: { id: uid } });
+    if (user) {
+      user = await prisma.user.update({
         where: { id: uid },
-        update: { name: decodedClaims.name, image: decodedClaims.picture },
-        create: { id: uid, name: decodedClaims.name, email, image: decodedClaims.picture },
+        data: { name: decodedClaims.name, email, image: decodedClaims.picture },
       });
     } else {
-      user = await prisma.user.upsert({
-        where: { email },
-        update: { id: uid, name: decodedClaims.name, image: decodedClaims.picture },
-        create: { id: uid, name: decodedClaims.name, email, image: decodedClaims.picture },
+      user = await prisma.user.create({
+        data: { id: uid, name: decodedClaims.name, email, image: decodedClaims.picture },
       });
     }
 

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import { getCurrentPlan } from "@/lib/plans";
+import { requireRole, getActorTenant } from "@/lib/rbac";
 import { getB2Prefix, getDicomMetadata } from "@/lib/storage";
 import { formatUnknownError } from "@/lib/format-error";
 import { readDicomSortMetadata, type DicomSortMetadata } from "@/lib/dicom-validation";
@@ -69,15 +70,21 @@ export async function GET(
     }
     const plan = planInfo.plan;
 
-    const { studyId } = await params;
+    const roleCheck = await requireRole("studies.view", session);
+    if (roleCheck instanceof Response) return roleCheck;
 
-    const study = await prisma.study.findUnique({
-      where: { studyUid: studyId },
+    const { studyId } = await params;
+    const actorInfo = await getActorTenant(session);
+    if (actorInfo instanceof Response) return actorInfo;
+
+    const study = await prisma.study.findFirst({
+      where: { studyUid: studyId, tenantId: actorInfo.tenantId },
       select: {
         studyUid: true,
         patientName: true,
         studyDate: true,
         description: true,
+        createdAt: true,
         series: {
           orderBy: [{ seriesNumber: { sort: "asc", nulls: "last" } }, { createdAt: "asc" }],
           select: {
@@ -103,10 +110,14 @@ export async function GET(
       return NextResponse.json({ error: "Study not found" }, { status: 404 });
     }
 
+    if (plan === "starter" && study.createdAt < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) {
+      return NextResponse.json({ error: "This study has expired. Upgrade to Pro to access older studies." }, { status: 403 });
+    }
+
     prisma.study.updateMany({
       where: { studyUid: studyId, status: "PENDING" },
       data: { status: "READING" },
-    }).catch(() => {});
+    }).catch((e) => console.error("[viewer] status update failed:", e));
 
     const instances = await Promise.all(
       study.series.flatMap((series, seriesIndex) =>
@@ -161,17 +172,19 @@ export async function GET(
       }
     }
 
-    const equipmentBySeries: Record<number, DicomEquipmentMetadata> = {};
-    for (const instance of b2Instances) {
-      const si = instance._seriesIndex;
-      if (equipmentBySeries[si] !== undefined) continue;
-      const prefix = await getB2Prefix(instance.storageKey, EQUIPMENT_PREFIX_BYTES).catch(() => null);
-      if (prefix) {
-        equipmentBySeries[si] = readDicomEquipmentMetadata(prefix);
-      } else {
-        equipmentBySeries[si] = {};
+    const uniqueSeries = new Map<number, string>();
+    for (const inst of b2Instances) {
+      if (!uniqueSeries.has(inst._seriesIndex)) {
+        uniqueSeries.set(inst._seriesIndex, inst.storageKey);
       }
     }
+    const equipmentEntries = await Promise.all(
+      Array.from(uniqueSeries.entries()).map(async ([si, storageKey]) => {
+        const prefix = await getB2Prefix(storageKey, EQUIPMENT_PREFIX_BYTES).catch(() => null);
+        return [si, prefix ? readDicomEquipmentMetadata(prefix) : {} as DicomEquipmentMetadata] as const;
+      })
+    );
+    const equipmentBySeries: Record<number, DicomEquipmentMetadata> = Object.fromEntries(equipmentEntries);
 
     const seriesWithThumbnail = study.series.map((s, i) => ({
       id: s.id,
@@ -202,8 +215,9 @@ export async function GET(
       }
     );
   } catch (error) {
+    console.error("[viewer] failed to load study:", formatUnknownError(error));
     return NextResponse.json(
-      { error: formatUnknownError(error, "Failed to load study") },
+      { error: "Failed to load study" },
       { status: 500 }
     );
   }

@@ -1,14 +1,18 @@
-import { cookies } from "next/headers";
 import { getAdminAuth } from "@/lib/firebase/admin";
 import { prisma } from "@/lib/prisma";
 import { getDefaultTenant } from "@/lib/db";
+import { z } from "zod";
+
+const registerSchema = z.object({
+  idToken: z.string().min(1),
+  name: z.string().min(1).max(200).optional(),
+});
 
 export async function POST(request: Request) {
   try {
-    const { idToken, name } = await request.json();
-    if (!idToken) {
-      return Response.json({ error: "Missing idToken" }, { status: 400 });
-    }
+    const body = await request.json();
+    const parsed = registerSchema.parse(body);
+    const { idToken, name } = parsed;
 
     const adminAuth = getAdminAuth();
     if (!adminAuth) {
@@ -24,34 +28,22 @@ export async function POST(request: Request) {
 
     const tenant = await getDefaultTenant();
 
-    const user = await prisma.user.upsert({
-      where: { email },
-      update: { id: uid, name: name ?? decoded.name, image: picture },
-      create: {
-        id: uid,
-        name: name ?? decoded.name,
-        email,
-        image: picture,
-      },
-    });
+    let user = await prisma.user.findUnique({ where: { id: uid } });
+    if (user) {
+      user = await prisma.user.update({
+        where: { id: uid },
+        data: { name: name ?? decoded.name, email, image: picture },
+      });
+    } else {
+      user = await prisma.user.create({
+        data: { id: uid, name: name ?? decoded.name, email, image: picture },
+      });
+    }
 
     await prisma.membership.upsert({
       where: { userId_tenantId: { userId: user.id, tenantId: tenant.id } },
       update: {},
       create: { userId: user.id, tenantId: tenant.id, role: "ADMIN" },
-    });
-
-    const expiresIn = 60 * 60 * 24 * 5 * 1000;
-    const sessionCookie = await adminAuth.createSessionCookie(idToken, { expiresIn });
-
-    const cookieStore = await cookies();
-    const isProd = process.env.NODE_ENV === "production";
-    cookieStore.set("__session", sessionCookie, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "none" : "lax",
-      path: "/",
-      maxAge: expiresIn / 1000,
     });
 
     return Response.json({

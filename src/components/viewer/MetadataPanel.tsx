@@ -35,7 +35,8 @@ export function MetadataPanel({
 }) {
   return (
     <div className="flex h-full flex-col gap-3">
-      <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
+      <div className="relative overflow-hidden rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
+        <div className="pointer-events-none absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-400/40 via-emerald-400/10 to-transparent" />
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
             <User className="h-4 w-4" />
@@ -115,7 +116,8 @@ export function MetadataPanel({
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
+      <div className="relative flex-1 overflow-y-auto rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
+        <div className="pointer-events-none absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-sky-400/40 via-sky-400/10 to-transparent" />
         <div className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
           Series List
         </div>
@@ -123,8 +125,8 @@ export function MetadataPanel({
           {series.map((item) => (
             <div
               key={item.id}
-              className="rounded-md border border-white/[0.06] bg-white/[0.02] p-3 transition-colors hover:bg-white/[0.04]"
-            >
+              className="group relative overflow-hidden rounded-md border border-white/[0.06] bg-white/[0.02] p-3 transition-all hover:border-white/[0.1] hover:bg-white/[0.04] hover:shadow-sm">
+                <div className="pointer-events-none absolute top-0 left-0 h-full w-0.5 bg-gradient-to-b from-emerald-400/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-white">
                   {item.modality ?? "MR"}
@@ -171,15 +173,7 @@ export function MetadataPanel({
         </a>
       )}
 
-      <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
-        <div className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
-          Quick Report
-        </div>
-        <textarea
-          placeholder="Add findings..."
-          className="mt-3 h-20 w-full rounded-md border border-white/[0.06] bg-white/[0.02] p-3 text-xs text-slate-300 placeholder:text-slate-600 focus:border-emerald-500/30 focus:outline-none resize-none"
-        />
-      </div>
+
     </div>
   );
 }

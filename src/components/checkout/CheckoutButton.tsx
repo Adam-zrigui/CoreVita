@@ -1,18 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type CheckoutButtonProps = {
   plan: string | null;
   popular?: boolean;
+  className?: string;
   children: React.ReactNode;
+  planName?: string; // used to show "Switch to {planName}" when already subscribed
 };
 
-export function CheckoutButton({ plan, popular, children }: CheckoutButtonProps) {
+export function CheckoutButton({ plan, popular, className, children, planName }: CheckoutButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
+  const [hasSubscription, setHasSubscription] = useState(false);
+  const [checked, setChecked] = useState(false);
   const isThisLoading = loading === plan;
+
+  useEffect(() => {
+    let mounted = true;
+    fetch("/api/billing/usage")
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (!mounted) return;
+        if (data?.status === "active" || data?.status === "trialing") {
+          setHasSubscription(true);
+        }
+      })
+      .catch((e) => { if (mounted) console.error("[checkout] redirect failed:", e); })
+      .finally(() => { if (mounted) setChecked(true); });
+    return () => { mounted = false; };
+  }, []);
 
   const handleCheckout = async () => {
     if (!plan) return;
@@ -28,23 +48,38 @@ export function CheckoutButton({ plan, popular, children }: CheckoutButtonProps)
         if (res.status === 401) { router.push("/login"); return; }
         throw new Error(data.error ?? "Checkout failed");
       }
-      const { url } = await res.json();
-      window.location.href = url;
+      const data = await res.json();
+
+      if (data.switched) {
+        toast.success(`Switched to ${planName || "new plan"}!`);
+        return;
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+        return;
+      }
+
+      throw new Error("Unexpected response");
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Checkout failed");
+      toast.error(e instanceof Error ? e.message : "Checkout failed");
     }
     setLoading(null);
   };
+
+  const label = checked && hasSubscription && planName
+    ? `Switch to ${planName}`
+    : children;
 
   if (!plan) {
     return (
       <a
         href="mailto:sales@corevita.com?subject=Enterprise%20plan%20inquiry"
-        className={`mt-6 block w-full rounded-lg px-4 py-2.5 text-center text-xs font-semibold transition-colors ${
+        className={`mt-8 flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-3 text-sm font-semibold shadow-lg transition-all active:scale-[0.98] ${className || (
           popular
-            ? "bg-emerald-500 text-white hover:bg-emerald-400"
-            : "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
-        }`}
+            ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-emerald-500/20 hover:from-emerald-400 hover:to-emerald-500"
+            : "border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
+        )}`}
       >
         {children}
       </a>
@@ -56,13 +91,13 @@ export function CheckoutButton({ plan, popular, children }: CheckoutButtonProps)
       type="button"
       disabled={isThisLoading}
       onClick={handleCheckout}
-      className={`mt-6 block w-full rounded-lg px-4 py-2.5 text-center text-xs font-semibold transition-colors disabled:opacity-40 ${
+      className={`mt-8 flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-3 text-sm font-semibold shadow-lg transition-all active:scale-[0.98] disabled:opacity-40 ${className || (
         popular
-          ? "bg-emerald-500 text-white hover:bg-emerald-400"
-          : "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
-      }`}
+          ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-emerald-500/20 hover:from-emerald-400 hover:to-emerald-500"
+          : "border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
+      )}`}
     >
-      {isThisLoading ? "Redirecting..." : children}
+      {isThisLoading ? "Redirecting..." : label}
     </button>
   );
 }

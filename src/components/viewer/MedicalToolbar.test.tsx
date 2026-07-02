@@ -22,9 +22,16 @@ describe("MedicalToolbar", () => {
     expect(onAction).toHaveBeenCalledWith("invert");
   });
 
-  it("calls onAction for each tool", () => {
+  it("blocks gated tools for starter plan", () => {
     const onAction = vi.fn();
-    render(<MedicalToolbar onAction={onAction} />);
+    render(<MedicalToolbar onAction={onAction} plan="starter" />);
+    fireEvent.click(screen.getByTestId("tool-export"));
+    expect(onAction).not.toHaveBeenCalled();
+  });
+
+  it("calls onAction for each tool when not gated", () => {
+    const onAction = vi.fn();
+    render(<MedicalToolbar onAction={onAction} plan="pro" />);
     const tools = ["fullscreen", "zoomIn", "zoomOut", "invert", "reset", "download", "export", "report"];
     tools.forEach((id) => fireEvent.click(screen.getByTestId(`tool-${id}`)));
     expect(onAction).toHaveBeenCalledTimes(8);

@@ -96,6 +96,12 @@ export async function RecentStudiesTableContent() {
                     {study.modality ?? "-"}
                   </span>
                 </td>
+                <td className="px-4 py-3.5 text-sm text-slate-500 hidden sm:table-cell">
+                  <span className="inline-flex items-center gap-1 tabular-nums">
+                    <Share2 className="h-3 w-3 text-slate-600" />
+                    {study.shareCount}
+                  </span>
+                </td>
                 <td className="px-4 py-3.5 text-sm text-slate-500 hidden lg:table-cell tabular-nums">
                   {study.slices}
                 </td>
@@ -112,12 +118,6 @@ export async function RecentStudiesTableContent() {
                     }`}
                   >
                     {study.status}
-                  </span>
-                </td>
-                <td className="px-4 py-3.5 text-sm text-slate-500 hidden sm:table-cell">
-                  <span className="inline-flex items-center gap-1 tabular-nums">
-                    <Share2 className="h-3 w-3 text-slate-600" />
-                    {study.shareCount}
                   </span>
                 </td>
                 <td className="px-4 py-3.5 text-sm text-slate-600 hidden lg:table-cell whitespace-nowrap">

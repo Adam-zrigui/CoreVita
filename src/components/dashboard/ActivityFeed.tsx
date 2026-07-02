@@ -9,8 +9,8 @@ export type Activity = {
   timestamp: string;
 };
 
-function formatRelativeTime(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime();
+function formatRelativeTime(iso: string, now: number = Date.now()) {
+  const diff = now - new Date(iso).getTime();
   const mins = Math.floor(diff / 60000);
   if (mins < 1) return "just now";
   if (mins < 60) return `${mins}m ago`;
@@ -53,7 +53,7 @@ export function ActivityFeed({
             </div>
             <div className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-600">
               <Clock className="h-3 w-3" />
-              {formatRelativeTime(a.timestamp)}
+              {formatRelativeTime(a.timestamp, activities.length > 0 ? new Date(activities[0].timestamp).getTime() : Date.now())}
             </div>
           </div>
         </div>

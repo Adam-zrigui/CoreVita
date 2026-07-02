@@ -56,6 +56,7 @@ export default async function StudyDetailPage({
 
   const planInfo = await getCurrentPlan();
   const hasAiFeature = planHasFeature(planInfo.plan, "ai_triage");
+  const hasStructuredReports = planHasFeature(planInfo.plan, "structured_reports");
 
-  return <StudyDetail study={study} plan={planInfo.plan} hasAiFeature={hasAiFeature} />;
+  return <StudyDetail study={study} plan={planInfo.plan} hasAiFeature={hasAiFeature} hasStructuredReports={hasStructuredReports} />;
 }

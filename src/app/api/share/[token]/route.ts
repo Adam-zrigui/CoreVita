@@ -164,10 +164,10 @@ export async function GET(
 
     if (share.password) {
       if (!passwordParam) {
-        return NextResponse.json({ requiresPassword: true, studyUid: study.studyUid }, { status: 200 });
+        return NextResponse.json({ requiresPassword: true }, { status: 200 });
       }
       const hash = crypto.createHash("sha256").update(passwordParam).digest("hex");
-      if (hash !== crypto.createHash("sha256").update(share.password).digest("hex")) {
+      if (hash !== share.password) {
         return NextResponse.json({ error: "Incorrect password" }, { status: 403 });
       }
     }

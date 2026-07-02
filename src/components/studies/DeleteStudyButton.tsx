@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, Loader2, AlertTriangle, X } from "lucide-react";
 
@@ -8,7 +8,7 @@ type Props = {
   studyUid: string;
 };
 
-export function DeleteStudyButton({ studyUid }: Props) {
+export const DeleteStudyButton = memo(function DeleteStudyButton({ studyUid }: Props) {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -70,4 +70,4 @@ export function DeleteStudyButton({ studyUid }: Props) {
       <Trash2 className="h-3 w-3" />
     </button>
   );
-}
+});

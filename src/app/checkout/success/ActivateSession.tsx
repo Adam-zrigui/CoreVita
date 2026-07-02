@@ -6,9 +6,11 @@ import { auth, signInWithCustomToken, getIdToken } from "@/lib/auth/client";
 export function ActivateSession({
   customToken,
   userId,
+  returnPath,
 }: {
   customToken: string;
   userId: string;
+  returnPath?: string;
 }) {
   const called = useRef(false);
 
@@ -26,7 +28,7 @@ export function ActivateSession({
           body: JSON.stringify({ idToken }),
         });
         if (!res.ok) throw new Error("Session creation failed");
-        window.location.href = "/dashboard";
+        window.location.href = returnPath || "/dashboard";
       } catch (err) {
         console.error("[ActivateSession] Re-auth failed:", err);
         window.location.href = `/login?error=session_expired`;

@@ -20,10 +20,11 @@ export async function POST(request: Request) {
 
     const cookieStore = await cookies();
     const isProd = process.env.NODE_ENV === "production";
+    const sameSite = (process.env.COOKIE_SAMESITE || (isProd ? "lax" : "lax")) as "lax" | "none" | "strict";
     cookieStore.set("__session", sessionCookie, {
       httpOnly: true,
       secure: isProd,
-      sameSite: isProd ? "none" : "lax",
+      sameSite,
       path: "/",
       maxAge: expiresIn / 1000,
     });

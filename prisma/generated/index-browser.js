@@ -239,9 +239,51 @@ exports.Prisma.ShareTokenScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ApiKeyScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  name: 'name',
+  prefix: 'prefix',
+  hash: 'hash',
+  lastUsedAt: 'lastUsedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.BrandingScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  logoUrl: 'logoUrl',
+  primaryColor: 'primaryColor',
+  accentColor: 'accentColor'
+};
+
+exports.Prisma.NotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  email: 'email',
+  browser: 'browser',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  actorId: 'actorId',
+  action: 'action',
+  targetId: 'targetId',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -252,6 +294,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
@@ -283,7 +331,11 @@ exports.Prisma.ModelName = {
   Instance: 'Instance',
   Subscription: 'Subscription',
   Report: 'Report',
-  ShareToken: 'ShareToken'
+  ShareToken: 'ShareToken',
+  ApiKey: 'ApiKey',
+  Branding: 'Branding',
+  NotificationPreference: 'NotificationPreference',
+  AuditLog: 'AuditLog'
 };
 
 /**

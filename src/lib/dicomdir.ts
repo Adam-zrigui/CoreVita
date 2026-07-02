@@ -1,7 +1,10 @@
 import dicomParser from "dicom-parser";
 
 function normalizePath(path: string) {
-  return path.replace(/\\/g, "/").replace(/^\.\//, "").toLowerCase();
+  const normalized = path.replace(/\\/g, "/").toLowerCase();
+  const parts = normalized.split("/").filter(Boolean);
+  const cleaned = parts.filter((p) => p !== "..").join("/");
+  return cleaned.replace(/^\.\//, "");
 }
 
 export function parseDicomdirStructured(buffer: Buffer) {

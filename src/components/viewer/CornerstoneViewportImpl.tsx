@@ -152,20 +152,20 @@ export function CornerstoneViewportImpl({
 
   useEffect(() => {
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      event.stopImmediatePropagation();
-      event.preventDefault();
+      console.warn("[viewport] unhandled rejection:", event.reason);
     };
 
     const handleError = (event: ErrorEvent) => {
-      event.stopImmediatePropagation();
-      event.preventDefault();
+      if (event.target === window) {
+        console.warn("[viewport] global error:", event.error ?? event.message);
+      }
     };
 
     window.addEventListener("unhandledrejection", handleUnhandledRejection);
-    window.addEventListener("error", handleError);
+    window.addEventListener("error", handleError, { capture: true });
     return () => {
       window.removeEventListener("unhandledrejection", handleUnhandledRejection);
-      window.removeEventListener("error", handleError);
+      window.removeEventListener("error", handleError, { capture: true });
     };
   }, []);
 
@@ -201,7 +201,7 @@ export function CornerstoneViewportImpl({
 
         const driftedIndex = clampSliceIndex(sliceIndexRef.current, currentImageIds.length);
         if (driftedIndex !== initialIndex) {
-          await viewport.setImageIdIndex(driftedIndex).catch(() => {});
+          await viewport.setImageIdIndex(driftedIndex).catch((e) => console.warn("[viewport] setImageIdIndex failed:", e));
           sliceIndexRef.current = driftedIndex;
         } else {
           sliceIndexRef.current = initialIndex;
@@ -274,6 +274,8 @@ export function CornerstoneViewportImpl({
       return;
     }
 
+    if (vp.getCurrentImageIdIndex() === nextIndex) return;
+
     (async () => {
       try {
         await vp.setImageIdIndex(nextIndex);
@@ -332,7 +334,7 @@ export function CornerstoneViewportImpl({
     const workers = Array.from({ length: CONCURRENCY }, () => worker());
     Promise.all(workers)
       .then(() => { if (!cancelled) setPreloadProgress(null); })
-      .catch(() => {});
+      .catch((e) => console.warn("[viewport] preload cache error:", e));
 
     return () => { cancelled = true; setPreloadProgress(null); };
   }, [imageStackKey, sliceIndex, loading]);
@@ -361,11 +363,14 @@ export function CornerstoneViewportImpl({
         bindings: [{ mouseButton: ToolEnums.MouseBindings.Primary }],
       });
     } catch (error) {
-      queueMicrotask(() => {
+      if (mountedRef.current) {
         setLoadError(formatUnknownError(error, "DICOM tool activation failed."));
-      });
+      }
     }
   }, [activeTool]);
+
+  const mountedRef = useRef(true);
+  useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; }; }, []);
 
   useEffect(() => {
     if (cinePlaying && imageCount > 1) {

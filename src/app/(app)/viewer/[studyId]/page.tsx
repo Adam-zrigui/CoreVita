@@ -72,10 +72,15 @@ function ViewerLoader({ studyId }: { studyId: string }) {
 
   if (error) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-950 px-8 py-10 text-slate-100">
-        <div className="max-w-lg rounded-xl border border-red-500/20 bg-red-500/10 p-6 text-center text-red-100">
-          <h1 className="text-lg font-semibold">MRI study could not be loaded</h1>
-          <p className="mt-2 break-words text-sm text-red-100/75">{error}</p>
+      <main className="flex min-h-screen items-center justify-center px-8 py-10">
+        <div className="max-w-lg rounded-xl border border-red-500/20 bg-red-500/[0.02] p-8 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 text-red-400">
+            <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+            </svg>
+          </div>
+          <h1 className="mt-4 text-lg font-semibold text-white">Study could not be loaded</h1>
+          <p className="mt-2 break-words text-sm text-red-400/75">{error}</p>
         </div>
       </main>
     );
@@ -83,7 +88,7 @@ function ViewerLoader({ studyId }: { studyId: string }) {
 
   if (!data) {
     return (
-      <main className="mx-auto flex min-h-screen flex-col bg-slate-950">
+      <main className="mx-auto flex min-h-screen flex-col">
         <div className="flex h-screen items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-emerald-500/20 border-t-emerald-400" />
