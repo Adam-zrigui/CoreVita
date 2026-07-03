@@ -6,8 +6,6 @@ import { getDashboardData } from "@/lib/dashboard";
 import { BarChart3, Users, Share2, ArrowUpRight, UploadCloud, ChevronRight } from "lucide-react";
 import { DashboardBanner } from "@/components/dashboard/DashboardBanner";
 
-export const dynamic = "force-dynamic";
-
 export default async function DashboardPage() {
   const session = await getServerSession();
   const userName = session?.user?.name ?? null;
