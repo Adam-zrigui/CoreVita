@@ -1,3 +1,3 @@
-import { type AppRole, type AuthSession, getServerSession } from "@/lib/auth/server";
-export type { AppRole, AuthSession };
+import { type AuthSession, getServerSession } from "@/lib/auth/server";
+export type { AuthSession };
 export { getServerSession };

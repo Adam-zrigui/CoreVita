@@ -107,6 +107,7 @@ export function ShareModal({ studyId, onClose, onShare, plan = "starter" }: Shar
           <div>
             <label className="text-xs font-medium text-slate-400">
               Password protection <span className="text-slate-600">(optional)</span>
+              {!isPaid && <span className="ml-2 text-[10px] text-amber-400">Pro feature</span>}
             </label>
             <div className="relative mt-1.5">
               <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
@@ -114,21 +115,29 @@ export function ShareModal({ studyId, onClose, onShare, plan = "starter" }: Shar
                 type="text"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Leave blank for no password"
-                className="w-full rounded-lg border border-white/[0.06] bg-white/[0.04] py-2 pl-10 pr-3 text-sm text-white outline-none transition-colors placeholder:text-slate-600 focus:border-blue-500/50"
+                disabled={!isPaid}
+                placeholder={isPaid ? "Leave blank for no password" : "Upgrade to Pro to set a password"}
+                className="w-full rounded-lg border border-white/[0.06] bg-white/[0.04] py-2 pl-10 pr-3 text-sm text-white outline-none transition-colors placeholder:text-slate-600 focus:border-blue-500/50 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
+            {!isPaid && (
+              <p className="mt-1 text-[10px] text-slate-600">Password protection is available on Pro and above</p>
+            )}
           </div>
 
-          <label className="flex items-center gap-3 rounded-lg border border-white/[0.06] bg-white/[0.02] px-4 py-3 cursor-pointer">
+          <label className={`flex items-center gap-3 rounded-lg border px-4 py-3 cursor-pointer ${!isPaid ? 'border-white/[0.06] bg-white/[0.02]' : 'border-white/[0.06] bg-white/[0.02]'}`}>
             <input
               type="checkbox"
-              checked={allowDownload}
-              onChange={(e) => setAllowDownload(e.target.checked)}
-              className="h-4 w-4 rounded border-white/20 bg-white/[0.04] text-blue-500 focus:ring-blue-500/30"
+              checked={isPaid ? allowDownload : false}
+              onChange={(e) => { if (isPaid) setAllowDownload(e.target.checked); }}
+              disabled={!isPaid}
+              className="h-4 w-4 rounded border-white/20 bg-white/[0.04] text-blue-500 focus:ring-blue-500/30 disabled:opacity-50"
             />
             <div>
-              <div className="text-sm font-medium text-slate-200">Allow download</div>
+              <div className="text-sm font-medium text-slate-200">
+                Allow download
+                {!isPaid && <span className="ml-2 text-[10px] text-amber-400">Pro feature</span>}
+              </div>
               <div className="text-xs text-slate-600">Viewers can download the original DICOM files</div>
             </div>
           </label>

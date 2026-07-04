@@ -13,6 +13,7 @@ type UploadJobPayload = {
   patientName?: string;
   studyDate?: string;
   description?: string;
+  title?: string | null;
 };
 
 export async function enqueueUpload(payload: UploadJobPayload) {

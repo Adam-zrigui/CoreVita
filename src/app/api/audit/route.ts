@@ -2,14 +2,10 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { planHasFeature } from "@/lib/plans";
-import { requireRole } from "@/lib/rbac";
 
 export async function GET(request: Request) {
   const session = await getServerSession();
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const roleCheck = await requireRole("audit", session);
-  if (roleCheck instanceof Response) return roleCheck;
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },

@@ -35,6 +35,7 @@ type Props = {
   onElementReady?: (el: HTMLDivElement) => void;
   cinePlaying?: boolean;
   patientName?: string | null;
+  title?: string | null;
   studyDate?: string | null;
   plan?: "starter" | "pro" | "enterprise";
 };
@@ -109,6 +110,7 @@ export function CornerstoneViewportImpl({
   sliceIndex,
   cinePlaying,
   patientName,
+  title,
   studyDate,
   plan = "starter",
 }: Props) {
@@ -313,7 +315,13 @@ export function CornerstoneViewportImpl({
     let loaded = 0;
 
     function tick() {
-      if (!cancelled) setPreloadProgress(Math.min(loaded, total));
+      if (!cancelled) {
+        if (loaded >= total) {
+          setPreloadProgress(null);
+        } else {
+          setPreloadProgress(loaded);
+        }
+      }
     }
 
     async function worker() {

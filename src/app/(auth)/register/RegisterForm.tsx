@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { Eye, EyeOff, MailCheck } from "lucide-react";
-import { signUpWithEmail, signInWithEmail, sendVerificationEmail, auth } from "@/lib/firebase/auth";
-import { signOut as fbSignOut } from "firebase/auth";
+import { signUpWithEmail, signInWithEmail, sendVerificationEmail } from "@/lib/firebase/auth";
+import { signOut as fbSignOut, getAuth } from "firebase/auth";
 
 function passwordStrength(pw: string): { label: string; color: string; width: string } {
   if (!pw) return { label: "", color: "", width: "0%" };
@@ -65,7 +65,8 @@ export function RegisterForm() {
           return;
         }
 
-        await fbSignOut(auth);
+        const fbAuth = getAuth();
+        await fbSignOut(fbAuth);
         setRegisteredEmail(email);
       }
     } catch (err) {
@@ -81,7 +82,8 @@ export function RegisterForm() {
     try {
       const user = await signInWithEmail(email, password);
       await sendVerificationEmail();
-      await fbSignOut(auth);
+      const fbAuth = getAuth();
+      await fbSignOut(fbAuth);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to resend verification email");
     }

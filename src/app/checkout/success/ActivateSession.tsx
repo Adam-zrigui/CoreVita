@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { auth, signInWithCustomToken, getIdToken } from "@/lib/auth/client";
+import { signInWithCustomToken, getIdToken } from "@/lib/auth/client";
 
 export function ActivateSession({
   customToken,
@@ -20,10 +20,11 @@ export function ActivateSession({
 
     (async () => {
       try {
-        await signInWithCustomToken(auth, customToken);
+        await signInWithCustomToken(customToken);
         const idToken = await getIdToken();
         const res = await fetch("/api/auth/session", {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ idToken }),
         });
@@ -34,7 +35,7 @@ export function ActivateSession({
         window.location.href = `/login?error=session_expired`;
       }
     })();
-  }, [customToken, userId]);
+  }, [customToken, userId, returnPath]);
 
   return (
     <div className="flex min-h-screen items-center justify-center">

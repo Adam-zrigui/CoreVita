@@ -13,6 +13,7 @@ type Props = {
   onElementReady?: (el: HTMLDivElement) => void;
   cinePlaying?: boolean;
   patientName?: string | null;
+  title?: string | null;
   studyDate?: string | null;
   plan?: "starter" | "pro" | "enterprise";
 };

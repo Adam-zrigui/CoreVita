@@ -49,6 +49,7 @@ export default function UploadPage() {
   const [uploadSpeed, setUploadSpeed] = useState("");
   const [showNonDicomWarning, setShowNonDicomWarning] = useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+  const [studyTitle, setStudyTitle] = useState("");
   const xhrRef = useRef<XMLHttpRequest | null>(null);
   const statusMap = useRef<Map<string, FileStatus>>(new Map()).current;
   const speedSamples = useRef<{ time: number; loaded: number }[]>([]);
@@ -120,6 +121,7 @@ export default function UploadPage() {
     rerender();
 
     const form = new FormData();
+    if (studyTitle.trim()) form.append("title", studyTitle.trim());
     files.forEach((file) => form.append("files", file));
 
     const xhr = new XMLHttpRequest();
@@ -222,6 +224,7 @@ export default function UploadPage() {
 
   const hasError = errorCount > 0;
   const allDone = doneCount === files.length && files.length > 0;
+  const submitDisabled = !busy && files.length === 0;
 
   return (
     <main className="mx-auto max-w-[1400px] px-6 py-8">
@@ -230,6 +233,17 @@ export default function UploadPage() {
         <p className="mt-1 text-sm text-slate-500">
           Drag-and-drop DICOM studies for secure processing
         </p>
+      </div>
+
+      <div className="mb-6">
+        <label className="text-xs font-medium text-slate-400">Study title</label>
+        <input
+          value={studyTitle}
+          onChange={(e) => setStudyTitle(e.target.value)}
+          disabled={busy}
+          placeholder="e.g. John Doe - Chest X-ray"
+          className="mt-1.5 h-9 w-full max-w-md rounded-lg border border-white/[0.06] bg-white/[0.04] px-3 text-sm text-slate-200 placeholder:text-slate-600 focus:border-emerald-500/30 focus:outline-none disabled:opacity-40"
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
@@ -432,7 +446,8 @@ export default function UploadPage() {
               <button
                 type="button"
                 onClick={busy ? cancelUpload : handleSubmit}
-                disabled={!busy && files.length === 0}
+                disabled={submitDisabled}
+                suppressHydrationWarning
                 className={`w-full rounded-lg px-4 py-2.5 text-xs font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-30 disabled:active:scale-100 ${
                   busy
                     ? "bg-red-500 hover:bg-red-400 disabled:bg-red-500"

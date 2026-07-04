@@ -20,7 +20,11 @@ export const DeleteStudyButton = memo(function DeleteStudyButton({ studyUid }: P
         method: "DELETE",
       });
       if (res.ok) {
-        router.refresh();
+        try {
+          router.refresh();
+        } catch {
+          window.location.reload();
+        }
       } else {
         const data = await res.json().catch(() => ({}));
         alert(data.error || "Failed to delete study");

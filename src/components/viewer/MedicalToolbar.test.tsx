@@ -12,6 +12,7 @@ describe("MedicalToolbar", () => {
     expect(screen.getByTestId("tool-reset")).toBeInTheDocument();
     expect(screen.getByTestId("tool-download")).toBeInTheDocument();
     expect(screen.getByTestId("tool-export")).toBeInTheDocument();
+    expect(screen.getByTestId("tool-pdf")).toBeInTheDocument();
     expect(screen.getByTestId("tool-report")).toBeInTheDocument();
   });
 
@@ -32,8 +33,8 @@ describe("MedicalToolbar", () => {
   it("calls onAction for each tool when not gated", () => {
     const onAction = vi.fn();
     render(<MedicalToolbar onAction={onAction} plan="pro" />);
-    const tools = ["fullscreen", "zoomIn", "zoomOut", "invert", "reset", "download", "export", "report"];
+    const tools = ["fullscreen", "zoomIn", "zoomOut", "invert", "reset", "download", "export", "pdf", "report"];
     tools.forEach((id) => fireEvent.click(screen.getByTestId(`tool-${id}`)));
-    expect(onAction).toHaveBeenCalledTimes(8);
+    expect(onAction).toHaveBeenCalledTimes(9);
   });
 });

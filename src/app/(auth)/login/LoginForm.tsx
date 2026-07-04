@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { MailCheck } from "lucide-react";
-import { signInWithEmail, sendVerificationEmail, auth } from "@/lib/firebase/auth";
-import { signOut as fbSignOut } from "firebase/auth";
+import { signInWithEmail, sendVerificationEmail } from "@/lib/firebase/auth";
+import { signOut as fbSignOut, getAuth } from "firebase/auth";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -31,7 +31,8 @@ export function LoginForm() {
       if (user) {
         if (!user.emailVerified) {
           setUnverifiedEmail(email);
-          await fbSignOut(auth);
+          const fbAuth = getAuth();
+          await fbSignOut(fbAuth);
           setLoading(false);
           return;
         }
@@ -39,6 +40,7 @@ export function LoginForm() {
         const idToken = await user.getIdToken();
         const res = await fetch("/api/auth/session", {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ idToken }),
         });
@@ -62,9 +64,10 @@ export function LoginForm() {
     setResent(true);
     setError(null);
     try {
-      const user = await signInWithEmail(email, password);
+      await signInWithEmail(email, password);
       await sendVerificationEmail();
-      await fbSignOut(auth);
+      const fbAuth = getAuth();
+      await fbSignOut(fbAuth);
     } catch (e) {
       console.error("[login] resend verification failed:", e);
     }

@@ -3,7 +3,7 @@ import { getServerSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getRedis, clearStudiesCache } from "@/lib/redis";
 import { getCurrentPlan, getStudyWindowFilter } from "@/lib/plans";
-import { requireRole, getActorTenant } from "@/lib/rbac";
+import { getActorTenant } from "@/lib/rbac";
 import { logAudit } from "@/lib/audit";
 import { StudyStatus, type Prisma } from "../../../../prisma/generated";
 
@@ -37,7 +37,7 @@ export async function GET(req: Request) {
   const redis = getRedis();
 
   if (!studyUid && redis) {
-    const key = `studies:all:${actorInfo.tenantId}:${take}:${skip}:${modality ?? ""}:${patient ?? ""}:${status ?? ""}:${plan}`;
+      const key = `studies:all:${actorInfo.tenantId}:${session.user.id}:${take}:${skip}:${modality ?? ""}:${patient ?? ""}:${status ?? ""}:${plan}`;
     const cached = await redis.get(key);
     if (cached) {
       try {
@@ -50,6 +50,7 @@ export async function GET(req: Request) {
 
   const where: Prisma.StudyWhereInput = {
     tenantId: actorInfo.tenantId,
+    uploadedById: session.user.id,
     ...(studyUid ? { studyUid } : {}),
     ...(modality ? { modality } : {}),
     ...(parsedStatus ? { status: parsedStatus } : {}),
@@ -66,6 +67,7 @@ export async function GET(req: Request) {
         id: true,
         studyUid: true,
         patientName: true,
+        title: true,
         modality: true,
         slices: true,
         status: true,
@@ -82,7 +84,7 @@ export async function GET(req: Request) {
 
   if (!studyUid && redis) {
     try {
-      const key = `studies:all:${actorInfo.tenantId}:${take}:${skip}:${modality ?? ""}:${patient ?? ""}:${status ?? ""}:${plan}`;
+    const key = `studies:all:${actorInfo.tenantId}:${session.user.id}:${take}:${skip}:${modality ?? ""}:${patient ?? ""}:${status ?? ""}:${plan}`;
       await redis.set(key, JSON.stringify(studies), "EX", 60);
     } catch {
       // cache write failure is non-fatal
@@ -97,9 +99,6 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const roleCheck = await requireRole("study.delete", session);
-  if (roleCheck instanceof Response) return roleCheck;
-
   let actorInfo = await getActorTenant(session);
   if (actorInfo instanceof Response) return actorInfo;
 
@@ -110,7 +109,7 @@ export async function DELETE(req: Request) {
   }
 
   const { count } = await prisma.study.deleteMany({
-    where: { studyUid, tenantId: actorInfo.tenantId },
+    where: { studyUid, tenantId: actorInfo.tenantId, uploadedById: session.user.id },
   });
   if (count === 0) {
     return NextResponse.json({ error: "Study not found" }, { status: 404 });

@@ -9,6 +9,7 @@ const ACTION_LABELS: Record<string, string> = {
   "member.role_change": "Role changed",
   "study.upload": "Study uploaded",
   "study.delete": "Study deleted",
+  "study.reported": "Report completed",
   "share.create": "Share link created",
   "share.revoke": "Share link revoked",
   "report.create": "Report created",

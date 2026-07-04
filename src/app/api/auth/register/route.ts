@@ -1,6 +1,7 @@
 import { getAdminAuth } from "@/lib/firebase/admin";
 import { prisma } from "@/lib/prisma";
-import { getDefaultTenant } from "@/lib/db";
+import { ensureUserTenant } from "@/lib/db";
+import { rateLimit } from "@/lib/rate-limit";
 import { z } from "zod";
 
 const registerSchema = z.object({
@@ -10,6 +11,12 @@ const registerSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    const ip = request.headers.get("x-forwarded-for") ?? "unknown";
+    const rl = rateLimit(`register:${ip}`, 3, 60_000);
+    if (!rl.allowed) {
+      return Response.json({ error: "Too many registration attempts. Try again later." }, { status: 429 });
+    }
+
     const body = await request.json();
     const parsed = registerSchema.parse(body);
     const { idToken, name } = parsed;
@@ -26,8 +33,6 @@ export async function POST(request: Request) {
       return Response.json({ error: "Email is required for registration" }, { status: 400 });
     }
 
-    const tenant = await getDefaultTenant();
-
     let user = await prisma.user.findUnique({ where: { id: uid } });
     if (user) {
       user = await prisma.user.update({
@@ -40,11 +45,7 @@ export async function POST(request: Request) {
       });
     }
 
-    await prisma.membership.upsert({
-      where: { userId_tenantId: { userId: user.id, tenantId: tenant.id } },
-      update: {},
-      create: { userId: user.id, tenantId: tenant.id, role: "ADMIN" },
-    });
+    await ensureUserTenant(user.id);
 
     return Response.json({
       success: true,

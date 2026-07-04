@@ -107,19 +107,28 @@ describe("ShareModal", () => {
     fireEvent.click(screen.getByTestId("share-generate"));
     expect(await screen.findByDisplayValue(/share\/abc123/)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Revoke & generate new"));
+    fireEvent.click(screen.getByText("Revoke link"));
     expect(screen.queryByDisplayValue(/share\/abc123/)).not.toBeInTheDocument();
     expect(screen.getByText("Generate Share Link")).toBeInTheDocument();
   });
 
-  it("allows password and download checkbox interaction", () => {
+  it("shows Pro feature labels for password and download on starter plan", () => {
     render(<ShareModal {...defaultProps} />);
+
+    expect(screen.getByPlaceholderText("Upgrade to Pro to set a password")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Upgrade to Pro to set a password")).toBeDisabled();
+    expect(screen.getAllByText("Pro feature").length).toBe(2);
+  });
+
+  it("allows password and download checkbox interaction on pro plan", () => {
+    render(<ShareModal {...defaultProps} plan="pro" />);
 
     const passwordInput = screen.getByPlaceholderText("Leave blank for no password");
     fireEvent.change(passwordInput, { target: { value: "mypass" } });
     expect(passwordInput).toHaveValue("mypass");
 
     const checkbox = screen.getByRole("checkbox");
+    expect(checkbox).not.toBeDisabled();
     fireEvent.click(checkbox);
     expect(checkbox).toBeChecked();
   });

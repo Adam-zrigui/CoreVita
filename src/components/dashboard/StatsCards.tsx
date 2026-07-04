@@ -1,32 +1,16 @@
 import { BarChart3, ImageIcon, FileText, Share2 } from "lucide-react";
 import { StatsCard } from "./StatsCard";
 import { Suspense } from "react";
-import { prisma } from "@/lib/prisma";
-import { getDefaultTenant } from "@/lib/db";
 
-async function getStatsCardsData(tenantId: string) {
-  const [totalStudies, totalImages, totalReports, activeShares, reportedStudies] = await Promise.all([
-    prisma.study.count({ where: { tenantId } }),
-    prisma.study.aggregate({ where: { tenantId }, _sum: { slices: true } }),
-    prisma.report.count({ where: { study: { tenantId } } }),
-    prisma.shareToken.count({
-      where: { study: { tenantId }, expiresAt: { gt: new Date() } },
-    }),
-    prisma.study.count({ where: { tenantId, status: "REPORTED" } }),
-  ]);
+type StatsCardsData = {
+  totalStudies: number;
+  totalImages: number;
+  totalReports: number;
+  activeShares: number;
+  reportedCount: number;
+};
 
-  return {
-    totalStudies,
-    totalImages: totalImages._sum.slices ?? 0,
-    totalReports,
-    activeShares,
-    reportedCount: reportedStudies,
-  };
-}
-
-async function StatsCardsContent() {
-  const tenant = await getDefaultTenant();
-  const data = await getStatsCardsData(tenant.id);
+function StatsCardsContent({ data }: { data: StatsCardsData }) {
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -63,14 +47,14 @@ async function StatsCardsContent() {
   );
 }
 
-export function StatsCards() {
+export function StatsCards({ data }: { data: StatsCardsData }) {
   return (
     <Suspense fallback={<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 animate-pulse">
       {[...Array(4)].map((_, i) => (
         <div key={i} className="h-24 rounded-xl border border-white/[0.06] bg-white/[0.02]" />
       ))}
-    </div>}>{
-      <StatsCardsContent />
-    }</Suspense>
+    </div>}>
+      <StatsCardsContent data={data} />
+    </Suspense>
   );
 }

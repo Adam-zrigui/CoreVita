@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const SESSION_COOKIE = "__Host-__session";
-const AUTH_PAGES = ["/login", "/register", "/reset-password"];
+const SESSION_COOKIE_NAME = process.env.NODE_ENV === "production" ? "__Host-__session" : "__session";
 const PROTECTED_PATHS = ["/dashboard", "/studies", "/upload", "/viewer", "/settings"];
 const ALLOWED_ORIGINS = new Set([
   process.env.CORS_ORIGIN,
@@ -12,12 +11,19 @@ const ALLOWED_ORIGINS = new Set([
 
 const AUTH_PATHS = ["/api/auth/session", "/api/auth/register", "/api/auth/refresh"];
 
+function decodeBase64Url(value: string): string {
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+  const pad = normalized.length % 4;
+  const padded = pad === 2 ? `${normalized}==` : pad === 3 ? `${normalized}=` : pad === 1 ? "" : normalized;
+  return atob(padded);
+}
+
 function isCookieExpired(value: string | undefined): boolean {
   if (!value) return true;
   try {
     const payload = value.split(".")[1];
     if (!payload) return true;
-    const decoded = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+    const decoded = JSON.parse(decodeBase64Url(payload));
     return decoded.exp ? decoded.exp * 1000 < Date.now() : true;
   } catch {
     return true;
@@ -160,9 +166,10 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  const sessionCookie = request.cookies.get(SESSION_COOKIE)?.value;
+  const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME)?.value
+    ?? request.cookies.get("__Host-__session")?.value
+    ?? request.cookies.get("__session")?.value;
   const isAuthenticated = !isCookieExpired(sessionCookie);
-  const isAuthPage = AUTH_PAGES.some((p) => pathname.startsWith(p));
   const isProtected = PROTECTED_PATHS.some((p) => pathname.startsWith(p));
 
   if (isProtected && !isAuthenticated) {
@@ -171,10 +178,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (isAuthPage && isAuthenticated) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
+  // Do not auto-redirect auth pages based on a cookie-only check.
+  // This prevents redirect loops when the session cookie is present but invalid.
   const response = NextResponse.next();
   response.headers.set(
     "Content-Security-Policy",

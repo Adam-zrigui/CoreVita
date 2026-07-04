@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { getServerSession, type AuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -25,7 +26,7 @@ export type Feature =
 
 const PLAN_LIMITS: Record<PlanTier, { studies: number; users: number; features: Feature[] }> = {
   starter: {
-    studies: 500,
+    studies: 3,
     users: 1,
     features: [],
   },
@@ -71,11 +72,7 @@ export function isFreeTier(plan: PlanTier): boolean {
   return plan === "starter";
 }
 
-export function getStudyWindowFilter(plan: PlanTier): { createdAt?: { gte: Date } } {
-  if (plan === "starter") {
-    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    return { createdAt: { gte: weekAgo } };
-  }
+export function getStudyWindowFilter(_plan: PlanTier): {} {
   return {};
 }
 
@@ -83,10 +80,10 @@ export function clearPlanCache() {
   /* noop — removed in-memory cache to fix stale data across serverless instances */
 }
 
-export async function getCurrentPlan(session?: AuthSession | null): Promise<PlanInfo> {
+async function getCurrentPlanImpl(session?: AuthSession | null): Promise<PlanInfo> {
   try {
     const s = session ?? await getServerSession();
-    if (!s?.user?.id) return { plan: "starter", used: 0, limit: 500, status: "none", userLimit: 1 };
+    if (!s?.user?.id) return { plan: "starter", used: 0, limit: 3, status: "none", userLimit: 1 };
 
     const membership = await prisma.membership.findFirst({
       where: { userId: s.user.id },
@@ -94,7 +91,7 @@ export async function getCurrentPlan(session?: AuthSession | null): Promise<Plan
     });
 
     if (!membership) {
-      return { plan: "starter", used: 0, limit: 500, status: "none", userLimit: 1 };
+      return { plan: "starter", used: 0, limit: 3, status: "none", userLimit: 1 };
     }
 
     const subscription = await prisma.subscription.findUnique({
@@ -110,13 +107,13 @@ export async function getCurrentPlan(session?: AuthSession | null): Promise<Plan
         ? "pro"
         : "starter";
 
-    const windowFilter = getStudyWindowFilter(plan);
+    const windowFilter = {} as const;
     const used = await prisma.study.count({
-      where: { tenantId: membership.tenantId, ...windowFilter },
+      where: { tenantId: membership.tenantId, uploadedById: s.user.id, ...windowFilter },
     });
 
     if (!subscription) {
-      return { plan: "starter", used, limit: 500, status: "none", userLimit: 1 };
+      return { plan: "starter", used, limit: 3, status: "none", userLimit: 1 };
     }
 
     const limits = PLAN_LIMITS[plan];
@@ -132,9 +129,11 @@ export async function getCurrentPlan(session?: AuthSession | null): Promise<Plan
       userLimit: limits.users,
     };
   } catch {
-    return { plan: "starter", used: 0, limit: 500, status: "none", userLimit: 1 };
+    return { plan: "starter", used: 0, limit: 3, status: "none", userLimit: 1 };
   }
 }
+
+export const getCurrentPlan = cache(getCurrentPlanImpl);
 
 export async function needsPlan(session?: AuthSession | null): Promise<boolean> {
   const info = await getCurrentPlan(session);

@@ -5,10 +5,12 @@ import type { Prisma } from "../../prisma/generated";
 
 export type AuditAction =
   | "member.invite"
+  | "member.invite_pending"
   | "member.remove"
   | "member.role_change"
   | "study.upload"
   | "study.delete"
+  | "study.reported"
   | "share.create"
   | "share.revoke"
   | "report.create"

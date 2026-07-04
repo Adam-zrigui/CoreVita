@@ -22,10 +22,13 @@ type Series = {
 
 type ViewerPayload = {
   study: {
+    id: string;
     studyUid: string;
     patientName?: string | null;
+    title?: string | null;
     studyDate?: string | null;
     description?: string | null;
+    status: string;
     series: Series[];
   };
   imageIds: string[];

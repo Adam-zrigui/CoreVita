@@ -14,7 +14,8 @@ import dynamic from "next/dynamic";
 const ReportModal = dynamic(() => import("@/components/viewer/ReportModal").then((m) => ({ default: m.ReportModal })), { ssr: false });
 import type { Types } from "@cornerstonejs/core";
 import JSZip from "jszip";
-import { ArrowLeft, ChevronLeft, ChevronRight, Crown, Key, Code, X, Copy, Check } from "lucide-react";
+import { generatePdfReport } from "@/lib/generateReport";
+import { ArrowLeft, ChevronLeft, ChevronRight, Crown, Key, Code, X, Copy, Check, Loader2 } from "lucide-react";
 
 type Series = {
   id: string;
@@ -46,8 +47,10 @@ export function ViewerShell({
   study: {
     studyUid: string;
     patientName?: string | null;
+    title?: string | null;
     studyDate?: string | null;
     description?: string | null;
+    status?: string;
     series: Series[];
   };
   imageIds: string[];
@@ -65,6 +68,8 @@ export function ViewerShell({
   const canReport = plan !== "starter";
   const [showApiKey, setShowApiKey] = useState(false);
   const [apiKeyCopied, setApiKeyCopied] = useState(false);
+  const [studyStatus, setStudyStatus] = useState(study.status ?? "PENDING");
+  const [updatingStatus, setUpdatingStatus] = useState(false);
   const [viewport, setViewport] = useState<Types.IStackViewport | null>(null);
   const viewportRef = useRef<Types.IStackViewport | null>(null);
   const elementRef = useRef<HTMLDivElement | null>(null);
@@ -135,6 +140,19 @@ export function ViewerShell({
     })();
   }, [imageIds, study.studyUid]);
 
+  const exportPdf = useCallback(async () => {
+    const el = elementRef.current;
+    const canvas = el?.querySelector("canvas");
+    if (!canvas) { toast.error("PDF export not available"); return; }
+    try {
+      const doc = await generatePdfReport(study, canvas, plan);
+      doc.save(`corevita-report-${study.studyUid.slice(0, 12)}.pdf`);
+      toast.success("Report exported as PDF");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to generate PDF");
+    }
+  }, [study, plan]);
+
   const snapshotRef = useRef(exportSnapshot);
   const goToSliceRef = useRef(goToSlice);
   const sliceIndexRef = useRef(sliceIndex);
@@ -186,6 +204,38 @@ export function ViewerShell({
     elementRef.current = el;
   }, []);
 
+  const canChangeStatus = plan === "pro" || plan === "enterprise";
+
+  const statusCycle: Record<string, string> = {
+    PENDING: "READING",
+    READING: "REPORTED",
+    REPORTED: "REPORTED",
+  };
+
+  const handleStatusChange = useCallback(async () => {
+    if (!canChangeStatus || updatingStatus) return;
+    const next = statusCycle[studyStatus];
+    if (!next || next === studyStatus) return;
+    setUpdatingStatus(true);
+    try {
+      const res = await fetch(`/api/studies/${study.studyUid}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: next }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to update status");
+      }
+      setStudyStatus(next);
+      toast.success(`Status changed to ${next}`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update status");
+    } finally {
+      setUpdatingStatus(false);
+    }
+  }, [studyStatus, canChangeStatus, updatingStatus, study.studyUid]);
+
   const handleToolbarAction = useCallback((action: string) => {
     if (action === "download") {
       if (onDownload) { onDownload(); return; }
@@ -193,6 +243,7 @@ export function ViewerShell({
       return;
     }
     if (action === "export") { exportSnapshot(); return; }
+    if (action === "pdf") { exportPdf(); return; }
     if (action === "report") {
       if (!canReport) { toast.error("Reports require the Pro plan"); return; }
       setReportOpen(true);
@@ -226,10 +277,12 @@ export function ViewerShell({
     }
     if (action === "reset" && viewport) {
       viewport.resetProperties();
+      viewport.resetCamera();
       viewport.render();
+      goToSlice(0);
       return;
     }
-  }, [canReport, downloadDicom, exportSnapshot]);
+  }, [canReport, downloadDicom, exportSnapshot, goToSlice]);
 
   return (
     <main className="relative mx-auto flex min-h-screen flex-col">
@@ -245,7 +298,7 @@ export function ViewerShell({
           </a>
           <div>
             <h1 className="text-sm font-semibold text-white">
-              {study.patientName ?? "Unknown"}
+              {study.title ?? study.patientName ?? "Unknown"}
             </h1>
             <div className="text-[11px] text-slate-600 font-mono">
               {study.studyUid.slice(0, 24)}&hellip;
@@ -253,6 +306,29 @@ export function ViewerShell({
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleStatusChange}
+            disabled={!canChangeStatus || updatingStatus}
+            className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium tabular-nums transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 ${
+              studyStatus === "PENDING"
+                ? "border-amber-500/20 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20"
+                : studyStatus === "READING"
+                  ? "border-blue-500/20 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20"
+                  : "border-emerald-500/20 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
+            } ${!canChangeStatus ? "cursor-default" : "cursor-pointer"}`}
+            title={canChangeStatus ? "Click to advance status" : "Status"}
+          >
+            {updatingStatus ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <span className={`h-1.5 w-1.5 rounded-full ${
+                studyStatus === "PENDING" ? "bg-amber-400" :
+                studyStatus === "READING" ? "bg-blue-400" : "bg-emerald-400"
+              }`} />
+            )}
+            {studyStatus}
+          </button>
           <span className="rounded-md border border-emerald-500/15 bg-emerald-500/[0.04] px-2.5 py-1 text-[11px] font-medium text-emerald-400 tabular-nums">
             {total} images
           </span>
@@ -265,6 +341,7 @@ export function ViewerShell({
           <StudySidebar
             studyUid={study.studyUid}
             patientName={study.patientName}
+            title={study.title}
             series={study.series}
             imageIds={imageIds}
             activeSeriesIndex={activeSeriesIndex}
@@ -316,6 +393,7 @@ export function ViewerShell({
             sliceIndex={sliceIndex}
             cinePlaying={cinePlaying}
             patientName={study.patientName}
+            title={study.title}
             studyDate={study.studyDate}
             plan={plan}
           />
@@ -371,6 +449,7 @@ export function ViewerShell({
         <div className="hidden w-[280px] shrink-0 xl:block">
           <MetadataPanel
             patientName={study.patientName}
+            title={study.title}
             studyDate={study.studyDate}
             description={study.description}
             series={study.series}

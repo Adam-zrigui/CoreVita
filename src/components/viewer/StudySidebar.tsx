@@ -14,6 +14,7 @@ type Series = {
 export function StudySidebar({
   studyUid,
   patientName,
+  title,
   series,
   imageIds,
   activeSeriesIndex,
@@ -21,6 +22,7 @@ export function StudySidebar({
 }: {
   studyUid: string;
   patientName?: string | null;
+  title?: string | null;
   series: Series[];
   imageIds: string[];
   activeSeriesIndex: number;
@@ -60,7 +62,7 @@ export function StudySidebar({
       </div>
 
       <div className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
-        {patientName ?? "Study"}
+        {title ?? patientName ?? "Study"}
       </div>
 
       <div className="space-y-2 overflow-y-auto pr-1">

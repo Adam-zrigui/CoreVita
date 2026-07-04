@@ -26,10 +26,10 @@ export async function PUT(request: Request) {
 
   const membership = await prisma.membership.findFirst({
     where: { userId: session.user.id },
-    select: { tenantId: true, role: true },
+    select: { tenantId: true },
   });
-  if (!membership || membership.role !== "ADMIN") {
-    return NextResponse.json({ error: "Only admins can change branding" }, { status: 403 });
+  if (!membership) {
+    return NextResponse.json({ error: "No tenant" }, { status: 400 });
   }
 
   const plan = await getCurrentPlan(session);

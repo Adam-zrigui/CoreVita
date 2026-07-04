@@ -26,6 +26,7 @@ interface SeriesItem {
 interface StudyData {
   studyUid: string;
   patientName: string | null;
+  title: string | null;
   patientId: string | null;
   modality: string | null;
   studyDate: string | null;
@@ -144,7 +145,7 @@ export function ShareViewer({
             <Eye className="h-8 w-8" />
           </div>
           <h1 className="mt-4 text-xl font-semibold text-white">
-            {study.patientName || "Medical Study"}
+            {study.title ?? study.patientName ?? "Medical Study"}
           </h1>
           {study.description && (
             <p className="mt-2 text-sm text-slate-500">{study.description}</p>

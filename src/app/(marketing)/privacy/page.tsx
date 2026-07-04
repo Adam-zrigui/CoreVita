@@ -23,7 +23,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-base font-semibold text-white mb-3">1. Data Controller</h2>
             <p>
-              CoreVita GmbH (hereinafter &ldquo;CoreVita,&rdquo; &ldquo;we,&rdquo; &ldquo;us&rdquo;) is the data controller for the processing of personal data in connection with the operation of the CoreVita platform. Contact details are provided in our Imprint.
+              CoreVita (hereinafter &ldquo;CoreVita,&rdquo; &ldquo;we,&rdquo; &ldquo;us&rdquo;) is the data controller for the processing of personal data in connection with the operation of the CoreVita platform. Contact: zriguiadam@gmail.com
             </p>
           </section>
 
@@ -73,7 +73,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-base font-semibold text-white mb-3">6. Data Retention</h2>
             <p>
-              Account data is retained for the duration of your account. Medical images are retained as described in Section 7 of our Terms of Service (active subscription duration plus 30-day grace period). Billing records are retained for 10 years as required by German commercial law (HGB).
+              Account data is retained for the duration of your account. Medical images are retained as described in Section 7 of our Terms of Service (active subscription duration plus 30-day grace period). Billing records are retained for the duration required by applicable law.
             </p>
           </section>
 
@@ -90,7 +90,7 @@ export default function PrivacyPage() {
               <li><strong>Right to withdraw consent</strong> where processing is based on consent</li>
             </ul>
             <p className="mt-3">
-              To exercise any of these rights, contact us at privacy@corevita.com. We will respond within 30 days.
+              To exercise any of these rights, contact us at zriguiadam@gmail.com. We will respond within 30 days.
             </p>
           </section>
 
@@ -111,7 +111,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-base font-semibold text-white mb-3">10. Complaints</h2>
             <p>
-              If you believe we have violated your data protection rights, you have the right to lodge a complaint with the supervisory authority of your residence or the Berlin Commissioner for Data Protection and Freedom of Information (Berliner Beauftragte für Datenschutz und Informationsfreiheit).
+              If you believe we have violated your data protection rights, you have the right to lodge a complaint with your local data protection supervisory authority.
             </p>
           </section>
 
@@ -125,7 +125,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-base font-semibold text-white mb-3">12. Contact</h2>
             <p>
-              For privacy-related inquiries: privacy@corevita.com
+              For privacy-related inquiries: zriguiadam@gmail.com
             </p>
           </section>
         </div>

@@ -7,6 +7,10 @@ export type DicomSortMetadata = {
   sliceLocation?: number;
   transferSyntaxUid?: string;
   hasPixelData?: boolean;
+  modality?: string;
+  patientName?: string;
+  description?: string;
+  studyDate?: string;
 };
 
 const SUPPORTED_TRANSFER_SYNTAXES = new Set([
@@ -68,6 +72,10 @@ export function readDicomSortMetadata(buffer: Buffer): DicomSortMetadata {
       sliceLocation: dataSet.floatString("x00201041"),
       transferSyntaxUid: dataSet.string("x00020010")?.trim(),
       hasPixelData: Boolean(dataSet.elements.x7fe00010),
+      modality: dataSet.string("x00080060")?.trim(),
+      patientName: dataSet.string("x00100010")?.trim(),
+      description: dataSet.string("x00081030")?.trim(),
+      studyDate: dataSet.string("x00080020")?.trim(),
     };
   } catch {
     return {};

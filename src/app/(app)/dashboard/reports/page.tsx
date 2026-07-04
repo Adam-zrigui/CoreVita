@@ -10,7 +10,7 @@ type ReportItem = {
   content: string | null;
   createdAt: string;
   author: { name: string | null } | null;
-  study: { id: string; patientName: string | null; studyUid: string | null };
+  study: { id: string; patientName: string | null; title?: string | null; studyUid: string | null };
 };
 
 export default function ReportsPage() {
@@ -116,7 +116,7 @@ export default function ReportsPage() {
                     {report.status}
                   </span>
                   <span className="truncate text-sm font-medium text-white">
-                    {report.study.patientName || "Unknown patient"}
+                    {report.study.title ?? report.study.patientName ?? "Unknown patient"}
                   </span>
                 </div>
                 {report.content && (

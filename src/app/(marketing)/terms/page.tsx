@@ -63,7 +63,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-base font-semibold text-white mb-3">6. Data Protection &amp; GDPR</h2>
             <p>
-              CoreVita processes personal data in accordance with the General Data Protection Regulation (GDPR) and the German Patientendaten-Schutz-Gesetz (PDSG). As a data processor, we implement appropriate technical and organizational measures to protect your data. You, as the data controller, are responsible for ensuring that you have a lawful basis for processing patient data through the Platform.
+              CoreVita processes personal data in accordance with the General Data Protection Regulation (GDPR). As a data processor, we implement appropriate technical and organizational measures to protect your data. You, as the data controller, are responsible for ensuring that you have a lawful basis for processing patient data through the Platform.
             </p>
           </section>
 
@@ -105,14 +105,14 @@ export default function TermsPage() {
           <section>
             <h2 className="text-base font-semibold text-white mb-3">12. Governing Law</h2>
             <p>
-              These Terms are governed by the laws of the Federal Republic of Germany. Any disputes shall be resolved in the courts of Berlin, Germany.
+              These Terms shall be governed by and construed in accordance with the laws applicable in the jurisdiction where the operator is established. Any disputes arising under these Terms shall be resolved in the competent courts of that jurisdiction.
             </p>
           </section>
 
           <section>
             <h2 className="text-base font-semibold text-white mb-3">13. Contact</h2>
             <p>
-              For questions about these Terms, contact us at legal@corevita.com.
+              For questions about these Terms, contact us at zriguiadam@gmail.com.
             </p>
           </section>
         </div>

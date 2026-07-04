@@ -36,7 +36,7 @@ describe("LoginForm", () => {
   });
 
   it("calls signInWithEmail and redirects on success", async () => {
-    const fakeUser = { getIdToken: vi.fn().mockResolvedValue("tok") };
+    const fakeUser = { getIdToken: vi.fn().mockResolvedValue("tok"), emailVerified: true };
     vi.mocked(signInWithEmail).mockResolvedValue(fakeUser as any);
     global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
 
@@ -66,9 +66,9 @@ describe("LoginForm", () => {
   });
 
   it("shows error when session API fails", async () => {
-    const fakeUser = { getIdToken: vi.fn().mockResolvedValue("tok") };
+    const fakeUser = { getIdToken: vi.fn().mockResolvedValue("tok"), emailVerified: true };
     vi.mocked(signInWithEmail).mockResolvedValue(fakeUser as any);
-    global.fetch = vi.fn().mockResolvedValue({ ok: false } as Response);
+    global.fetch = vi.fn().mockResolvedValue({ ok: false, json: () => Promise.resolve({ error: "session setup failed" }) } as any);
 
     render(<LoginForm />);
     fireEvent.change(screen.getByPlaceholderText("Email address"), { target: { value: "a@b.com" } });
@@ -82,6 +82,8 @@ describe("LoginForm", () => {
 
   it("disables inputs while loading", async () => {
     vi.mocked(signInWithEmail).mockImplementation(() => new Promise(() => {}));
+    // mock emailVerified to avoid the unverified-card path
+    global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
     render(<LoginForm />);
     fireEvent.change(screen.getByPlaceholderText("Email address"), { target: { value: "a@b.com" } });
     fireEvent.change(screen.getByPlaceholderText("Password"), { target: { value: "x" } });

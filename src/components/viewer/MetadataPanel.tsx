@@ -20,6 +20,7 @@ type Series = {
 
 export function MetadataPanel({
   patientName,
+  title,
   studyDate,
   description,
   series,
@@ -27,6 +28,7 @@ export function MetadataPanel({
   activeSeriesIndex = 0,
 }: {
   patientName?: string | null;
+  title?: string | null;
   studyDate?: string | null;
   description?: string | null;
   series: Series[];
@@ -43,7 +45,7 @@ export function MetadataPanel({
           </div>
           <div className="min-w-0">
             <div className="text-sm font-semibold text-white truncate">
-              {patientName ?? "Unknown"}
+              {title ?? patientName ?? "Unknown"}
             </div>
             <div className="text-[11px] text-slate-500">Patient</div>
           </div>

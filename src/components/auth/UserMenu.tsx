@@ -2,11 +2,11 @@
 
 import { useState, useRef, useEffect } from "react";
 import { LogOut, Settings, Users } from "lucide-react";
-import { signOut } from "@/lib/firebase/auth";
 import Link from "next/link";
 
-export function UserMenu({ name, role }: { name?: string | null; role?: string | null }) {
+export function UserMenu({ name }: { name?: string | null }) {
   const [open, setOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,9 +22,6 @@ export function UserMenu({ name, role }: { name?: string | null; role?: string |
       <div className="hidden text-right lg:block">
         <div className="text-xs font-medium text-slate-200 leading-tight">
           {name ?? "User"}
-        </div>
-        <div className="text-[10px] text-slate-500 leading-tight capitalize">
-          {role?.toLowerCase() ?? ""}
         </div>
       </div>
       <button
@@ -56,11 +53,21 @@ export function UserMenu({ name, role }: { name?: string | null; role?: string |
           <hr className="my-1 border-white/[0.06]" />
           <button
             type="button"
-            onClick={() => { signOut().catch((e) => console.error("[auth] sign out failed:", e)); }}
-            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-slate-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
+            disabled={signingOut}
+            onClick={async () => {
+              setSigningOut(true);
+              try {
+                const { signOut } = await import("@/lib/firebase/auth");
+                await signOut();
+              } catch (e) {
+                console.error("[auth] sign out failed:", e);
+                setSigningOut(false);
+              }
+            }}
+            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-slate-400 transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:opacity-50"
           >
             <LogOut className="h-3.5 w-3.5" />
-            Sign out
+            {signingOut ? "Signing out..." : "Sign out"}
           </button>
         </div>
       )}

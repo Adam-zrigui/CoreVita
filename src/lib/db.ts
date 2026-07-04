@@ -1,19 +1,30 @@
 import { prisma } from "@/lib/prisma";
 import { formatUnknownError } from "@/lib/format-error";
 
-let cachedTenant: { id: string; name: string; slug: string } | null = null;
+export async function ensureUserTenant(userId: string): Promise<void> {
+  const memberships = await prisma.membership.findMany({
+    where: { userId },
+    include: { tenant: true },
+  });
 
-export async function getDefaultTenant() {
-  if (cachedTenant) return cachedTenant;
-  const slug = process.env.DEFAULT_TENANT_SLUG ?? "default";
+  if (memberships.length > 0) {
+    const defaultSlug = process.env.DEFAULT_TENANT_SLUG ?? "default";
+    const allOnDefault = memberships.every((m) => m.tenant.slug === defaultSlug);
+    if (!allOnDefault) return;
+  }
+
+  const slug = `user-${userId}`;
   let tenant = await prisma.tenant.findUnique({ where: { slug } });
   if (!tenant) {
     tenant = await prisma.tenant.create({
-      data: { name: "Default Clinic", slug },
+      data: { name: "My Workspace", slug },
     });
   }
-  cachedTenant = tenant;
-  return tenant;
+  await prisma.membership.upsert({
+    where: { userId_tenantId: { userId, tenantId: tenant.id } },
+    update: {},
+    create: { userId, tenantId: tenant.id },
+  });
 }
 
 export { prisma };

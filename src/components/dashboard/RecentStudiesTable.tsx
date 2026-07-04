@@ -2,36 +2,22 @@ import { Clock, ChevronRight, Share2 } from "lucide-react";
 import Link from "next/link";
 import { DeleteStudyButton } from "../studies/DeleteStudyButton";
 import { Suspense } from "react";
-import { prisma } from "@/lib/prisma";
-import { getDefaultTenant } from "@/lib/db";
 
-async function getRecentStudies() {
-  const tenant = await getDefaultTenant();
-  const studies = await prisma.study.findMany({
-    where: { tenantId: tenant.id },
-    select: {
-      id: true,
-      studyUid: true,
-      patientName: true,
-      modality: true,
-      slices: true,
-      status: true,
-      createdAt: true,
-      _count: { select: { shareTokens: true } },
-    },
-    orderBy: { createdAt: "desc" },
-    take: 10,
-  });
+type RecentStudiesTableProps = {
+  studies: Array<{
+    id: string;
+    studyUid: string;
+    patientName: string | null;
+    title?: string | null;
+    modality: string | null;
+    slices: number;
+    status: string;
+    shareCount: number;
+    createdAt: Date;
+  }>;
+};
 
-  return studies.map((s) => ({
-    ...s,
-    shareCount: s._count.shareTokens,
-  }));
-}
-
-export async function RecentStudiesTableContent() {
-  const studies = await getRecentStudies();
-
+function RecentStudiesTableContent({ studies }: RecentStudiesTableProps) {
   if (studies.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -51,7 +37,7 @@ export async function RecentStudiesTableContent() {
           <thead className="sticky top-0 bg-white/[0.02] border-b border-white/[0.06]">
             <tr>
               <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-                Patient
+                Study
               </th>
               <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500 hidden md:table-cell">
                 Study UID
@@ -85,7 +71,7 @@ export async function RecentStudiesTableContent() {
                     href={`/viewer/${study.studyUid}`}
                     className="text-sm font-medium text-white transition-colors hover:text-emerald-400"
                   >
-                    {study.patientName ?? "Unknown"}
+                    {study.title ?? study.patientName ?? "Unknown"}
                   </Link>
                 </td>
                 <td className="px-4 py-3.5 font-mono text-[11px] text-slate-600 hidden md:table-cell max-w-[180px] truncate">
@@ -154,7 +140,7 @@ export async function RecentStudiesTableContent() {
   );
 }
 
-export async function RecentStudiesTable() {
+export function RecentStudiesTable({ studies }: RecentStudiesTableProps) {
   return (
     <Suspense fallback={
       <div className="overflow-hidden rounded-xl border border-white/[0.06] animate-pulse">
@@ -172,7 +158,7 @@ export async function RecentStudiesTable() {
         </div>
       </div>
     }>
-      <RecentStudiesTableContent />
+      <RecentStudiesTableContent studies={studies} />
     </Suspense>
   );
 }

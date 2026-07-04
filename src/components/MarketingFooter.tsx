@@ -8,7 +8,7 @@ export function MarketingFooter() {
           <img src="/favicon.png" alt="CoreVita" className="h-6 w-6" />
         </div>
         <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-slate-600">
-          CoreVita is a prototype for a future medical operating system &mdash; purpose-built for secure medical image management, compliant with GDPR and German healthcare regulations (Patientendaten-Schutz-Gesetz).
+          CoreVita &mdash; purpose-built for secure medical image management, compliant with GDPR and applicable healthcare data protection regulations.
         </p>
         <div className="mt-8 flex items-center justify-center gap-6 text-xs text-slate-700">
           <Link href="/imprint" className="transition-colors hover:text-slate-400">Imprint</Link>
@@ -16,8 +16,6 @@ export function MarketingFooter() {
           <Link href="/privacy" className="transition-colors hover:text-slate-400">Privacy</Link>
           <span className="text-white/[0.04]">·</span>
           <Link href="/terms" className="transition-colors hover:text-slate-400">Terms</Link>
-          <span className="text-white/[0.04]">·</span>
-          <span className="text-[10px] text-slate-600">Prototype</span>
           <span className="text-white/[0.04]">·</span>
           <span className="text-slate-600">&copy; 2024–{String(new Date().getFullYear()).padStart(4, "0")} CoreVita Medical OS</span>
         </div>

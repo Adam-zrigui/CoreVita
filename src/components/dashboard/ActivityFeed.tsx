@@ -23,9 +23,11 @@ function formatRelativeTime(iso: string, now: number = Date.now()) {
 export function ActivityFeed({
   activities,
 }: {
-  activities: Activity[];
+  activities?: Activity[];
 }) {
-  if (activities.length === 0) {
+  const items = activities ?? [];
+
+  if (items.length === 0) {
     return (
       <div className="flex items-center justify-center py-10 text-xs text-slate-600">
         No recent activity
@@ -35,7 +37,7 @@ export function ActivityFeed({
 
   return (
     <div className="space-y-0.5">
-      {activities.map((a) => (
+      {items.map((a) => (
         <div
           key={a.id}
           className="flex items-start gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-white/[0.03]"
@@ -53,7 +55,7 @@ export function ActivityFeed({
             </div>
             <div className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-600">
               <Clock className="h-3 w-3" />
-              {formatRelativeTime(a.timestamp, activities.length > 0 ? new Date(activities[0].timestamp).getTime() : Date.now())}
+              {formatRelativeTime(a.timestamp, new Date(items[0].timestamp).getTime())}
             </div>
           </div>
         </div>

@@ -1,22 +1,46 @@
+import { notFound } from "next/navigation";
 import { getServerSession } from "@/lib/auth";
 import Link from "next/link";
-import { getDefaultTenant } from "@/lib/db";
+import { getActorTenant } from "@/lib/rbac";
 import { getCurrentPlan } from "@/lib/plans";
 import { getDashboardData } from "@/lib/dashboard";
-import { BarChart3, Users, Share2, ArrowUpRight, UploadCloud, ChevronRight } from "lucide-react";
+import { Users, Share2, ArrowUpRight, UploadCloud, ChevronRight } from "lucide-react";
 import { DashboardBanner } from "@/components/dashboard/DashboardBanner";
+
+export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   const session = await getServerSession();
   const userName = session?.user?.name ?? null;
-  const userRole = session?.user?.role ?? null;
 
-  const tenant = await getDefaultTenant();
-  const planResult = await getCurrentPlan();
-  const [dashboardData] = await Promise.all([
-    getDashboardData(tenant.id, 20, planResult.plan).catch(() => null),
+  const [actorInfo, planResult] = await Promise.all([
+    getActorTenant(session),
+    getCurrentPlan(session),
   ]);
+  if (actorInfo instanceof Response) notFound();
+  const dashboardData = await getDashboardData(actorInfo.tenantId, 8, planResult.plan, actorInfo.actorId).catch(() => null);
+  const dashboardDataWithFallback = dashboardData ?? {
+    totalStudies: 0,
+    studiesByStatus: [],
+    totalReports: 0,
+    teamMembers: 0,
+    totalImages: 0,
+    activeShares: 0,
+    sharesThisMonth: 0,
+    reportedCount: 0,
+    avgTurnaroundHours: null,
+    studyVolume: [],
+    recentStudies: [],
+    recentShares: [],
+  };
   const { plan, used, limit, status } = planResult;
+
+  const totalByStatus = dashboardDataWithFallback.studiesByStatus.reduce((sum, s) => sum + s._count, 0) || 1;
+  const studiesByStatusFormatted = dashboardDataWithFallback.studiesByStatus.map((s) => ({
+    label: s.status,
+    value: s._count,
+    percentage: Math.round((s._count / totalByStatus) * 100),
+  }));
 
   if (status === "none") {
     // If no plan and no session, allow access with limited features
@@ -29,12 +53,12 @@ export default async function DashboardPage() {
   const { StatsCards } = await import("@/components/dashboard/StatsCards");
   const { StudyStatusSection } = await import("@/components/dashboard/StudyStatusSection");
   const { RecentStudiesTable } = await import("@/components/dashboard/RecentStudiesTable");
+  const { VolumeChart } = await import("@/components/dashboard/VolumeChart");
 
-  const totalStudies = dashboardData?.totalStudies ?? 0;
-  const recentStudies = dashboardData?.recentStudies ?? [];
-  const activeShares = dashboardData?.activeShares ?? 0;
-  const sharesThisMonth = dashboardData?.sharesThisMonth ?? 0;
-  const recentShares = dashboardData?.recentShares ?? [];
+  const totalStudies = dashboardDataWithFallback.totalStudies;
+  const recentStudies = dashboardDataWithFallback.recentStudies;
+  const activeShares = dashboardDataWithFallback.activeShares;
+  const recentShares = dashboardDataWithFallback.recentShares;
   const usagePercent = limit > 0 ? Math.round((used / limit) * 100) : 0;
 
   return (
@@ -55,10 +79,8 @@ export default async function DashboardPage() {
             </span>
           </div>
           <p className="mt-1 text-sm text-slate-500">
-            {userName ? (
-              <>Welcome back, <span className="text-slate-400 font-medium">{userName}</span>
-                {userRole && <><span className="mx-1.5 text-slate-700">&middot;</span>
-                  <span className="capitalize text-slate-500">{userRole.toLowerCase()}</span></>}</>
+              {userName ? (
+                <>Welcome back, <span className="text-slate-400 font-medium">{userName}</span></>
             ) : (
               <>Browse and manage your studies</>
             )}
@@ -106,10 +128,22 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {StatsCards && <StatsCards />}
+      {StatsCards && <StatsCards data={dashboardDataWithFallback} />}
+
+      <VolumeChart data={dashboardDataWithFallback.studyVolume} avgTurnaroundHours={dashboardDataWithFallback.avgTurnaroundHours} />
 
       <div className="mt-5 grid gap-4 lg:grid-cols-3">
-        {StudyStatusSection && <div className="lg:col-span-2"><StudyStatusSection /></div>}
+        {StudyStatusSection && (
+          <div className="lg:col-span-2">
+            <StudyStatusSection
+              data={{
+                studiesByStatus: studiesByStatusFormatted,
+                teamMembers: dashboardDataWithFallback.teamMembers,
+                activities: [],
+              }}
+            />
+          </div>
+        )}
 
         <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 transition-all hover:border-white/[0.09]">
           <h2 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
@@ -177,7 +211,7 @@ export default async function DashboardPage() {
                     <tr key={share.id} className="group transition-colors hover:bg-white/[0.02]">
                       <td className="px-4 py-3">
                         <Link href={`/studies/${share.study.id}`} className="text-sm font-medium text-slate-200 transition-colors hover:text-blue-400">
-                          {share.study.patientName || "Unknown"}
+                          {share.study.title ?? share.study.patientName ?? "Unknown"}
                         </Link>
                       </td>
                       <td className="px-4 py-3">
@@ -228,7 +262,7 @@ export default async function DashboardPage() {
             </a>
           </div>
         ) : (
-          <RecentStudiesTable />
+          <RecentStudiesTable studies={recentStudies} />
         )}
       </section>
 

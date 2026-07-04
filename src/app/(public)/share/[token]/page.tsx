@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 import { ShareViewer } from "./ShareViewer";
 
 export const dynamic = "force-dynamic";
@@ -21,12 +22,12 @@ export default async function SharePage({
         select: {
           studyUid: true,
           patientName: true,
+          title: true,
           patientId: true,
           modality: true,
           studyDate: true,
           description: true,
           slices: true,
-          tenantId: true,
           series: {
             orderBy: [{ seriesNumber: { sort: "asc", nulls: "last" } }, { createdAt: "asc" }],
             select: {
@@ -49,15 +50,14 @@ export default async function SharePage({
   }
 
   if (share.password && !password) {
-    return <PasswordGate token={token} />;
+    return <PasswordGate />;
   }
 
   if (share.password && password) {
     const Crypto = await import("crypto");
     const hash = Crypto.createHash("sha256").update(password).digest("hex");
-    const expected = Crypto.createHash("sha256").update(share.password).digest("hex");
-    if (hash !== expected) {
-      return <PasswordGate token={token} error="Incorrect password" />;
+    if (hash !== share.password) {
+      return <PasswordGate error="Incorrect password" />;
     }
   }
 
@@ -93,19 +93,19 @@ function ExpiredPage() {
           <p className="mt-1 text-xs text-slate-500">
             Upload, view, and share medical images securely with anyone.
           </p>
-          <a
+          <Link
             href="/"
             className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
           >
             Learn more
-          </a>
+          </Link>
         </div>
       </div>
     </div>
   );
 }
 
-function PasswordGate({ token, error }: { token: string; error?: string }) {
+function PasswordGate({ error }: { error?: string }) {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-sm">

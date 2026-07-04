@@ -264,6 +264,7 @@ export async function GET(
       study: {
         studyUid: study.studyUid,
         patientName: study.patientName,
+        title: study.title,
         studyDate: study.studyDate,
         description: study.description,
         modality: study.modality,

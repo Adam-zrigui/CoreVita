@@ -17,7 +17,7 @@ describe("UpgradeModal", () => {
 
   it("shows all plan tiers", () => {
     render(<UpgradeModal open={true} onClose={() => {}} />);
-    expect(screen.getByText("Starter")).toBeInTheDocument();
+    expect(screen.getByText("Free")).toBeInTheDocument();
     expect(screen.getByText("Pro")).toBeInTheDocument();
     expect(screen.getByText("Clinic")).toBeInTheDocument();
   });

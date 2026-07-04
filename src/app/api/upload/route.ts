@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Busboy from "busboy";
+import { Readable } from "stream";
 import { randomUUID } from "crypto";
 import { getServerSession } from "@/lib/auth";
 import { prisma, withDbRetry } from "@/lib/db";
@@ -12,8 +13,9 @@ import { parseInstanceNumber, parseSeriesNumber, parseSeriesUid } from "@/lib/di
 import { isDicomPart10 } from "@/lib/dicom-validation";
 import { sanitizeDicomMetadata } from "@/lib/dicom-sanitize";
 import { getCurrentPlan } from "@/lib/plans";
-import { requireRole, getActorTenant } from "@/lib/rbac";
+import { getActorTenant } from "@/lib/rbac";
 import { logAudit } from "@/lib/audit";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -24,8 +26,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const rl = rateLimit(`upload:${session.user.id}`, 5, 60_000);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: "Too many uploads. Try again shortly." }, { status: 429 });
+    }
+
     const planInfo = await getCurrentPlan(session);
-    if (planInfo.status === "none") {
+    if (planInfo.status === "none" && planInfo.plan !== "starter") {
       return NextResponse.json({ error: "Subscription required", redirect: "/services/pricing" }, { status: 402 });
     }
 
@@ -36,15 +43,12 @@ export async function POST(req: Request) {
       }, { status: 402 });
     }
 
-    const roleCheck = await requireRole("upload", session);
-    if (roleCheck instanceof Response) return roleCheck;
+    const contentType = req.headers.get("content-type");
+    if (!contentType?.includes("multipart/form-data")) {
+      return NextResponse.json({ error: "Expected multipart upload" }, { status: 400 });
+    }
 
-  const contentType = req.headers.get("content-type");
-  if (!contentType?.includes("multipart/form-data")) {
-    return NextResponse.json({ error: "Expected multipart upload" }, { status: 400 });
-  }
-
-  const uploadId = randomUUID();
+    const uploadId = randomUUID();
   const storageDriver = getStorageDriver();
   if (storageDriver !== "b2") {
     return NextResponse.json({ error: "Storage driver must be b2" }, { status: 400 });
@@ -56,60 +60,70 @@ export async function POST(req: Request) {
   const files: { name: string; storageKey: string; driver: string; originalPath: string; instanceNumber?: number; seriesUid?: string; seriesNumber?: number }[] = [];
   const uploads: Promise<void>[] = [];
   let dicomdirBuffer: Buffer | null = null;
+  let studyTitle: string | null = null;
 
   const bb = Busboy({
     headers: { "content-type": contentType },
     limits: { fileSize: 500 * 1024 * 1024, files: 5000 },
   } as any);
 
-  const finished = new Promise<void>((resolve, reject) => {
-    bb.on("file", (_name, file, info) => {
-      const originalPath = info.filename || "unknown";
-      const normalizedPath = normalizeDicomPath(originalPath);
-      const isDicomdir = normalizedPath.endsWith("dicomdir");
-      if (isDicomdir) {
-        const chunks: Buffer[] = [];
-        file.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
-        file.on("end", () => {
-          dicomdirBuffer = Buffer.concat(chunks);
-        });
+  bb.on("field", (name, val) => {
+    if (name === "title" && typeof val === "string" && val.trim()) {
+      studyTitle = val.trim();
+    }
+  });
+
+  bb.on("file", (_name, file, info) => {
+    const originalPath = info.filename || "unknown";
+    const normalizedPath = normalizeDicomPath(originalPath);
+    const isDicomdir = normalizedPath.endsWith("dicomdir");
+    if (isDicomdir) {
+      const chunks: Buffer[] = [];
+      file.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+      file.on("end", () => {
+        dicomdirBuffer = Buffer.concat(chunks);
+      });
+      file.on("error", () => {});
+      return;
+    }
+    const key = `${uploadId}/${normalizedPath}`;
+    const chunks: Buffer[] = [];
+    file.on("data", (chunk: Buffer | string) => chunks.push(Buffer.from(chunk)));
+    file.on("end", () => {
+      const buffer = Buffer.concat(chunks);
+      if (!isDicomPart10(buffer)) {
         return;
       }
-      const key = `${uploadId}/${normalizedPath}`;
-      const chunks: Buffer[] = [];
-      file.on("data", (chunk: Buffer | string) => chunks.push(Buffer.from(chunk)));
-      file.on("end", () => {
-        const buffer = Buffer.concat(chunks);
-        if (!isDicomPart10(buffer)) {
-          return;
-        }
-        const instanceNumber = parseInstanceNumber(buffer);
-        const seriesNumber = parseSeriesNumber(buffer);
-        const seriesUid = parseSeriesUid(buffer);
-        uploads.push(uploadToB2(key, buffer, info.mimeType || "application/dicom"));
-        const metadata = readDicomSortMetadata(buffer);
-        if (Object.keys(metadata).length > 0) {
-          uploads.push(uploadDicomMetadata(key, metadata));
-        }
-        files.push({
-          name: originalPath,
-          storageKey: key,
-          driver: "b2",
-          originalPath: normalizedPath,
-          instanceNumber: instanceNumber ?? undefined,
-          seriesUid: seriesUid ?? undefined,
-          seriesNumber: seriesNumber ?? undefined,
-        });
+      const instanceNumber = parseInstanceNumber(buffer);
+      const seriesNumber = parseSeriesNumber(buffer);
+      const seriesUid = parseSeriesUid(buffer);
+      uploads.push(uploadToB2(key, buffer, info.mimeType || "application/dicom"));
+      const metadata = readDicomSortMetadata(buffer);
+      if (Object.keys(metadata).length > 0) {
+        uploads.push(uploadDicomMetadata(key, metadata));
+      }
+      files.push({
+        name: originalPath,
+        storageKey: key,
+        driver: "b2",
+        originalPath: normalizedPath,
+        instanceNumber: instanceNumber ?? undefined,
+        seriesUid: seriesUid ?? undefined,
+        seriesNumber: seriesNumber ?? undefined,
       });
+      file.on("error", () => {});
     });
-    bb.on("error", reject);
-    bb.on("finish", () => resolve());
   });
 
   const reader = req.body?.getReader();
   if (!reader) {
     return NextResponse.json({ error: "No body" }, { status: 400 });
   }
+
+  const finished = new Promise<void>((resolve, reject) => {
+    bb.on("error", reject);
+    bb.on("finish", () => resolve());
+  });
 
   const pump = async () => {
     try {
@@ -119,7 +133,7 @@ export async function POST(req: Request) {
         bb.write(value);
       }
     } finally {
-      bb.end();
+      try { bb.end(); } catch {}
     }
   };
 
@@ -201,8 +215,17 @@ export async function POST(req: Request) {
 
   const effectiveStudyUid = studyUidFromDir || studyUid;
 
-  const sanitizedPatientName = patientNameFromDir ? sanitizeDicomMetadata(patientNameFromDir) : "Unknown";
-  const sanitizedDescription = descriptionFromDir ? sanitizeDicomMetadata(descriptionFromDir) : "Imported Study";
+  const sanitizedPatientName = patientNameFromDir
+    ? sanitizeDicomMetadata(patientNameFromDir)
+    : "Unknown";
+  const sanitizedTitle = studyTitle
+    ? sanitizeDicomMetadata(studyTitle)
+    : null;
+  const sanitizedDescription = studyTitle
+    ? sanitizeDicomMetadata(studyTitle)
+    : descriptionFromDir
+      ? sanitizeDicomMetadata(descriptionFromDir)
+      : "Imported Study";
 
   const queued = await enqueueUpload({
     studyUid: effectiveStudyUid,
@@ -222,6 +245,7 @@ export async function POST(req: Request) {
     patientName: sanitizedPatientName,
     studyDate: studyDateFromDir,
     description: sanitizedDescription,
+    title: sanitizedTitle,
   });
 
   if (queued) {
@@ -242,8 +266,10 @@ export async function POST(req: Request) {
     prisma.study.create({
       data: {
         tenantId,
+        uploadedById: actorTenant.actorId,
         studyUid: effectiveStudyUid,
         patientName: sanitizedPatientName,
+        title: sanitizedTitle,
         description: sanitizedDescription,
         studyDate: studyDateFromDir,
         modality: "MR",
@@ -284,7 +310,8 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ ok: true, studyUid: study.studyUid, queued: false });
   } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    const msg = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+    console.error("Upload error:", msg, error instanceof Error ? error.stack : "");
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

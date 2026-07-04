@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "@/lib/auth";
 import { getCurrentPlan, planHasFeature } from "@/lib/plans";
-import { requireRole, getActorTenant } from "@/lib/rbac";
+import { getActorTenant } from "@/lib/rbac";
 import { logAudit } from "@/lib/audit";
 import { generateAiReport } from "@/lib/ai-report";
 import { z } from "zod";
@@ -34,7 +34,7 @@ export async function GET(request: Request) {
 
   const [reports, total] = await Promise.all([
     prisma.report.findMany({
-      where: { study: { tenantId } },
+      where: { study: { tenantId, uploadedById: session.user.id } },
       orderBy: { createdAt: "desc" },
       take,
       skip,
@@ -44,10 +44,10 @@ export async function GET(request: Request) {
         content: true,
         createdAt: true,
         author: { select: { name: true } },
-        study: { select: { id: true, patientName: true, studyUid: true } },
+        study: { select: { id: true, patientName: true, title: true, studyUid: true } },
       },
     }),
-    prisma.report.count({ where: { study: { tenantId } } }),
+    prisma.report.count({ where: { study: { tenantId, uploadedById: session.user.id } } }),
   ]);
 
   return NextResponse.json({ reports, total, skip, take });
@@ -83,11 +83,9 @@ export async function POST(request: Request) {
     if (!planHasFeature(planInfo.plan, "ai_triage")) {
       return NextResponse.json({ error: "AI report generation requires Pro plan" }, { status: 402 });
     }
-    const roleCheck = await requireRole("reports.ai", session);
-    if (roleCheck instanceof Response) return roleCheck;
 
     const study = await prisma.study.findFirst({
-      where: { OR: [{ id: studyId }, { studyUid: studyId }], tenantId },
+      where: { OR: [{ id: studyId }, { studyUid: studyId }], tenantId, uploadedById: session.user.id },
     });
     if (!study) {
       return NextResponse.json({ error: "Study not found" }, { status: 404 });
@@ -141,11 +139,9 @@ export async function POST(request: Request) {
   if (!planHasFeature(planInfo.plan, "structured_reports")) {
     return NextResponse.json({ error: "Structured reports require the Pro plan" }, { status: 402 });
   }
-  const roleCheck = await requireRole("reports.create", session);
-  if (roleCheck instanceof Response) return roleCheck;
 
   const study = await prisma.study.findFirst({
-    where: { OR: [{ id: studyId }, { studyUid: studyId }], tenantId },
+    where: { OR: [{ id: studyId }, { studyUid: studyId }], tenantId, uploadedById: session.user.id },
   });
   if (!study) {
     return NextResponse.json({ error: "Study not found" }, { status: 404 });

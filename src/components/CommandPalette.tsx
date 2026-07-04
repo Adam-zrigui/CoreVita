@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
-export function CommandPaletteProvider({ studies: _studies }: { studies?: { id: string; patientName: string | null }[] } = {}) {
+export function CommandPaletteProvider({ studies: _studies }: { studies?: { id: string; patientName: string | null; title?: string | null }[] } = {}) {
   const studies = _studies ?? [];
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -26,7 +26,14 @@ export function CommandPaletteProvider({ studies: _studies }: { studies?: { id: 
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        setOpen((v) => !v);
+        setOpen((v) => {
+          const next = !v;
+          if (next) {
+            setQuery("");
+            setSelectedIndex(0);
+          }
+          return next;
+        });
       }
       if (e.key === "Escape") setOpen(false);
     };
@@ -35,19 +42,20 @@ export function CommandPaletteProvider({ studies: _studies }: { studies?: { id: 
   }, []);
 
   useEffect(() => {
-    if (open) {
+    if (!open) return;
+    const id = window.setTimeout(() => {
       setQuery("");
       setSelectedIndex(0);
-      const id = setTimeout(() => inputRef.current?.focus(), 50);
-      return () => clearTimeout(id);
-    }
+      inputRef.current?.focus();
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [open]);
 
   const items = [
     ...NAV_ITEMS.map((item) => ({ type: "nav" as const, ...item })),
     ...(studies ?? []).slice(0, 5).map((s) => ({
       type: "study" as const,
-      label: s.patientName ?? "Unknown",
+      label: s.title ?? s.patientName ?? "Unknown",
       href: `/studies/${s.id}`,
     })),
   ];
@@ -59,8 +67,13 @@ export function CommandPaletteProvider({ studies: _studies }: { studies?: { id: 
   });
 
   const navigate = useCallback((href: string) => {
+    if (!href) return;
     setOpen(false);
-    router.push(href);
+    try {
+      router.push(href);
+    } catch {
+      window.location.assign(href);
+    }
   }, [router]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

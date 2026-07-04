@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth/server";
 import { prisma } from "@/lib/db";
-import { requireRole, getActorTenant } from "@/lib/rbac";
+import { getActorTenant } from "@/lib/rbac";
 import { logAudit } from "@/lib/audit";
 import { getRedis, clearStudiesCache } from "@/lib/redis";
 
@@ -10,9 +10,6 @@ export async function POST(request: Request) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const roleCheck = await requireRole("study.delete", session);
-  if (roleCheck instanceof Response) return roleCheck;
 
   const { ids } = await request.json();
   if (!Array.isArray(ids) || ids.length === 0) {
@@ -23,7 +20,7 @@ export async function POST(request: Request) {
   if (actorInfo instanceof Response) return actorInfo;
 
   const result = await prisma.study.deleteMany({
-    where: { id: { in: ids }, tenantId: actorInfo.tenantId },
+    where: { id: { in: ids }, tenantId: actorInfo.tenantId, uploadedById: session.user.id },
   });
 
   for (const id of ids) {

@@ -8,12 +8,12 @@ import {
   ArrowLeft,
   Eye,
   Share2,
+  User,
   Clock,
   Activity,
   FileText,
   Layers,
   Calendar,
-  User,
   Info,
   XCircle,
   Sparkles,
@@ -56,6 +56,7 @@ interface StudyData {
   id: string;
   studyUid: string;
   patientName: string | null;
+  title?: string | null;
   patientId: string | null;
   modality: string | null;
   studyDate: string | null;
@@ -180,7 +181,7 @@ export function StudyDetail({ study, plan, hasAiFeature, hasStructuredReports }:
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-3">
                   <h1 className="text-xl font-semibold tracking-tight text-white truncate">
-                    {study.patientName || "Unknown Patient"}
+                    {study.title ?? study.patientName ?? "Unknown Patient"}
                   </h1>
                   <span className={`inline-flex items-center gap-1.5 shrink-0 rounded-md border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${statusColor(study.status)}`}>
                     <span className={`h-1.5 w-1.5 rounded-full ${
@@ -244,6 +245,15 @@ export function StudyDetail({ study, plan, hasAiFeature, hasStructuredReports }:
                 <Share2 className="h-4 w-4" />
                 Share
               </button>
+              {study.patientId && (
+                <Link
+                  href={`/patients/${encodeURIComponent(study.patientId)}`}
+                  className="inline-flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-slate-300 transition-all hover:bg-white/[0.08] active:scale-[0.98]"
+                >
+                  <User className="h-4 w-4" />
+                  Patient
+                </Link>
+              )}
               <DeleteStudyButton studyUid={study.studyUid} />
             </div>
           </div>

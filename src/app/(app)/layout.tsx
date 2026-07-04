@@ -5,6 +5,8 @@ import { getCurrentPlan, planHasFeature } from "@/lib/plans";
 import { AppNav } from "@/components/AppNav";
 import { CommandPaletteProvider } from "@/components/CommandPalette";
 
+export const dynamic = "force-dynamic";
+
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await getServerSession();
 
@@ -17,7 +19,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <AppNav name={session.user.name} role={session.user.role} hasAuditLog={hasAuditLog} />
+      <AppNav name={session.user.name} hasAuditLog={hasAuditLog} />
       <CommandPaletteProvider />
       <div className="flex-1 pt-14">{children}</div>
       <footer className="border-t border-white/[0.04] py-6">
@@ -30,7 +32,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
             <a href="/imprint" className="hover:text-slate-500 transition-colors">Imprint</a>
             <a href="/terms" className="hover:text-slate-500 transition-colors">Terms</a>
             <span className="text-white/[0.04]">|</span>
-            <span className="text-slate-600 text-[10px]">Prototype &mdash; CoreVita Medical OS</span>
+            <span className="text-slate-600 text-[10px]">CoreVita Medical OS</span>
           </div>
         </div>
       </footer>

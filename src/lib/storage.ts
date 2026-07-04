@@ -10,6 +10,8 @@ type StorageDriver = "b2";
 type SdkBody = {
   transformToByteArray?: () => Promise<Uint8Array>;
   transformToWebStream?: () => ReadableStream;
+  arrayBuffer?: () => Promise<ArrayBuffer>;
+  stream?: () => ReadableStream;
 };
 
 export function getStorageDriver(): StorageDriver {
@@ -90,14 +92,30 @@ async function readWebStream(stream: ReadableStream) {
   return Buffer.concat(chunks);
 }
 
+function isReadableWebStream(body: unknown): body is ReadableStream {
+  return (
+    typeof body === "object" &&
+    body !== null &&
+    typeof (body as any).getReader === "function" &&
+    typeof (body as any).tee === "function"
+  );
+}
+
 async function readSdkBody(body: unknown) {
   if (!body) return null;
   if (Buffer.isBuffer(body)) return body;
   if (body instanceof Uint8Array) return Buffer.from(body);
+  if (body instanceof ArrayBuffer) return Buffer.from(body);
   if (body instanceof Readable) return readNodeStream(body);
-  if (body instanceof ReadableStream) return readWebStream(body);
+  if (isReadableWebStream(body)) return readWebStream(body);
 
   const sdkBody = body as SdkBody;
+  if (typeof sdkBody.arrayBuffer === "function") {
+    return Buffer.from(await sdkBody.arrayBuffer());
+  }
+  if (typeof sdkBody.stream === "function") {
+    return readWebStream(sdkBody.stream());
+  }
   if (typeof sdkBody.transformToByteArray === "function") {
     return Buffer.from(await sdkBody.transformToByteArray());
   }

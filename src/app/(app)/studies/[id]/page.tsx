@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { getDefaultTenant } from "@/lib/db";
+import { getActorTenant } from "@/lib/rbac";
 import { getCurrentPlan, planHasFeature } from "@/lib/plans";
 import { StudyDetail } from "./StudyDetail";
 
@@ -13,10 +13,11 @@ export default async function StudyDetailPage({
 }) {
   const { id } = await params;
 
-  const tenant = await getDefaultTenant();
+  const actorInfo = await getActorTenant();
+  if (actorInfo instanceof Response) notFound();
 
   const study = await prisma.study.findFirst({
-    where: { OR: [{ id }, { studyUid: id }], tenantId: tenant.id },
+    where: { OR: [{ id }, { studyUid: id }], tenantId: actorInfo.tenantId, uploadedById: actorInfo.actorId },
     include: {
       series: {
         orderBy: [{ seriesNumber: { sort: "asc", nulls: "last" } }, { createdAt: "asc" }],

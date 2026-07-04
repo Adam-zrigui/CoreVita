@@ -89,6 +89,11 @@ export type Branding = $Result.DefaultSelection<Prisma.$BrandingPayload>
  */
 export type NotificationPreference = $Result.DefaultSelection<Prisma.$NotificationPreferencePayload>
 /**
+ * Model PendingInvite
+ * 
+ */
+export type PendingInvite = $Result.DefaultSelection<Prisma.$PendingInvitePayload>
+/**
  * Model AuditLog
  * 
  */
@@ -98,17 +103,7 @@ export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
  * Enums
  */
 export namespace $Enums {
-  export const Role: {
-  ADMIN: 'ADMIN',
-  RADIOLOGIST: 'RADIOLOGIST',
-  ASSISTANT: 'ASSISTANT',
-  VIEWER: 'VIEWER'
-};
-
-export type Role = (typeof Role)[keyof typeof Role]
-
-
-export const StudyStatus: {
+  export const StudyStatus: {
   PENDING: 'PENDING',
   READING: 'READING',
   REPORTED: 'REPORTED'
@@ -125,10 +120,6 @@ export const ReportStatus: {
 export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
 
 }
-
-export type Role = $Enums.Role
-
-export const Role: typeof $Enums.Role
 
 export type StudyStatus = $Enums.StudyStatus
 
@@ -251,7 +242,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
-  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
 
@@ -410,6 +401,16 @@ export class PrismaClient<
   get notificationPreference(): Prisma.NotificationPreferenceDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.pendingInvite`: Exposes CRUD operations for the **PendingInvite** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PendingInvites
+    * const pendingInvites = await prisma.pendingInvite.findMany()
+    * ```
+    */
+  get pendingInvite(): Prisma.PendingInviteDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.auditLog`: Exposes CRUD operations for the **AuditLog** model.
     * Example usage:
     * ```ts
@@ -468,8 +469,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.5.0
-   * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
+   * Prisma Client JS version: 7.8.0
+   * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
    */
   export type PrismaVersion = {
     client: string
@@ -867,6 +868,7 @@ export namespace Prisma {
     ApiKey: 'ApiKey',
     Branding: 'Branding',
     NotificationPreference: 'NotificationPreference',
+    PendingInvite: 'PendingInvite',
     AuditLog: 'AuditLog'
   };
 
@@ -883,7 +885,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "tenant" | "user" | "membership" | "account" | "session" | "verificationToken" | "study" | "series" | "instance" | "subscription" | "report" | "shareToken" | "apiKey" | "branding" | "notificationPreference" | "auditLog"
+      modelProps: "tenant" | "user" | "membership" | "account" | "session" | "verificationToken" | "study" | "series" | "instance" | "subscription" | "report" | "shareToken" | "apiKey" | "branding" | "notificationPreference" | "pendingInvite" | "auditLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1997,6 +1999,80 @@ export namespace Prisma {
           }
         }
       }
+      PendingInvite: {
+        payload: Prisma.$PendingInvitePayload<ExtArgs>
+        fields: Prisma.PendingInviteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PendingInviteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingInvitePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PendingInviteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingInvitePayload>
+          }
+          findFirst: {
+            args: Prisma.PendingInviteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingInvitePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PendingInviteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingInvitePayload>
+          }
+          findMany: {
+            args: Prisma.PendingInviteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingInvitePayload>[]
+          }
+          create: {
+            args: Prisma.PendingInviteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingInvitePayload>
+          }
+          createMany: {
+            args: Prisma.PendingInviteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PendingInviteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingInvitePayload>[]
+          }
+          delete: {
+            args: Prisma.PendingInviteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingInvitePayload>
+          }
+          update: {
+            args: Prisma.PendingInviteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingInvitePayload>
+          }
+          deleteMany: {
+            args: Prisma.PendingInviteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PendingInviteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PendingInviteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingInvitePayload>[]
+          }
+          upsert: {
+            args: Prisma.PendingInviteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PendingInvitePayload>
+          }
+          aggregate: {
+            args: Prisma.PendingInviteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePendingInvite>
+          }
+          groupBy: {
+            args: Prisma.PendingInviteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PendingInviteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PendingInviteCountArgs<ExtArgs>
+            result: $Utils.Optional<PendingInviteCountAggregateOutputType> | number
+          }
+        }
+      }
       AuditLog: {
         payload: Prisma.$AuditLogPayload<ExtArgs>
         fields: Prisma.AuditLogFieldRefs
@@ -2194,6 +2270,7 @@ export namespace Prisma {
     apiKey?: ApiKeyOmit
     branding?: BrandingOmit
     notificationPreference?: NotificationPreferenceOmit
+    pendingInvite?: PendingInviteOmit
     auditLog?: AuditLogOmit
   }
 
@@ -2275,17 +2352,19 @@ export namespace Prisma {
    */
 
   export type TenantCountOutputType = {
-    members: number
-    studies: number
-    auditLogs: number
     apiKeys: number
+    auditLogs: number
+    members: number
+    pendingInvites: number
+    studies: number
   }
 
   export type TenantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    members?: boolean | TenantCountOutputTypeCountMembersArgs
-    studies?: boolean | TenantCountOutputTypeCountStudiesArgs
-    auditLogs?: boolean | TenantCountOutputTypeCountAuditLogsArgs
     apiKeys?: boolean | TenantCountOutputTypeCountApiKeysArgs
+    auditLogs?: boolean | TenantCountOutputTypeCountAuditLogsArgs
+    members?: boolean | TenantCountOutputTypeCountMembersArgs
+    pendingInvites?: boolean | TenantCountOutputTypeCountPendingInvitesArgs
+    studies?: boolean | TenantCountOutputTypeCountStudiesArgs
   }
 
   // Custom InputTypes
@@ -2302,15 +2381,8 @@ export namespace Prisma {
   /**
    * TenantCountOutputType without action
    */
-  export type TenantCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MembershipWhereInput
-  }
-
-  /**
-   * TenantCountOutputType without action
-   */
-  export type TenantCountOutputTypeCountStudiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: StudyWhereInput
+  export type TenantCountOutputTypeCountApiKeysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApiKeyWhereInput
   }
 
   /**
@@ -2323,8 +2395,22 @@ export namespace Prisma {
   /**
    * TenantCountOutputType without action
    */
-  export type TenantCountOutputTypeCountApiKeysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ApiKeyWhereInput
+  export type TenantCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MembershipWhereInput
+  }
+
+  /**
+   * TenantCountOutputType without action
+   */
+  export type TenantCountOutputTypeCountPendingInvitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PendingInviteWhereInput
+  }
+
+  /**
+   * TenantCountOutputType without action
+   */
+  export type TenantCountOutputTypeCountStudiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StudyWhereInput
   }
 
 
@@ -2334,16 +2420,22 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     accounts: number
-    sessions: number
     memberships: number
+    pendingInvites: number
     reports: number
+    sessions: number
+    Study: number
+    shareTokens: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
-    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
+    pendingInvites?: boolean | UserCountOutputTypeCountPendingInvitesArgs
     reports?: boolean | UserCountOutputTypeCountReportsArgs
+    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+    Study?: boolean | UserCountOutputTypeCountStudyArgs
+    shareTokens?: boolean | UserCountOutputTypeCountShareTokensArgs
   }
 
   // Custom InputTypes
@@ -2367,15 +2459,15 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SessionWhereInput
+  export type UserCountOutputTypeCountMembershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MembershipWhereInput
   }
 
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountMembershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MembershipWhereInput
+  export type UserCountOutputTypeCountPendingInvitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PendingInviteWhereInput
   }
 
   /**
@@ -2385,20 +2477,41 @@ export namespace Prisma {
     where?: ReportWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountStudyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StudyWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountShareTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ShareTokenWhereInput
+  }
+
 
   /**
    * Count Type StudyCountOutputType
    */
 
   export type StudyCountOutputType = {
-    series: number
     reports: number
+    series: number
     shareTokens: number
   }
 
   export type StudyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    series?: boolean | StudyCountOutputTypeCountSeriesArgs
     reports?: boolean | StudyCountOutputTypeCountReportsArgs
+    series?: boolean | StudyCountOutputTypeCountSeriesArgs
     shareTokens?: boolean | StudyCountOutputTypeCountShareTokensArgs
   }
 
@@ -2416,15 +2529,15 @@ export namespace Prisma {
   /**
    * StudyCountOutputType without action
    */
-  export type StudyCountOutputTypeCountSeriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SeriesWhereInput
+  export type StudyCountOutputTypeCountReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportWhereInput
   }
 
   /**
    * StudyCountOutputType without action
    */
-  export type StudyCountOutputTypeCountReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ReportWhereInput
+  export type StudyCountOutputTypeCountSeriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SeriesWhereInput
   }
 
   /**
@@ -2626,12 +2739,13 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     createdAt?: boolean
+    apiKeys?: boolean | Tenant$apiKeysArgs<ExtArgs>
+    auditLogs?: boolean | Tenant$auditLogsArgs<ExtArgs>
+    branding?: boolean | Tenant$brandingArgs<ExtArgs>
     members?: boolean | Tenant$membersArgs<ExtArgs>
+    pendingInvites?: boolean | Tenant$pendingInvitesArgs<ExtArgs>
     studies?: boolean | Tenant$studiesArgs<ExtArgs>
     subscription?: boolean | Tenant$subscriptionArgs<ExtArgs>
-    auditLogs?: boolean | Tenant$auditLogsArgs<ExtArgs>
-    apiKeys?: boolean | Tenant$apiKeysArgs<ExtArgs>
-    branding?: boolean | Tenant$brandingArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
@@ -2658,12 +2772,13 @@ export namespace Prisma {
 
   export type TenantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "createdAt", ExtArgs["result"]["tenant"]>
   export type TenantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    apiKeys?: boolean | Tenant$apiKeysArgs<ExtArgs>
+    auditLogs?: boolean | Tenant$auditLogsArgs<ExtArgs>
+    branding?: boolean | Tenant$brandingArgs<ExtArgs>
     members?: boolean | Tenant$membersArgs<ExtArgs>
+    pendingInvites?: boolean | Tenant$pendingInvitesArgs<ExtArgs>
     studies?: boolean | Tenant$studiesArgs<ExtArgs>
     subscription?: boolean | Tenant$subscriptionArgs<ExtArgs>
-    auditLogs?: boolean | Tenant$auditLogsArgs<ExtArgs>
-    apiKeys?: boolean | Tenant$apiKeysArgs<ExtArgs>
-    branding?: boolean | Tenant$brandingArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TenantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2672,12 +2787,13 @@ export namespace Prisma {
   export type $TenantPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Tenant"
     objects: {
+      apiKeys: Prisma.$ApiKeyPayload<ExtArgs>[]
+      auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+      branding: Prisma.$BrandingPayload<ExtArgs> | null
       members: Prisma.$MembershipPayload<ExtArgs>[]
+      pendingInvites: Prisma.$PendingInvitePayload<ExtArgs>[]
       studies: Prisma.$StudyPayload<ExtArgs>[]
       subscription: Prisma.$SubscriptionPayload<ExtArgs> | null
-      auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
-      apiKeys: Prisma.$ApiKeyPayload<ExtArgs>[]
-      branding: Prisma.$BrandingPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3078,12 +3194,13 @@ export namespace Prisma {
    */
   export interface Prisma__TenantClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    apiKeys<T extends Tenant$apiKeysArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$apiKeysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    auditLogs<T extends Tenant$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    branding<T extends Tenant$brandingArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$brandingArgs<ExtArgs>>): Prisma__BrandingClient<$Result.GetResult<Prisma.$BrandingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     members<T extends Tenant$membersArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    pendingInvites<T extends Tenant$pendingInvitesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$pendingInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     studies<T extends Tenant$studiesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$studiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     subscription<T extends Tenant$subscriptionArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$subscriptionArgs<ExtArgs>>): Prisma__SubscriptionClient<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    auditLogs<T extends Tenant$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    apiKeys<T extends Tenant$apiKeysArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$apiKeysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    branding<T extends Tenant$brandingArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$brandingArgs<ExtArgs>>): Prisma__BrandingClient<$Result.GetResult<Prisma.$BrandingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3510,6 +3627,73 @@ export namespace Prisma {
   }
 
   /**
+   * Tenant.apiKeys
+   */
+  export type Tenant$apiKeysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApiKeyInclude<ExtArgs> | null
+    where?: ApiKeyWhereInput
+    orderBy?: ApiKeyOrderByWithRelationInput | ApiKeyOrderByWithRelationInput[]
+    cursor?: ApiKeyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApiKeyScalarFieldEnum | ApiKeyScalarFieldEnum[]
+  }
+
+  /**
+   * Tenant.auditLogs
+   */
+  export type Tenant$auditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    where?: AuditLogWhereInput
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    cursor?: AuditLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * Tenant.branding
+   */
+  export type Tenant$brandingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branding
+     */
+    select?: BrandingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branding
+     */
+    omit?: BrandingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandingInclude<ExtArgs> | null
+    where?: BrandingWhereInput
+  }
+
+  /**
    * Tenant.members
    */
   export type Tenant$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3531,6 +3715,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MembershipScalarFieldEnum | MembershipScalarFieldEnum[]
+  }
+
+  /**
+   * Tenant.pendingInvites
+   */
+  export type Tenant$pendingInvitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+    where?: PendingInviteWhereInput
+    orderBy?: PendingInviteOrderByWithRelationInput | PendingInviteOrderByWithRelationInput[]
+    cursor?: PendingInviteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PendingInviteScalarFieldEnum | PendingInviteScalarFieldEnum[]
   }
 
   /**
@@ -3574,73 +3782,6 @@ export namespace Prisma {
      */
     include?: SubscriptionInclude<ExtArgs> | null
     where?: SubscriptionWhereInput
-  }
-
-  /**
-   * Tenant.auditLogs
-   */
-  export type Tenant$auditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AuditLog
-     */
-    select?: AuditLogSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AuditLog
-     */
-    omit?: AuditLogOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AuditLogInclude<ExtArgs> | null
-    where?: AuditLogWhereInput
-    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
-    cursor?: AuditLogWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
-  }
-
-  /**
-   * Tenant.apiKeys
-   */
-  export type Tenant$apiKeysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApiKey
-     */
-    select?: ApiKeySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApiKey
-     */
-    omit?: ApiKeyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApiKeyInclude<ExtArgs> | null
-    where?: ApiKeyWhereInput
-    orderBy?: ApiKeyOrderByWithRelationInput | ApiKeyOrderByWithRelationInput[]
-    cursor?: ApiKeyWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ApiKeyScalarFieldEnum | ApiKeyScalarFieldEnum[]
-  }
-
-  /**
-   * Tenant.branding
-   */
-  export type Tenant$brandingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Branding
-     */
-    select?: BrandingSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Branding
-     */
-    omit?: BrandingOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BrandingInclude<ExtArgs> | null
-    where?: BrandingWhereInput
   }
 
   /**
@@ -3843,10 +3984,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
     memberships?: boolean | User$membershipsArgs<ExtArgs>
-    reports?: boolean | User$reportsArgs<ExtArgs>
     notificationPreference?: boolean | User$notificationPreferenceArgs<ExtArgs>
+    pendingInvites?: boolean | User$pendingInvitesArgs<ExtArgs>
+    reports?: boolean | User$reportsArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    Study?: boolean | User$StudyArgs<ExtArgs>
+    shareTokens?: boolean | User$shareTokensArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3883,10 +4027,13 @@ export namespace Prisma {
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
     memberships?: boolean | User$membershipsArgs<ExtArgs>
-    reports?: boolean | User$reportsArgs<ExtArgs>
     notificationPreference?: boolean | User$notificationPreferenceArgs<ExtArgs>
+    pendingInvites?: boolean | User$pendingInvitesArgs<ExtArgs>
+    reports?: boolean | User$reportsArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    Study?: boolean | User$StudyArgs<ExtArgs>
+    shareTokens?: boolean | User$shareTokensArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3896,10 +4043,13 @@ export namespace Prisma {
     name: "User"
     objects: {
       accounts: Prisma.$AccountPayload<ExtArgs>[]
-      sessions: Prisma.$SessionPayload<ExtArgs>[]
       memberships: Prisma.$MembershipPayload<ExtArgs>[]
-      reports: Prisma.$ReportPayload<ExtArgs>[]
       notificationPreference: Prisma.$NotificationPreferencePayload<ExtArgs> | null
+      pendingInvites: Prisma.$PendingInvitePayload<ExtArgs>[]
+      reports: Prisma.$ReportPayload<ExtArgs>[]
+      sessions: Prisma.$SessionPayload<ExtArgs>[]
+      Study: Prisma.$StudyPayload<ExtArgs>[]
+      shareTokens: Prisma.$ShareTokenPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4304,10 +4454,13 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     memberships<T extends User$membershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    reports<T extends User$reportsArgs<ExtArgs> = {}>(args?: Subset<T, User$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notificationPreference<T extends User$notificationPreferenceArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationPreferenceArgs<ExtArgs>>): Prisma__NotificationPreferenceClient<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    pendingInvites<T extends User$pendingInvitesArgs<ExtArgs> = {}>(args?: Subset<T, User$pendingInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reports<T extends User$reportsArgs<ExtArgs> = {}>(args?: Subset<T, User$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Study<T extends User$StudyArgs<ExtArgs> = {}>(args?: Subset<T, User$StudyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    shareTokens<T extends User$shareTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$shareTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShareTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4761,30 +4914,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.sessions
-   */
-  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Session
-     */
-    select?: SessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Session
-     */
-    omit?: SessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SessionInclude<ExtArgs> | null
-    where?: SessionWhereInput
-    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
-    cursor?: SessionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
-  }
-
-  /**
    * User.memberships
    */
   export type User$membershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4806,6 +4935,49 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MembershipScalarFieldEnum | MembershipScalarFieldEnum[]
+  }
+
+  /**
+   * User.notificationPreference
+   */
+  export type User$notificationPreferenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationPreference
+     */
+    select?: NotificationPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NotificationPreference
+     */
+    omit?: NotificationPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationPreferenceInclude<ExtArgs> | null
+    where?: NotificationPreferenceWhereInput
+  }
+
+  /**
+   * User.pendingInvites
+   */
+  export type User$pendingInvitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+    where?: PendingInviteWhereInput
+    orderBy?: PendingInviteOrderByWithRelationInput | PendingInviteOrderByWithRelationInput[]
+    cursor?: PendingInviteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PendingInviteScalarFieldEnum | PendingInviteScalarFieldEnum[]
   }
 
   /**
@@ -4833,22 +5005,75 @@ export namespace Prisma {
   }
 
   /**
-   * User.notificationPreference
+   * User.sessions
    */
-  export type User$notificationPreferenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the NotificationPreference
+     * Select specific fields to fetch from the Session
      */
-    select?: NotificationPreferenceSelect<ExtArgs> | null
+    select?: SessionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the NotificationPreference
+     * Omit specific fields from the Session
      */
-    omit?: NotificationPreferenceOmit<ExtArgs> | null
+    omit?: SessionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: NotificationPreferenceInclude<ExtArgs> | null
-    where?: NotificationPreferenceWhereInput
+    include?: SessionInclude<ExtArgs> | null
+    where?: SessionWhereInput
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    cursor?: SessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.Study
+   */
+  export type User$StudyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Study
+     */
+    select?: StudySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Study
+     */
+    omit?: StudyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudyInclude<ExtArgs> | null
+    where?: StudyWhereInput
+    orderBy?: StudyOrderByWithRelationInput | StudyOrderByWithRelationInput[]
+    cursor?: StudyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StudyScalarFieldEnum | StudyScalarFieldEnum[]
+  }
+
+  /**
+   * User.shareTokens
+   */
+  export type User$shareTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShareToken
+     */
+    select?: ShareTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShareToken
+     */
+    omit?: ShareTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShareTokenInclude<ExtArgs> | null
+    where?: ShareTokenWhereInput
+    orderBy?: ShareTokenOrderByWithRelationInput | ShareTokenOrderByWithRelationInput[]
+    cursor?: ShareTokenWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ShareTokenScalarFieldEnum | ShareTokenScalarFieldEnum[]
   }
 
   /**
@@ -4884,7 +5109,7 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     tenantId: string | null
-    role: $Enums.Role | null
+    role: string | null
     createdAt: Date | null
   }
 
@@ -4892,7 +5117,7 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     tenantId: string | null
-    role: $Enums.Role | null
+    role: string | null
     createdAt: Date | null
   }
 
@@ -5007,7 +5232,7 @@ export namespace Prisma {
     id: string
     userId: string
     tenantId: string
-    role: $Enums.Role
+    role: string
     createdAt: Date
     _count: MembershipCountAggregateOutputType | null
     _min: MembershipMinAggregateOutputType | null
@@ -5034,8 +5259,8 @@ export namespace Prisma {
     tenantId?: boolean
     role?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["membership"]>
 
   export type MembershipSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5044,8 +5269,8 @@ export namespace Prisma {
     tenantId?: boolean
     role?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["membership"]>
 
   export type MembershipSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5054,8 +5279,8 @@ export namespace Prisma {
     tenantId?: boolean
     role?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["membership"]>
 
   export type MembershipSelectScalar = {
@@ -5068,29 +5293,29 @@ export namespace Prisma {
 
   export type MembershipOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "tenantId" | "role" | "createdAt", ExtArgs["result"]["membership"]>
   export type MembershipInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type MembershipIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type MembershipIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $MembershipPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Membership"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
       tenant: Prisma.$TenantPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
       tenantId: string
-      role: $Enums.Role
+      role: string
       createdAt: Date
     }, ExtArgs["result"]["membership"]>
     composites: {}
@@ -5486,8 +5711,8 @@ export namespace Prisma {
    */
   export interface Prisma__MembershipClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5520,7 +5745,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Membership", 'String'>
     readonly userId: FieldRef<"Membership", 'String'>
     readonly tenantId: FieldRef<"Membership", 'String'>
-    readonly role: FieldRef<"Membership", 'Role'>
+    readonly role: FieldRef<"Membership", 'String'>
     readonly createdAt: FieldRef<"Membership", 'DateTime'>
   }
     
@@ -9177,42 +9402,54 @@ export namespace Prisma {
     id: string | null
     tenantId: string | null
     studyUid: string | null
+    title: string | null
     patientId: string | null
     patientName: string | null
     modality: string | null
     slices: number | null
     status: $Enums.StudyStatus | null
+    reportedAt: Date | null
     description: string | null
     studyDate: string | null
     createdAt: Date | null
+    uploadedById: string | null
+    visible: boolean | null
   }
 
   export type StudyMaxAggregateOutputType = {
     id: string | null
     tenantId: string | null
     studyUid: string | null
+    title: string | null
     patientId: string | null
     patientName: string | null
     modality: string | null
     slices: number | null
     status: $Enums.StudyStatus | null
+    reportedAt: Date | null
     description: string | null
     studyDate: string | null
     createdAt: Date | null
+    uploadedById: string | null
+    visible: boolean | null
   }
 
   export type StudyCountAggregateOutputType = {
     id: number
     tenantId: number
     studyUid: number
+    title: number
     patientId: number
     patientName: number
     modality: number
     slices: number
     status: number
+    reportedAt: number
     description: number
     studyDate: number
     createdAt: number
+    uploadedById: number
+    visible: number
     _all: number
   }
 
@@ -9229,42 +9466,54 @@ export namespace Prisma {
     id?: true
     tenantId?: true
     studyUid?: true
+    title?: true
     patientId?: true
     patientName?: true
     modality?: true
     slices?: true
     status?: true
+    reportedAt?: true
     description?: true
     studyDate?: true
     createdAt?: true
+    uploadedById?: true
+    visible?: true
   }
 
   export type StudyMaxAggregateInputType = {
     id?: true
     tenantId?: true
     studyUid?: true
+    title?: true
     patientId?: true
     patientName?: true
     modality?: true
     slices?: true
     status?: true
+    reportedAt?: true
     description?: true
     studyDate?: true
     createdAt?: true
+    uploadedById?: true
+    visible?: true
   }
 
   export type StudyCountAggregateInputType = {
     id?: true
     tenantId?: true
     studyUid?: true
+    title?: true
     patientId?: true
     patientName?: true
     modality?: true
     slices?: true
     status?: true
+    reportedAt?: true
     description?: true
     studyDate?: true
     createdAt?: true
+    uploadedById?: true
+    visible?: true
     _all?: true
   }
 
@@ -9358,14 +9607,18 @@ export namespace Prisma {
     id: string
     tenantId: string
     studyUid: string
+    title: string | null
     patientId: string | null
     patientName: string | null
     modality: string | null
     slices: number
     status: $Enums.StudyStatus
+    reportedAt: Date | null
     description: string | null
     studyDate: string | null
     createdAt: Date
+    uploadedById: string | null
+    visible: boolean
     _count: StudyCountAggregateOutputType | null
     _avg: StudyAvgAggregateOutputType | null
     _sum: StudySumAggregateOutputType | null
@@ -9391,18 +9644,23 @@ export namespace Prisma {
     id?: boolean
     tenantId?: boolean
     studyUid?: boolean
+    title?: boolean
     patientId?: boolean
     patientName?: boolean
     modality?: boolean
     slices?: boolean
     status?: boolean
+    reportedAt?: boolean
     description?: boolean
     studyDate?: boolean
     createdAt?: boolean
-    tenant?: boolean | TenantDefaultArgs<ExtArgs>
-    series?: boolean | Study$seriesArgs<ExtArgs>
+    uploadedById?: boolean
+    visible?: boolean
     reports?: boolean | Study$reportsArgs<ExtArgs>
+    series?: boolean | Study$seriesArgs<ExtArgs>
     shareTokens?: boolean | Study$shareTokensArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    User?: boolean | Study$UserArgs<ExtArgs>
     _count?: boolean | StudyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["study"]>
 
@@ -9410,81 +9668,103 @@ export namespace Prisma {
     id?: boolean
     tenantId?: boolean
     studyUid?: boolean
+    title?: boolean
     patientId?: boolean
     patientName?: boolean
     modality?: boolean
     slices?: boolean
     status?: boolean
+    reportedAt?: boolean
     description?: boolean
     studyDate?: boolean
     createdAt?: boolean
+    uploadedById?: boolean
+    visible?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    User?: boolean | Study$UserArgs<ExtArgs>
   }, ExtArgs["result"]["study"]>
 
   export type StudySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tenantId?: boolean
     studyUid?: boolean
+    title?: boolean
     patientId?: boolean
     patientName?: boolean
     modality?: boolean
     slices?: boolean
     status?: boolean
+    reportedAt?: boolean
     description?: boolean
     studyDate?: boolean
     createdAt?: boolean
+    uploadedById?: boolean
+    visible?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    User?: boolean | Study$UserArgs<ExtArgs>
   }, ExtArgs["result"]["study"]>
 
   export type StudySelectScalar = {
     id?: boolean
     tenantId?: boolean
     studyUid?: boolean
+    title?: boolean
     patientId?: boolean
     patientName?: boolean
     modality?: boolean
     slices?: boolean
     status?: boolean
+    reportedAt?: boolean
     description?: boolean
     studyDate?: boolean
     createdAt?: boolean
+    uploadedById?: boolean
+    visible?: boolean
   }
 
-  export type StudyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "studyUid" | "patientId" | "patientName" | "modality" | "slices" | "status" | "description" | "studyDate" | "createdAt", ExtArgs["result"]["study"]>
+  export type StudyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "studyUid" | "title" | "patientId" | "patientName" | "modality" | "slices" | "status" | "reportedAt" | "description" | "studyDate" | "createdAt" | "uploadedById" | "visible", ExtArgs["result"]["study"]>
   export type StudyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    tenant?: boolean | TenantDefaultArgs<ExtArgs>
-    series?: boolean | Study$seriesArgs<ExtArgs>
     reports?: boolean | Study$reportsArgs<ExtArgs>
+    series?: boolean | Study$seriesArgs<ExtArgs>
     shareTokens?: boolean | Study$shareTokensArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    User?: boolean | Study$UserArgs<ExtArgs>
     _count?: boolean | StudyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StudyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    User?: boolean | Study$UserArgs<ExtArgs>
   }
   export type StudyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    User?: boolean | Study$UserArgs<ExtArgs>
   }
 
   export type $StudyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Study"
     objects: {
-      tenant: Prisma.$TenantPayload<ExtArgs>
-      series: Prisma.$SeriesPayload<ExtArgs>[]
       reports: Prisma.$ReportPayload<ExtArgs>[]
+      series: Prisma.$SeriesPayload<ExtArgs>[]
       shareTokens: Prisma.$ShareTokenPayload<ExtArgs>[]
+      tenant: Prisma.$TenantPayload<ExtArgs>
+      User: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       tenantId: string
       studyUid: string
+      title: string | null
       patientId: string | null
       patientName: string | null
       modality: string | null
       slices: number
       status: $Enums.StudyStatus
+      reportedAt: Date | null
       description: string | null
       studyDate: string | null
       createdAt: Date
+      uploadedById: string | null
+      visible: boolean
     }, ExtArgs["result"]["study"]>
     composites: {}
   }
@@ -9879,10 +10159,11 @@ export namespace Prisma {
    */
   export interface Prisma__StudyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    series<T extends Study$seriesArgs<ExtArgs> = {}>(args?: Subset<T, Study$seriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reports<T extends Study$reportsArgs<ExtArgs> = {}>(args?: Subset<T, Study$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    series<T extends Study$seriesArgs<ExtArgs> = {}>(args?: Subset<T, Study$seriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     shareTokens<T extends Study$shareTokensArgs<ExtArgs> = {}>(args?: Subset<T, Study$shareTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShareTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    User<T extends Study$UserArgs<ExtArgs> = {}>(args?: Subset<T, Study$UserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9915,14 +10196,18 @@ export namespace Prisma {
     readonly id: FieldRef<"Study", 'String'>
     readonly tenantId: FieldRef<"Study", 'String'>
     readonly studyUid: FieldRef<"Study", 'String'>
+    readonly title: FieldRef<"Study", 'String'>
     readonly patientId: FieldRef<"Study", 'String'>
     readonly patientName: FieldRef<"Study", 'String'>
     readonly modality: FieldRef<"Study", 'String'>
     readonly slices: FieldRef<"Study", 'Int'>
     readonly status: FieldRef<"Study", 'StudyStatus'>
+    readonly reportedAt: FieldRef<"Study", 'DateTime'>
     readonly description: FieldRef<"Study", 'String'>
     readonly studyDate: FieldRef<"Study", 'String'>
     readonly createdAt: FieldRef<"Study", 'DateTime'>
+    readonly uploadedById: FieldRef<"Study", 'String'>
+    readonly visible: FieldRef<"Study", 'Boolean'>
   }
     
 
@@ -10324,30 +10609,6 @@ export namespace Prisma {
   }
 
   /**
-   * Study.series
-   */
-  export type Study$seriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Series
-     */
-    select?: SeriesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Series
-     */
-    omit?: SeriesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SeriesInclude<ExtArgs> | null
-    where?: SeriesWhereInput
-    orderBy?: SeriesOrderByWithRelationInput | SeriesOrderByWithRelationInput[]
-    cursor?: SeriesWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SeriesScalarFieldEnum | SeriesScalarFieldEnum[]
-  }
-
-  /**
    * Study.reports
    */
   export type Study$reportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10372,6 +10633,30 @@ export namespace Prisma {
   }
 
   /**
+   * Study.series
+   */
+  export type Study$seriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Series
+     */
+    select?: SeriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Series
+     */
+    omit?: SeriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeriesInclude<ExtArgs> | null
+    where?: SeriesWhereInput
+    orderBy?: SeriesOrderByWithRelationInput | SeriesOrderByWithRelationInput[]
+    cursor?: SeriesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SeriesScalarFieldEnum | SeriesScalarFieldEnum[]
+  }
+
+  /**
    * Study.shareTokens
    */
   export type Study$shareTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10393,6 +10678,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ShareTokenScalarFieldEnum | ShareTokenScalarFieldEnum[]
+  }
+
+  /**
+   * Study.User
+   */
+  export type Study$UserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -10427,85 +10731,85 @@ export namespace Prisma {
   }
 
   export type SeriesAvgAggregateOutputType = {
-    seriesNumber: number | null
     instanceCount: number | null
+    seriesNumber: number | null
   }
 
   export type SeriesSumAggregateOutputType = {
-    seriesNumber: number | null
     instanceCount: number | null
+    seriesNumber: number | null
   }
 
   export type SeriesMinAggregateOutputType = {
     id: string | null
     seriesUid: string | null
-    seriesNumber: number | null
     modality: string | null
     instanceCount: number | null
     studyId: string | null
     createdAt: Date | null
+    seriesNumber: number | null
   }
 
   export type SeriesMaxAggregateOutputType = {
     id: string | null
     seriesUid: string | null
-    seriesNumber: number | null
     modality: string | null
     instanceCount: number | null
     studyId: string | null
     createdAt: Date | null
+    seriesNumber: number | null
   }
 
   export type SeriesCountAggregateOutputType = {
     id: number
     seriesUid: number
-    seriesNumber: number
     modality: number
     instanceCount: number
     studyId: number
     createdAt: number
+    seriesNumber: number
     _all: number
   }
 
 
   export type SeriesAvgAggregateInputType = {
-    seriesNumber?: true
     instanceCount?: true
+    seriesNumber?: true
   }
 
   export type SeriesSumAggregateInputType = {
-    seriesNumber?: true
     instanceCount?: true
+    seriesNumber?: true
   }
 
   export type SeriesMinAggregateInputType = {
     id?: true
     seriesUid?: true
-    seriesNumber?: true
     modality?: true
     instanceCount?: true
     studyId?: true
     createdAt?: true
+    seriesNumber?: true
   }
 
   export type SeriesMaxAggregateInputType = {
     id?: true
     seriesUid?: true
-    seriesNumber?: true
     modality?: true
     instanceCount?: true
     studyId?: true
     createdAt?: true
+    seriesNumber?: true
   }
 
   export type SeriesCountAggregateInputType = {
     id?: true
     seriesUid?: true
-    seriesNumber?: true
     modality?: true
     instanceCount?: true
     studyId?: true
     createdAt?: true
+    seriesNumber?: true
     _all?: true
   }
 
@@ -10598,11 +10902,11 @@ export namespace Prisma {
   export type SeriesGroupByOutputType = {
     id: string
     seriesUid: string
-    seriesNumber: number | null
     modality: string | null
     instanceCount: number
     studyId: string
     createdAt: Date
+    seriesNumber: number | null
     _count: SeriesCountAggregateOutputType | null
     _avg: SeriesAvgAggregateOutputType | null
     _sum: SeriesSumAggregateOutputType | null
@@ -10627,52 +10931,52 @@ export namespace Prisma {
   export type SeriesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     seriesUid?: boolean
-    seriesNumber?: boolean
     modality?: boolean
     instanceCount?: boolean
     studyId?: boolean
     createdAt?: boolean
-    study?: boolean | StudyDefaultArgs<ExtArgs>
+    seriesNumber?: boolean
     instances?: boolean | Series$instancesArgs<ExtArgs>
+    study?: boolean | StudyDefaultArgs<ExtArgs>
     _count?: boolean | SeriesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["series"]>
 
   export type SeriesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     seriesUid?: boolean
-    seriesNumber?: boolean
     modality?: boolean
     instanceCount?: boolean
     studyId?: boolean
     createdAt?: boolean
+    seriesNumber?: boolean
     study?: boolean | StudyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["series"]>
 
   export type SeriesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     seriesUid?: boolean
-    seriesNumber?: boolean
     modality?: boolean
     instanceCount?: boolean
     studyId?: boolean
     createdAt?: boolean
+    seriesNumber?: boolean
     study?: boolean | StudyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["series"]>
 
   export type SeriesSelectScalar = {
     id?: boolean
     seriesUid?: boolean
-    seriesNumber?: boolean
     modality?: boolean
     instanceCount?: boolean
     studyId?: boolean
     createdAt?: boolean
+    seriesNumber?: boolean
   }
 
-  export type SeriesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "seriesUid" | "seriesNumber" | "modality" | "instanceCount" | "studyId" | "createdAt", ExtArgs["result"]["series"]>
+  export type SeriesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "seriesUid" | "modality" | "instanceCount" | "studyId" | "createdAt" | "seriesNumber", ExtArgs["result"]["series"]>
   export type SeriesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    study?: boolean | StudyDefaultArgs<ExtArgs>
     instances?: boolean | Series$instancesArgs<ExtArgs>
+    study?: boolean | StudyDefaultArgs<ExtArgs>
     _count?: boolean | SeriesCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SeriesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10685,17 +10989,17 @@ export namespace Prisma {
   export type $SeriesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Series"
     objects: {
-      study: Prisma.$StudyPayload<ExtArgs>
       instances: Prisma.$InstancePayload<ExtArgs>[]
+      study: Prisma.$StudyPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       seriesUid: string
-      seriesNumber: number | null
       modality: string | null
       instanceCount: number
       studyId: string
       createdAt: Date
+      seriesNumber: number | null
     }, ExtArgs["result"]["series"]>
     composites: {}
   }
@@ -11090,8 +11394,8 @@ export namespace Prisma {
    */
   export interface Prisma__SeriesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    study<T extends StudyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudyDefaultArgs<ExtArgs>>): Prisma__StudyClient<$Result.GetResult<Prisma.$StudyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     instances<T extends Series$instancesArgs<ExtArgs> = {}>(args?: Subset<T, Series$instancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    study<T extends StudyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudyDefaultArgs<ExtArgs>>): Prisma__StudyClient<$Result.GetResult<Prisma.$StudyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11123,11 +11427,11 @@ export namespace Prisma {
   interface SeriesFieldRefs {
     readonly id: FieldRef<"Series", 'String'>
     readonly seriesUid: FieldRef<"Series", 'String'>
-    readonly seriesNumber: FieldRef<"Series", 'Int'>
     readonly modality: FieldRef<"Series", 'String'>
     readonly instanceCount: FieldRef<"Series", 'Int'>
     readonly studyId: FieldRef<"Series", 'String'>
     readonly createdAt: FieldRef<"Series", 'DateTime'>
+    readonly seriesNumber: FieldRef<"Series", 'Int'>
   }
     
 
@@ -13994,8 +14298,8 @@ export namespace Prisma {
     status?: boolean
     content?: boolean
     createdAt?: boolean
-    study?: boolean | StudyDefaultArgs<ExtArgs>
     author?: boolean | Report$authorArgs<ExtArgs>
+    study?: boolean | StudyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["report"]>
 
   export type ReportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -14005,8 +14309,8 @@ export namespace Prisma {
     status?: boolean
     content?: boolean
     createdAt?: boolean
-    study?: boolean | StudyDefaultArgs<ExtArgs>
     author?: boolean | Report$authorArgs<ExtArgs>
+    study?: boolean | StudyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["report"]>
 
   export type ReportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -14016,8 +14320,8 @@ export namespace Prisma {
     status?: boolean
     content?: boolean
     createdAt?: boolean
-    study?: boolean | StudyDefaultArgs<ExtArgs>
     author?: boolean | Report$authorArgs<ExtArgs>
+    study?: boolean | StudyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["report"]>
 
   export type ReportSelectScalar = {
@@ -14031,23 +14335,23 @@ export namespace Prisma {
 
   export type ReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studyId" | "authorId" | "status" | "content" | "createdAt", ExtArgs["result"]["report"]>
   export type ReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    study?: boolean | StudyDefaultArgs<ExtArgs>
     author?: boolean | Report$authorArgs<ExtArgs>
+    study?: boolean | StudyDefaultArgs<ExtArgs>
   }
   export type ReportIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    study?: boolean | StudyDefaultArgs<ExtArgs>
     author?: boolean | Report$authorArgs<ExtArgs>
+    study?: boolean | StudyDefaultArgs<ExtArgs>
   }
   export type ReportIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    study?: boolean | StudyDefaultArgs<ExtArgs>
     author?: boolean | Report$authorArgs<ExtArgs>
+    study?: boolean | StudyDefaultArgs<ExtArgs>
   }
 
   export type $ReportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Report"
     objects: {
-      study: Prisma.$StudyPayload<ExtArgs>
       author: Prisma.$UserPayload<ExtArgs> | null
+      study: Prisma.$StudyPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -14450,8 +14754,8 @@ export namespace Prisma {
    */
   export interface Prisma__ReportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    study<T extends StudyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudyDefaultArgs<ExtArgs>>): Prisma__StudyClient<$Result.GetResult<Prisma.$StudyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     author<T extends Report$authorArgs<ExtArgs> = {}>(args?: Subset<T, Report$authorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    study<T extends StudyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudyDefaultArgs<ExtArgs>>): Prisma__StudyClient<$Result.GetResult<Prisma.$StudyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14939,6 +15243,7 @@ export namespace Prisma {
     id: string | null
     token: string | null
     studyId: string | null
+    createdById: string | null
     expiresAt: Date | null
     password: string | null
     allowDownload: boolean | null
@@ -14949,6 +15254,7 @@ export namespace Prisma {
     id: string | null
     token: string | null
     studyId: string | null
+    createdById: string | null
     expiresAt: Date | null
     password: string | null
     allowDownload: boolean | null
@@ -14959,6 +15265,7 @@ export namespace Prisma {
     id: number
     token: number
     studyId: number
+    createdById: number
     expiresAt: number
     password: number
     allowDownload: number
@@ -14971,6 +15278,7 @@ export namespace Prisma {
     id?: true
     token?: true
     studyId?: true
+    createdById?: true
     expiresAt?: true
     password?: true
     allowDownload?: true
@@ -14981,6 +15289,7 @@ export namespace Prisma {
     id?: true
     token?: true
     studyId?: true
+    createdById?: true
     expiresAt?: true
     password?: true
     allowDownload?: true
@@ -14991,6 +15300,7 @@ export namespace Prisma {
     id?: true
     token?: true
     studyId?: true
+    createdById?: true
     expiresAt?: true
     password?: true
     allowDownload?: true
@@ -15074,6 +15384,7 @@ export namespace Prisma {
     id: string
     token: string
     studyId: string
+    createdById: string | null
     expiresAt: Date
     password: string | null
     allowDownload: boolean
@@ -15101,65 +15412,77 @@ export namespace Prisma {
     id?: boolean
     token?: boolean
     studyId?: boolean
+    createdById?: boolean
     expiresAt?: boolean
     password?: boolean
     allowDownload?: boolean
     createdAt?: boolean
     study?: boolean | StudyDefaultArgs<ExtArgs>
+    createdBy?: boolean | ShareToken$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["shareToken"]>
 
   export type ShareTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     token?: boolean
     studyId?: boolean
+    createdById?: boolean
     expiresAt?: boolean
     password?: boolean
     allowDownload?: boolean
     createdAt?: boolean
     study?: boolean | StudyDefaultArgs<ExtArgs>
+    createdBy?: boolean | ShareToken$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["shareToken"]>
 
   export type ShareTokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     token?: boolean
     studyId?: boolean
+    createdById?: boolean
     expiresAt?: boolean
     password?: boolean
     allowDownload?: boolean
     createdAt?: boolean
     study?: boolean | StudyDefaultArgs<ExtArgs>
+    createdBy?: boolean | ShareToken$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["shareToken"]>
 
   export type ShareTokenSelectScalar = {
     id?: boolean
     token?: boolean
     studyId?: boolean
+    createdById?: boolean
     expiresAt?: boolean
     password?: boolean
     allowDownload?: boolean
     createdAt?: boolean
   }
 
-  export type ShareTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "token" | "studyId" | "expiresAt" | "password" | "allowDownload" | "createdAt", ExtArgs["result"]["shareToken"]>
+  export type ShareTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "token" | "studyId" | "createdById" | "expiresAt" | "password" | "allowDownload" | "createdAt", ExtArgs["result"]["shareToken"]>
   export type ShareTokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     study?: boolean | StudyDefaultArgs<ExtArgs>
+    createdBy?: boolean | ShareToken$createdByArgs<ExtArgs>
   }
   export type ShareTokenIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     study?: boolean | StudyDefaultArgs<ExtArgs>
+    createdBy?: boolean | ShareToken$createdByArgs<ExtArgs>
   }
   export type ShareTokenIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     study?: boolean | StudyDefaultArgs<ExtArgs>
+    createdBy?: boolean | ShareToken$createdByArgs<ExtArgs>
   }
 
   export type $ShareTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ShareToken"
     objects: {
       study: Prisma.$StudyPayload<ExtArgs>
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       token: string
       studyId: string
+      createdById: string | null
       expiresAt: Date
       password: string | null
       allowDownload: boolean
@@ -15559,6 +15882,7 @@ export namespace Prisma {
   export interface Prisma__ShareTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     study<T extends StudyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudyDefaultArgs<ExtArgs>>): Prisma__StudyClient<$Result.GetResult<Prisma.$StudyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends ShareToken$createdByArgs<ExtArgs> = {}>(args?: Subset<T, ShareToken$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15591,6 +15915,7 @@ export namespace Prisma {
     readonly id: FieldRef<"ShareToken", 'String'>
     readonly token: FieldRef<"ShareToken", 'String'>
     readonly studyId: FieldRef<"ShareToken", 'String'>
+    readonly createdById: FieldRef<"ShareToken", 'String'>
     readonly expiresAt: FieldRef<"ShareToken", 'DateTime'>
     readonly password: FieldRef<"ShareToken", 'String'>
     readonly allowDownload: FieldRef<"ShareToken", 'Boolean'>
@@ -15993,6 +16318,25 @@ export namespace Prisma {
      * Limit how many ShareTokens to delete.
      */
     limit?: number
+  }
+
+  /**
+   * ShareToken.createdBy
+   */
+  export type ShareToken$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -19243,6 +19587,1077 @@ export namespace Prisma {
 
 
   /**
+   * Model PendingInvite
+   */
+
+  export type AggregatePendingInvite = {
+    _count: PendingInviteCountAggregateOutputType | null
+    _min: PendingInviteMinAggregateOutputType | null
+    _max: PendingInviteMaxAggregateOutputType | null
+  }
+
+  export type PendingInviteMinAggregateOutputType = {
+    id: string | null
+    email: string | null
+    tenantId: string | null
+    invitedById: string | null
+    createdAt: Date | null
+  }
+
+  export type PendingInviteMaxAggregateOutputType = {
+    id: string | null
+    email: string | null
+    tenantId: string | null
+    invitedById: string | null
+    createdAt: Date | null
+  }
+
+  export type PendingInviteCountAggregateOutputType = {
+    id: number
+    email: number
+    tenantId: number
+    invitedById: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PendingInviteMinAggregateInputType = {
+    id?: true
+    email?: true
+    tenantId?: true
+    invitedById?: true
+    createdAt?: true
+  }
+
+  export type PendingInviteMaxAggregateInputType = {
+    id?: true
+    email?: true
+    tenantId?: true
+    invitedById?: true
+    createdAt?: true
+  }
+
+  export type PendingInviteCountAggregateInputType = {
+    id?: true
+    email?: true
+    tenantId?: true
+    invitedById?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PendingInviteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PendingInvite to aggregate.
+     */
+    where?: PendingInviteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PendingInvites to fetch.
+     */
+    orderBy?: PendingInviteOrderByWithRelationInput | PendingInviteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PendingInviteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PendingInvites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PendingInvites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PendingInvites
+    **/
+    _count?: true | PendingInviteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PendingInviteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PendingInviteMaxAggregateInputType
+  }
+
+  export type GetPendingInviteAggregateType<T extends PendingInviteAggregateArgs> = {
+        [P in keyof T & keyof AggregatePendingInvite]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePendingInvite[P]>
+      : GetScalarType<T[P], AggregatePendingInvite[P]>
+  }
+
+
+
+
+  export type PendingInviteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PendingInviteWhereInput
+    orderBy?: PendingInviteOrderByWithAggregationInput | PendingInviteOrderByWithAggregationInput[]
+    by: PendingInviteScalarFieldEnum[] | PendingInviteScalarFieldEnum
+    having?: PendingInviteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PendingInviteCountAggregateInputType | true
+    _min?: PendingInviteMinAggregateInputType
+    _max?: PendingInviteMaxAggregateInputType
+  }
+
+  export type PendingInviteGroupByOutputType = {
+    id: string
+    email: string
+    tenantId: string
+    invitedById: string
+    createdAt: Date
+    _count: PendingInviteCountAggregateOutputType | null
+    _min: PendingInviteMinAggregateOutputType | null
+    _max: PendingInviteMaxAggregateOutputType | null
+  }
+
+  type GetPendingInviteGroupByPayload<T extends PendingInviteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PendingInviteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PendingInviteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PendingInviteGroupByOutputType[P]>
+            : GetScalarType<T[P], PendingInviteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PendingInviteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    tenantId?: boolean
+    invitedById?: boolean
+    createdAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    invitedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pendingInvite"]>
+
+  export type PendingInviteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    tenantId?: boolean
+    invitedById?: boolean
+    createdAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    invitedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pendingInvite"]>
+
+  export type PendingInviteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    tenantId?: boolean
+    invitedById?: boolean
+    createdAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    invitedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pendingInvite"]>
+
+  export type PendingInviteSelectScalar = {
+    id?: boolean
+    email?: boolean
+    tenantId?: boolean
+    invitedById?: boolean
+    createdAt?: boolean
+  }
+
+  export type PendingInviteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "tenantId" | "invitedById" | "createdAt", ExtArgs["result"]["pendingInvite"]>
+  export type PendingInviteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    invitedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PendingInviteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    invitedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PendingInviteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    invitedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $PendingInvitePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PendingInvite"
+    objects: {
+      tenant: Prisma.$TenantPayload<ExtArgs>
+      invitedBy: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      email: string
+      tenantId: string
+      invitedById: string
+      createdAt: Date
+    }, ExtArgs["result"]["pendingInvite"]>
+    composites: {}
+  }
+
+  type PendingInviteGetPayload<S extends boolean | null | undefined | PendingInviteDefaultArgs> = $Result.GetResult<Prisma.$PendingInvitePayload, S>
+
+  type PendingInviteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PendingInviteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PendingInviteCountAggregateInputType | true
+    }
+
+  export interface PendingInviteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PendingInvite'], meta: { name: 'PendingInvite' } }
+    /**
+     * Find zero or one PendingInvite that matches the filter.
+     * @param {PendingInviteFindUniqueArgs} args - Arguments to find a PendingInvite
+     * @example
+     * // Get one PendingInvite
+     * const pendingInvite = await prisma.pendingInvite.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PendingInviteFindUniqueArgs>(args: SelectSubset<T, PendingInviteFindUniqueArgs<ExtArgs>>): Prisma__PendingInviteClient<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PendingInvite that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PendingInviteFindUniqueOrThrowArgs} args - Arguments to find a PendingInvite
+     * @example
+     * // Get one PendingInvite
+     * const pendingInvite = await prisma.pendingInvite.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PendingInviteFindUniqueOrThrowArgs>(args: SelectSubset<T, PendingInviteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PendingInviteClient<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PendingInvite that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingInviteFindFirstArgs} args - Arguments to find a PendingInvite
+     * @example
+     * // Get one PendingInvite
+     * const pendingInvite = await prisma.pendingInvite.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PendingInviteFindFirstArgs>(args?: SelectSubset<T, PendingInviteFindFirstArgs<ExtArgs>>): Prisma__PendingInviteClient<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PendingInvite that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingInviteFindFirstOrThrowArgs} args - Arguments to find a PendingInvite
+     * @example
+     * // Get one PendingInvite
+     * const pendingInvite = await prisma.pendingInvite.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PendingInviteFindFirstOrThrowArgs>(args?: SelectSubset<T, PendingInviteFindFirstOrThrowArgs<ExtArgs>>): Prisma__PendingInviteClient<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PendingInvites that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingInviteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PendingInvites
+     * const pendingInvites = await prisma.pendingInvite.findMany()
+     * 
+     * // Get first 10 PendingInvites
+     * const pendingInvites = await prisma.pendingInvite.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const pendingInviteWithIdOnly = await prisma.pendingInvite.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PendingInviteFindManyArgs>(args?: SelectSubset<T, PendingInviteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PendingInvite.
+     * @param {PendingInviteCreateArgs} args - Arguments to create a PendingInvite.
+     * @example
+     * // Create one PendingInvite
+     * const PendingInvite = await prisma.pendingInvite.create({
+     *   data: {
+     *     // ... data to create a PendingInvite
+     *   }
+     * })
+     * 
+     */
+    create<T extends PendingInviteCreateArgs>(args: SelectSubset<T, PendingInviteCreateArgs<ExtArgs>>): Prisma__PendingInviteClient<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PendingInvites.
+     * @param {PendingInviteCreateManyArgs} args - Arguments to create many PendingInvites.
+     * @example
+     * // Create many PendingInvites
+     * const pendingInvite = await prisma.pendingInvite.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PendingInviteCreateManyArgs>(args?: SelectSubset<T, PendingInviteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PendingInvites and returns the data saved in the database.
+     * @param {PendingInviteCreateManyAndReturnArgs} args - Arguments to create many PendingInvites.
+     * @example
+     * // Create many PendingInvites
+     * const pendingInvite = await prisma.pendingInvite.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PendingInvites and only return the `id`
+     * const pendingInviteWithIdOnly = await prisma.pendingInvite.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PendingInviteCreateManyAndReturnArgs>(args?: SelectSubset<T, PendingInviteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PendingInvite.
+     * @param {PendingInviteDeleteArgs} args - Arguments to delete one PendingInvite.
+     * @example
+     * // Delete one PendingInvite
+     * const PendingInvite = await prisma.pendingInvite.delete({
+     *   where: {
+     *     // ... filter to delete one PendingInvite
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PendingInviteDeleteArgs>(args: SelectSubset<T, PendingInviteDeleteArgs<ExtArgs>>): Prisma__PendingInviteClient<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PendingInvite.
+     * @param {PendingInviteUpdateArgs} args - Arguments to update one PendingInvite.
+     * @example
+     * // Update one PendingInvite
+     * const pendingInvite = await prisma.pendingInvite.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PendingInviteUpdateArgs>(args: SelectSubset<T, PendingInviteUpdateArgs<ExtArgs>>): Prisma__PendingInviteClient<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PendingInvites.
+     * @param {PendingInviteDeleteManyArgs} args - Arguments to filter PendingInvites to delete.
+     * @example
+     * // Delete a few PendingInvites
+     * const { count } = await prisma.pendingInvite.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PendingInviteDeleteManyArgs>(args?: SelectSubset<T, PendingInviteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PendingInvites.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingInviteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PendingInvites
+     * const pendingInvite = await prisma.pendingInvite.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PendingInviteUpdateManyArgs>(args: SelectSubset<T, PendingInviteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PendingInvites and returns the data updated in the database.
+     * @param {PendingInviteUpdateManyAndReturnArgs} args - Arguments to update many PendingInvites.
+     * @example
+     * // Update many PendingInvites
+     * const pendingInvite = await prisma.pendingInvite.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PendingInvites and only return the `id`
+     * const pendingInviteWithIdOnly = await prisma.pendingInvite.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PendingInviteUpdateManyAndReturnArgs>(args: SelectSubset<T, PendingInviteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PendingInvite.
+     * @param {PendingInviteUpsertArgs} args - Arguments to update or create a PendingInvite.
+     * @example
+     * // Update or create a PendingInvite
+     * const pendingInvite = await prisma.pendingInvite.upsert({
+     *   create: {
+     *     // ... data to create a PendingInvite
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PendingInvite we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PendingInviteUpsertArgs>(args: SelectSubset<T, PendingInviteUpsertArgs<ExtArgs>>): Prisma__PendingInviteClient<$Result.GetResult<Prisma.$PendingInvitePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PendingInvites.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingInviteCountArgs} args - Arguments to filter PendingInvites to count.
+     * @example
+     * // Count the number of PendingInvites
+     * const count = await prisma.pendingInvite.count({
+     *   where: {
+     *     // ... the filter for the PendingInvites we want to count
+     *   }
+     * })
+    **/
+    count<T extends PendingInviteCountArgs>(
+      args?: Subset<T, PendingInviteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PendingInviteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PendingInvite.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingInviteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PendingInviteAggregateArgs>(args: Subset<T, PendingInviteAggregateArgs>): Prisma.PrismaPromise<GetPendingInviteAggregateType<T>>
+
+    /**
+     * Group by PendingInvite.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PendingInviteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PendingInviteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PendingInviteGroupByArgs['orderBy'] }
+        : { orderBy?: PendingInviteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PendingInviteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPendingInviteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PendingInvite model
+   */
+  readonly fields: PendingInviteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PendingInvite.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PendingInviteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    invitedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PendingInvite model
+   */
+  interface PendingInviteFieldRefs {
+    readonly id: FieldRef<"PendingInvite", 'String'>
+    readonly email: FieldRef<"PendingInvite", 'String'>
+    readonly tenantId: FieldRef<"PendingInvite", 'String'>
+    readonly invitedById: FieldRef<"PendingInvite", 'String'>
+    readonly createdAt: FieldRef<"PendingInvite", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PendingInvite findUnique
+   */
+  export type PendingInviteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+    /**
+     * Filter, which PendingInvite to fetch.
+     */
+    where: PendingInviteWhereUniqueInput
+  }
+
+  /**
+   * PendingInvite findUniqueOrThrow
+   */
+  export type PendingInviteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+    /**
+     * Filter, which PendingInvite to fetch.
+     */
+    where: PendingInviteWhereUniqueInput
+  }
+
+  /**
+   * PendingInvite findFirst
+   */
+  export type PendingInviteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+    /**
+     * Filter, which PendingInvite to fetch.
+     */
+    where?: PendingInviteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PendingInvites to fetch.
+     */
+    orderBy?: PendingInviteOrderByWithRelationInput | PendingInviteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PendingInvites.
+     */
+    cursor?: PendingInviteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PendingInvites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PendingInvites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PendingInvites.
+     */
+    distinct?: PendingInviteScalarFieldEnum | PendingInviteScalarFieldEnum[]
+  }
+
+  /**
+   * PendingInvite findFirstOrThrow
+   */
+  export type PendingInviteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+    /**
+     * Filter, which PendingInvite to fetch.
+     */
+    where?: PendingInviteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PendingInvites to fetch.
+     */
+    orderBy?: PendingInviteOrderByWithRelationInput | PendingInviteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PendingInvites.
+     */
+    cursor?: PendingInviteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PendingInvites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PendingInvites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PendingInvites.
+     */
+    distinct?: PendingInviteScalarFieldEnum | PendingInviteScalarFieldEnum[]
+  }
+
+  /**
+   * PendingInvite findMany
+   */
+  export type PendingInviteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+    /**
+     * Filter, which PendingInvites to fetch.
+     */
+    where?: PendingInviteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PendingInvites to fetch.
+     */
+    orderBy?: PendingInviteOrderByWithRelationInput | PendingInviteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PendingInvites.
+     */
+    cursor?: PendingInviteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PendingInvites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PendingInvites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PendingInvites.
+     */
+    distinct?: PendingInviteScalarFieldEnum | PendingInviteScalarFieldEnum[]
+  }
+
+  /**
+   * PendingInvite create
+   */
+  export type PendingInviteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PendingInvite.
+     */
+    data: XOR<PendingInviteCreateInput, PendingInviteUncheckedCreateInput>
+  }
+
+  /**
+   * PendingInvite createMany
+   */
+  export type PendingInviteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PendingInvites.
+     */
+    data: PendingInviteCreateManyInput | PendingInviteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PendingInvite createManyAndReturn
+   */
+  export type PendingInviteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * The data used to create many PendingInvites.
+     */
+    data: PendingInviteCreateManyInput | PendingInviteCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PendingInvite update
+   */
+  export type PendingInviteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PendingInvite.
+     */
+    data: XOR<PendingInviteUpdateInput, PendingInviteUncheckedUpdateInput>
+    /**
+     * Choose, which PendingInvite to update.
+     */
+    where: PendingInviteWhereUniqueInput
+  }
+
+  /**
+   * PendingInvite updateMany
+   */
+  export type PendingInviteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PendingInvites.
+     */
+    data: XOR<PendingInviteUpdateManyMutationInput, PendingInviteUncheckedUpdateManyInput>
+    /**
+     * Filter which PendingInvites to update
+     */
+    where?: PendingInviteWhereInput
+    /**
+     * Limit how many PendingInvites to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PendingInvite updateManyAndReturn
+   */
+  export type PendingInviteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * The data used to update PendingInvites.
+     */
+    data: XOR<PendingInviteUpdateManyMutationInput, PendingInviteUncheckedUpdateManyInput>
+    /**
+     * Filter which PendingInvites to update
+     */
+    where?: PendingInviteWhereInput
+    /**
+     * Limit how many PendingInvites to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PendingInvite upsert
+   */
+  export type PendingInviteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PendingInvite to update in case it exists.
+     */
+    where: PendingInviteWhereUniqueInput
+    /**
+     * In case the PendingInvite found by the `where` argument doesn't exist, create a new PendingInvite with this data.
+     */
+    create: XOR<PendingInviteCreateInput, PendingInviteUncheckedCreateInput>
+    /**
+     * In case the PendingInvite was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PendingInviteUpdateInput, PendingInviteUncheckedUpdateInput>
+  }
+
+  /**
+   * PendingInvite delete
+   */
+  export type PendingInviteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+    /**
+     * Filter which PendingInvite to delete.
+     */
+    where: PendingInviteWhereUniqueInput
+  }
+
+  /**
+   * PendingInvite deleteMany
+   */
+  export type PendingInviteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PendingInvites to delete
+     */
+    where?: PendingInviteWhereInput
+    /**
+     * Limit how many PendingInvites to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PendingInvite without action
+   */
+  export type PendingInviteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PendingInvite
+     */
+    select?: PendingInviteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PendingInvite
+     */
+    omit?: PendingInviteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PendingInviteInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model AuditLog
    */
 
@@ -20416,14 +21831,18 @@ export namespace Prisma {
     id: 'id',
     tenantId: 'tenantId',
     studyUid: 'studyUid',
+    title: 'title',
     patientId: 'patientId',
     patientName: 'patientName',
     modality: 'modality',
     slices: 'slices',
     status: 'status',
+    reportedAt: 'reportedAt',
     description: 'description',
     studyDate: 'studyDate',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    uploadedById: 'uploadedById',
+    visible: 'visible'
   };
 
   export type StudyScalarFieldEnum = (typeof StudyScalarFieldEnum)[keyof typeof StudyScalarFieldEnum]
@@ -20432,11 +21851,11 @@ export namespace Prisma {
   export const SeriesScalarFieldEnum: {
     id: 'id',
     seriesUid: 'seriesUid',
-    seriesNumber: 'seriesNumber',
     modality: 'modality',
     instanceCount: 'instanceCount',
     studyId: 'studyId',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    seriesNumber: 'seriesNumber'
   };
 
   export type SeriesScalarFieldEnum = (typeof SeriesScalarFieldEnum)[keyof typeof SeriesScalarFieldEnum]
@@ -20487,6 +21906,7 @@ export namespace Prisma {
     id: 'id',
     token: 'token',
     studyId: 'studyId',
+    createdById: 'createdById',
     expiresAt: 'expiresAt',
     password: 'password',
     allowDownload: 'allowDownload',
@@ -20530,6 +21950,17 @@ export namespace Prisma {
   };
 
   export type NotificationPreferenceScalarFieldEnum = (typeof NotificationPreferenceScalarFieldEnum)[keyof typeof NotificationPreferenceScalarFieldEnum]
+
+
+  export const PendingInviteScalarFieldEnum: {
+    id: 'id',
+    email: 'email',
+    tenantId: 'tenantId',
+    invitedById: 'invitedById',
+    createdAt: 'createdAt'
+  };
+
+  export type PendingInviteScalarFieldEnum = (typeof PendingInviteScalarFieldEnum)[keyof typeof PendingInviteScalarFieldEnum]
 
 
   export const AuditLogScalarFieldEnum: {
@@ -20620,20 +22051,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Role'
-   */
-  export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
-    
-
-
-  /**
-   * Reference to a field of type 'Role[]'
-   */
-  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -20662,6 +22079,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'ReportStatus'
    */
   export type EnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus'>
@@ -20672,13 +22096,6 @@ export namespace Prisma {
    * Reference to a field of type 'ReportStatus[]'
    */
   export type ListEnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -20721,12 +22138,13 @@ export namespace Prisma {
     name?: StringFilter<"Tenant"> | string
     slug?: StringFilter<"Tenant"> | string
     createdAt?: DateTimeFilter<"Tenant"> | Date | string
+    apiKeys?: ApiKeyListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
+    branding?: XOR<BrandingNullableScalarRelationFilter, BrandingWhereInput> | null
     members?: MembershipListRelationFilter
+    pendingInvites?: PendingInviteListRelationFilter
     studies?: StudyListRelationFilter
     subscription?: XOR<SubscriptionNullableScalarRelationFilter, SubscriptionWhereInput> | null
-    auditLogs?: AuditLogListRelationFilter
-    apiKeys?: ApiKeyListRelationFilter
-    branding?: XOR<BrandingNullableScalarRelationFilter, BrandingWhereInput> | null
   }
 
   export type TenantOrderByWithRelationInput = {
@@ -20734,12 +22152,13 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     createdAt?: SortOrder
+    apiKeys?: ApiKeyOrderByRelationAggregateInput
+    auditLogs?: AuditLogOrderByRelationAggregateInput
+    branding?: BrandingOrderByWithRelationInput
     members?: MembershipOrderByRelationAggregateInput
+    pendingInvites?: PendingInviteOrderByRelationAggregateInput
     studies?: StudyOrderByRelationAggregateInput
     subscription?: SubscriptionOrderByWithRelationInput
-    auditLogs?: AuditLogOrderByRelationAggregateInput
-    apiKeys?: ApiKeyOrderByRelationAggregateInput
-    branding?: BrandingOrderByWithRelationInput
   }
 
   export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -20750,12 +22169,13 @@ export namespace Prisma {
     NOT?: TenantWhereInput | TenantWhereInput[]
     name?: StringFilter<"Tenant"> | string
     createdAt?: DateTimeFilter<"Tenant"> | Date | string
+    apiKeys?: ApiKeyListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
+    branding?: XOR<BrandingNullableScalarRelationFilter, BrandingWhereInput> | null
     members?: MembershipListRelationFilter
+    pendingInvites?: PendingInviteListRelationFilter
     studies?: StudyListRelationFilter
     subscription?: XOR<SubscriptionNullableScalarRelationFilter, SubscriptionWhereInput> | null
-    auditLogs?: AuditLogListRelationFilter
-    apiKeys?: ApiKeyListRelationFilter
-    branding?: XOR<BrandingNullableScalarRelationFilter, BrandingWhereInput> | null
   }, "id" | "slug">
 
   export type TenantOrderByWithAggregationInput = {
@@ -20790,10 +22210,13 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     accounts?: AccountListRelationFilter
-    sessions?: SessionListRelationFilter
     memberships?: MembershipListRelationFilter
-    reports?: ReportListRelationFilter
     notificationPreference?: XOR<NotificationPreferenceNullableScalarRelationFilter, NotificationPreferenceWhereInput> | null
+    pendingInvites?: PendingInviteListRelationFilter
+    reports?: ReportListRelationFilter
+    sessions?: SessionListRelationFilter
+    Study?: StudyListRelationFilter
+    shareTokens?: ShareTokenListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -20805,10 +22228,13 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accounts?: AccountOrderByRelationAggregateInput
-    sessions?: SessionOrderByRelationAggregateInput
     memberships?: MembershipOrderByRelationAggregateInput
-    reports?: ReportOrderByRelationAggregateInput
     notificationPreference?: NotificationPreferenceOrderByWithRelationInput
+    pendingInvites?: PendingInviteOrderByRelationAggregateInput
+    reports?: ReportOrderByRelationAggregateInput
+    sessions?: SessionOrderByRelationAggregateInput
+    Study?: StudyOrderByRelationAggregateInput
+    shareTokens?: ShareTokenOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -20823,10 +22249,13 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     accounts?: AccountListRelationFilter
-    sessions?: SessionListRelationFilter
     memberships?: MembershipListRelationFilter
-    reports?: ReportListRelationFilter
     notificationPreference?: XOR<NotificationPreferenceNullableScalarRelationFilter, NotificationPreferenceWhereInput> | null
+    pendingInvites?: PendingInviteListRelationFilter
+    reports?: ReportListRelationFilter
+    sessions?: SessionListRelationFilter
+    Study?: StudyListRelationFilter
+    shareTokens?: ShareTokenListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -20862,10 +22291,10 @@ export namespace Prisma {
     id?: StringFilter<"Membership"> | string
     userId?: StringFilter<"Membership"> | string
     tenantId?: StringFilter<"Membership"> | string
-    role?: EnumRoleFilter<"Membership"> | $Enums.Role
+    role?: StringFilter<"Membership"> | string
     createdAt?: DateTimeFilter<"Membership"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type MembershipOrderByWithRelationInput = {
@@ -20874,8 +22303,8 @@ export namespace Prisma {
     tenantId?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
-    user?: UserOrderByWithRelationInput
     tenant?: TenantOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type MembershipWhereUniqueInput = Prisma.AtLeast<{
@@ -20886,10 +22315,10 @@ export namespace Prisma {
     NOT?: MembershipWhereInput | MembershipWhereInput[]
     userId?: StringFilter<"Membership"> | string
     tenantId?: StringFilter<"Membership"> | string
-    role?: EnumRoleFilter<"Membership"> | $Enums.Role
+    role?: StringFilter<"Membership"> | string
     createdAt?: DateTimeFilter<"Membership"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId_tenantId">
 
   export type MembershipOrderByWithAggregationInput = {
@@ -20910,7 +22339,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Membership"> | string
     userId?: StringWithAggregatesFilter<"Membership"> | string
     tenantId?: StringWithAggregatesFilter<"Membership"> | string
-    role?: EnumRoleWithAggregatesFilter<"Membership"> | $Enums.Role
+    role?: StringWithAggregatesFilter<"Membership"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Membership"> | Date | string
   }
 
@@ -21107,36 +22536,46 @@ export namespace Prisma {
     id?: StringFilter<"Study"> | string
     tenantId?: StringFilter<"Study"> | string
     studyUid?: StringFilter<"Study"> | string
+    title?: StringNullableFilter<"Study"> | string | null
     patientId?: StringNullableFilter<"Study"> | string | null
     patientName?: StringNullableFilter<"Study"> | string | null
     modality?: StringNullableFilter<"Study"> | string | null
     slices?: IntFilter<"Study"> | number
     status?: EnumStudyStatusFilter<"Study"> | $Enums.StudyStatus
+    reportedAt?: DateTimeNullableFilter<"Study"> | Date | string | null
     description?: StringNullableFilter<"Study"> | string | null
     studyDate?: StringNullableFilter<"Study"> | string | null
     createdAt?: DateTimeFilter<"Study"> | Date | string
-    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
-    series?: SeriesListRelationFilter
+    uploadedById?: StringNullableFilter<"Study"> | string | null
+    visible?: BoolFilter<"Study"> | boolean
     reports?: ReportListRelationFilter
+    series?: SeriesListRelationFilter
     shareTokens?: ShareTokenListRelationFilter
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type StudyOrderByWithRelationInput = {
     id?: SortOrder
     tenantId?: SortOrder
     studyUid?: SortOrder
+    title?: SortOrderInput | SortOrder
     patientId?: SortOrderInput | SortOrder
     patientName?: SortOrderInput | SortOrder
     modality?: SortOrderInput | SortOrder
     slices?: SortOrder
     status?: SortOrder
+    reportedAt?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     studyDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    tenant?: TenantOrderByWithRelationInput
-    series?: SeriesOrderByRelationAggregateInput
+    uploadedById?: SortOrderInput | SortOrder
+    visible?: SortOrder
     reports?: ReportOrderByRelationAggregateInput
+    series?: SeriesOrderByRelationAggregateInput
     shareTokens?: ShareTokenOrderByRelationAggregateInput
+    tenant?: TenantOrderByWithRelationInput
+    User?: UserOrderByWithRelationInput
   }
 
   export type StudyWhereUniqueInput = Prisma.AtLeast<{
@@ -21146,32 +22585,41 @@ export namespace Prisma {
     OR?: StudyWhereInput[]
     NOT?: StudyWhereInput | StudyWhereInput[]
     tenantId?: StringFilter<"Study"> | string
+    title?: StringNullableFilter<"Study"> | string | null
     patientId?: StringNullableFilter<"Study"> | string | null
     patientName?: StringNullableFilter<"Study"> | string | null
     modality?: StringNullableFilter<"Study"> | string | null
     slices?: IntFilter<"Study"> | number
     status?: EnumStudyStatusFilter<"Study"> | $Enums.StudyStatus
+    reportedAt?: DateTimeNullableFilter<"Study"> | Date | string | null
     description?: StringNullableFilter<"Study"> | string | null
     studyDate?: StringNullableFilter<"Study"> | string | null
     createdAt?: DateTimeFilter<"Study"> | Date | string
-    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
-    series?: SeriesListRelationFilter
+    uploadedById?: StringNullableFilter<"Study"> | string | null
+    visible?: BoolFilter<"Study"> | boolean
     reports?: ReportListRelationFilter
+    series?: SeriesListRelationFilter
     shareTokens?: ShareTokenListRelationFilter
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id" | "studyUid">
 
   export type StudyOrderByWithAggregationInput = {
     id?: SortOrder
     tenantId?: SortOrder
     studyUid?: SortOrder
+    title?: SortOrderInput | SortOrder
     patientId?: SortOrderInput | SortOrder
     patientName?: SortOrderInput | SortOrder
     modality?: SortOrderInput | SortOrder
     slices?: SortOrder
     status?: SortOrder
+    reportedAt?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     studyDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    uploadedById?: SortOrderInput | SortOrder
+    visible?: SortOrder
     _count?: StudyCountOrderByAggregateInput
     _avg?: StudyAvgOrderByAggregateInput
     _max?: StudyMaxOrderByAggregateInput
@@ -21186,14 +22634,18 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Study"> | string
     tenantId?: StringWithAggregatesFilter<"Study"> | string
     studyUid?: StringWithAggregatesFilter<"Study"> | string
+    title?: StringNullableWithAggregatesFilter<"Study"> | string | null
     patientId?: StringNullableWithAggregatesFilter<"Study"> | string | null
     patientName?: StringNullableWithAggregatesFilter<"Study"> | string | null
     modality?: StringNullableWithAggregatesFilter<"Study"> | string | null
     slices?: IntWithAggregatesFilter<"Study"> | number
     status?: EnumStudyStatusWithAggregatesFilter<"Study"> | $Enums.StudyStatus
+    reportedAt?: DateTimeNullableWithAggregatesFilter<"Study"> | Date | string | null
     description?: StringNullableWithAggregatesFilter<"Study"> | string | null
     studyDate?: StringNullableWithAggregatesFilter<"Study"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Study"> | Date | string
+    uploadedById?: StringNullableWithAggregatesFilter<"Study"> | string | null
+    visible?: BoolWithAggregatesFilter<"Study"> | boolean
   }
 
   export type SeriesWhereInput = {
@@ -21202,25 +22654,25 @@ export namespace Prisma {
     NOT?: SeriesWhereInput | SeriesWhereInput[]
     id?: StringFilter<"Series"> | string
     seriesUid?: StringFilter<"Series"> | string
-    seriesNumber?: IntNullableFilter<"Series"> | number | null
     modality?: StringNullableFilter<"Series"> | string | null
     instanceCount?: IntFilter<"Series"> | number
     studyId?: StringFilter<"Series"> | string
     createdAt?: DateTimeFilter<"Series"> | Date | string
-    study?: XOR<StudyScalarRelationFilter, StudyWhereInput>
+    seriesNumber?: IntNullableFilter<"Series"> | number | null
     instances?: InstanceListRelationFilter
+    study?: XOR<StudyScalarRelationFilter, StudyWhereInput>
   }
 
   export type SeriesOrderByWithRelationInput = {
     id?: SortOrder
     seriesUid?: SortOrder
-    seriesNumber?: SortOrderInput | SortOrder
     modality?: SortOrderInput | SortOrder
     instanceCount?: SortOrder
     studyId?: SortOrder
     createdAt?: SortOrder
-    study?: StudyOrderByWithRelationInput
+    seriesNumber?: SortOrderInput | SortOrder
     instances?: InstanceOrderByRelationAggregateInput
+    study?: StudyOrderByWithRelationInput
   }
 
   export type SeriesWhereUniqueInput = Prisma.AtLeast<{
@@ -21230,23 +22682,23 @@ export namespace Prisma {
     OR?: SeriesWhereInput[]
     NOT?: SeriesWhereInput | SeriesWhereInput[]
     seriesUid?: StringFilter<"Series"> | string
-    seriesNumber?: IntNullableFilter<"Series"> | number | null
     modality?: StringNullableFilter<"Series"> | string | null
     instanceCount?: IntFilter<"Series"> | number
     studyId?: StringFilter<"Series"> | string
     createdAt?: DateTimeFilter<"Series"> | Date | string
-    study?: XOR<StudyScalarRelationFilter, StudyWhereInput>
+    seriesNumber?: IntNullableFilter<"Series"> | number | null
     instances?: InstanceListRelationFilter
+    study?: XOR<StudyScalarRelationFilter, StudyWhereInput>
   }, "id" | "studyId_seriesUid">
 
   export type SeriesOrderByWithAggregationInput = {
     id?: SortOrder
     seriesUid?: SortOrder
-    seriesNumber?: SortOrderInput | SortOrder
     modality?: SortOrderInput | SortOrder
     instanceCount?: SortOrder
     studyId?: SortOrder
     createdAt?: SortOrder
+    seriesNumber?: SortOrderInput | SortOrder
     _count?: SeriesCountOrderByAggregateInput
     _avg?: SeriesAvgOrderByAggregateInput
     _max?: SeriesMaxOrderByAggregateInput
@@ -21260,11 +22712,11 @@ export namespace Prisma {
     NOT?: SeriesScalarWhereWithAggregatesInput | SeriesScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Series"> | string
     seriesUid?: StringWithAggregatesFilter<"Series"> | string
-    seriesNumber?: IntNullableWithAggregatesFilter<"Series"> | number | null
     modality?: StringNullableWithAggregatesFilter<"Series"> | string | null
     instanceCount?: IntWithAggregatesFilter<"Series"> | number
     studyId?: StringWithAggregatesFilter<"Series"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Series"> | Date | string
+    seriesNumber?: IntNullableWithAggregatesFilter<"Series"> | number | null
   }
 
   export type InstanceWhereInput = {
@@ -21424,8 +22876,8 @@ export namespace Prisma {
     status?: EnumReportStatusFilter<"Report"> | $Enums.ReportStatus
     content?: StringNullableFilter<"Report"> | string | null
     createdAt?: DateTimeFilter<"Report"> | Date | string
-    study?: XOR<StudyScalarRelationFilter, StudyWhereInput>
     author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    study?: XOR<StudyScalarRelationFilter, StudyWhereInput>
   }
 
   export type ReportOrderByWithRelationInput = {
@@ -21435,8 +22887,8 @@ export namespace Prisma {
     status?: SortOrder
     content?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    study?: StudyOrderByWithRelationInput
     author?: UserOrderByWithRelationInput
+    study?: StudyOrderByWithRelationInput
   }
 
   export type ReportWhereUniqueInput = Prisma.AtLeast<{
@@ -21449,8 +22901,8 @@ export namespace Prisma {
     status?: EnumReportStatusFilter<"Report"> | $Enums.ReportStatus
     content?: StringNullableFilter<"Report"> | string | null
     createdAt?: DateTimeFilter<"Report"> | Date | string
-    study?: XOR<StudyScalarRelationFilter, StudyWhereInput>
     author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    study?: XOR<StudyScalarRelationFilter, StudyWhereInput>
   }, "id">
 
   export type ReportOrderByWithAggregationInput = {
@@ -21484,22 +22936,26 @@ export namespace Prisma {
     id?: StringFilter<"ShareToken"> | string
     token?: StringFilter<"ShareToken"> | string
     studyId?: StringFilter<"ShareToken"> | string
+    createdById?: StringNullableFilter<"ShareToken"> | string | null
     expiresAt?: DateTimeFilter<"ShareToken"> | Date | string
     password?: StringNullableFilter<"ShareToken"> | string | null
     allowDownload?: BoolFilter<"ShareToken"> | boolean
     createdAt?: DateTimeFilter<"ShareToken"> | Date | string
     study?: XOR<StudyScalarRelationFilter, StudyWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type ShareTokenOrderByWithRelationInput = {
     id?: SortOrder
     token?: SortOrder
     studyId?: SortOrder
+    createdById?: SortOrderInput | SortOrder
     expiresAt?: SortOrder
     password?: SortOrderInput | SortOrder
     allowDownload?: SortOrder
     createdAt?: SortOrder
     study?: StudyOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
   }
 
   export type ShareTokenWhereUniqueInput = Prisma.AtLeast<{
@@ -21509,17 +22965,20 @@ export namespace Prisma {
     OR?: ShareTokenWhereInput[]
     NOT?: ShareTokenWhereInput | ShareTokenWhereInput[]
     studyId?: StringFilter<"ShareToken"> | string
+    createdById?: StringNullableFilter<"ShareToken"> | string | null
     expiresAt?: DateTimeFilter<"ShareToken"> | Date | string
     password?: StringNullableFilter<"ShareToken"> | string | null
     allowDownload?: BoolFilter<"ShareToken"> | boolean
     createdAt?: DateTimeFilter<"ShareToken"> | Date | string
     study?: XOR<StudyScalarRelationFilter, StudyWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id" | "token">
 
   export type ShareTokenOrderByWithAggregationInput = {
     id?: SortOrder
     token?: SortOrder
     studyId?: SortOrder
+    createdById?: SortOrderInput | SortOrder
     expiresAt?: SortOrder
     password?: SortOrderInput | SortOrder
     allowDownload?: SortOrder
@@ -21536,6 +22995,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ShareToken"> | string
     token?: StringWithAggregatesFilter<"ShareToken"> | string
     studyId?: StringWithAggregatesFilter<"ShareToken"> | string
+    createdById?: StringNullableWithAggregatesFilter<"ShareToken"> | string | null
     expiresAt?: DateTimeWithAggregatesFilter<"ShareToken"> | Date | string
     password?: StringNullableWithAggregatesFilter<"ShareToken"> | string | null
     allowDownload?: BoolWithAggregatesFilter<"ShareToken"> | boolean
@@ -21722,6 +23182,65 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"NotificationPreference"> | Date | string
   }
 
+  export type PendingInviteWhereInput = {
+    AND?: PendingInviteWhereInput | PendingInviteWhereInput[]
+    OR?: PendingInviteWhereInput[]
+    NOT?: PendingInviteWhereInput | PendingInviteWhereInput[]
+    id?: StringFilter<"PendingInvite"> | string
+    email?: StringFilter<"PendingInvite"> | string
+    tenantId?: StringFilter<"PendingInvite"> | string
+    invitedById?: StringFilter<"PendingInvite"> | string
+    createdAt?: DateTimeFilter<"PendingInvite"> | Date | string
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+    invitedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type PendingInviteOrderByWithRelationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    tenantId?: SortOrder
+    invitedById?: SortOrder
+    createdAt?: SortOrder
+    tenant?: TenantOrderByWithRelationInput
+    invitedBy?: UserOrderByWithRelationInput
+  }
+
+  export type PendingInviteWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    email_tenantId?: PendingInviteEmailTenantIdCompoundUniqueInput
+    AND?: PendingInviteWhereInput | PendingInviteWhereInput[]
+    OR?: PendingInviteWhereInput[]
+    NOT?: PendingInviteWhereInput | PendingInviteWhereInput[]
+    email?: StringFilter<"PendingInvite"> | string
+    tenantId?: StringFilter<"PendingInvite"> | string
+    invitedById?: StringFilter<"PendingInvite"> | string
+    createdAt?: DateTimeFilter<"PendingInvite"> | Date | string
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+    invitedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "email_tenantId">
+
+  export type PendingInviteOrderByWithAggregationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    tenantId?: SortOrder
+    invitedById?: SortOrder
+    createdAt?: SortOrder
+    _count?: PendingInviteCountOrderByAggregateInput
+    _max?: PendingInviteMaxOrderByAggregateInput
+    _min?: PendingInviteMinOrderByAggregateInput
+  }
+
+  export type PendingInviteScalarWhereWithAggregatesInput = {
+    AND?: PendingInviteScalarWhereWithAggregatesInput | PendingInviteScalarWhereWithAggregatesInput[]
+    OR?: PendingInviteScalarWhereWithAggregatesInput[]
+    NOT?: PendingInviteScalarWhereWithAggregatesInput | PendingInviteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PendingInvite"> | string
+    email?: StringWithAggregatesFilter<"PendingInvite"> | string
+    tenantId?: StringWithAggregatesFilter<"PendingInvite"> | string
+    invitedById?: StringWithAggregatesFilter<"PendingInvite"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"PendingInvite"> | Date | string
+  }
+
   export type AuditLogWhereInput = {
     AND?: AuditLogWhereInput | AuditLogWhereInput[]
     OR?: AuditLogWhereInput[]
@@ -21792,12 +23311,13 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
+    apiKeys?: ApiKeyCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
+    branding?: BrandingCreateNestedOneWithoutTenantInput
     members?: MembershipCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutTenantInput
     studies?: StudyCreateNestedManyWithoutTenantInput
     subscription?: SubscriptionCreateNestedOneWithoutTenantInput
-    auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
-    apiKeys?: ApiKeyCreateNestedManyWithoutTenantInput
-    branding?: BrandingCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateInput = {
@@ -21805,12 +23325,13 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
+    branding?: BrandingUncheckedCreateNestedOneWithoutTenantInput
     members?: MembershipUncheckedCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutTenantInput
     studies?: StudyUncheckedCreateNestedManyWithoutTenantInput
     subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
-    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
-    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutTenantInput
-    branding?: BrandingUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUpdateInput = {
@@ -21818,12 +23339,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiKeys?: ApiKeyUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
+    branding?: BrandingUpdateOneWithoutTenantNestedInput
     members?: MembershipUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutTenantNestedInput
     studies?: StudyUpdateManyWithoutTenantNestedInput
     subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
-    auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
-    apiKeys?: ApiKeyUpdateManyWithoutTenantNestedInput
-    branding?: BrandingUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateInput = {
@@ -21831,12 +23353,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
+    branding?: BrandingUncheckedUpdateOneWithoutTenantNestedInput
     members?: MembershipUncheckedUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutTenantNestedInput
     studies?: StudyUncheckedUpdateManyWithoutTenantNestedInput
     subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
-    auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
-    apiKeys?: ApiKeyUncheckedUpdateManyWithoutTenantNestedInput
-    branding?: BrandingUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantCreateManyInput = {
@@ -21869,10 +23392,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
     memberships?: MembershipCreateNestedManyWithoutUserInput
-    reports?: ReportCreateNestedManyWithoutAuthorInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutInvitedByInput
+    reports?: ReportCreateNestedManyWithoutAuthorInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    Study?: StudyCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -21884,10 +23410,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     memberships?: MembershipUncheckedCreateNestedManyWithoutUserInput
-    reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutInvitedByInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    Study?: StudyUncheckedCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUpdateInput = {
@@ -21899,10 +23428,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
     memberships?: MembershipUpdateManyWithoutUserNestedInput
-    reports?: ReportUpdateManyWithoutAuthorNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    Study?: StudyUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -21914,10 +23446,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     memberships?: MembershipUncheckedUpdateManyWithoutUserNestedInput
-    reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    Study?: StudyUncheckedUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -21952,33 +23487,33 @@ export namespace Prisma {
 
   export type MembershipCreateInput = {
     id?: string
-    role?: $Enums.Role
+    role?: string
     createdAt?: Date | string
-    user: UserCreateNestedOneWithoutMembershipsInput
     tenant: TenantCreateNestedOneWithoutMembersInput
+    user: UserCreateNestedOneWithoutMembershipsInput
   }
 
   export type MembershipUncheckedCreateInput = {
     id?: string
     userId: string
     tenantId: string
-    role?: $Enums.Role
+    role?: string
     createdAt?: Date | string
   }
 
   export type MembershipUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
     tenant?: TenantUpdateOneRequiredWithoutMembersNestedInput
+    user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
   }
 
   export type MembershipUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21986,13 +23521,13 @@ export namespace Prisma {
     id?: string
     userId: string
     tenantId: string
-    role?: $Enums.Role
+    role?: string
     createdAt?: Date | string
   }
 
   export type MembershipUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22000,7 +23535,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22201,68 +23736,84 @@ export namespace Prisma {
   export type StudyCreateInput = {
     id?: string
     studyUid: string
+    title?: string | null
     patientId?: string | null
     patientName?: string | null
     modality?: string | null
     slices?: number
     status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
     description?: string | null
     studyDate?: string | null
     createdAt?: Date | string
-    tenant: TenantCreateNestedOneWithoutStudiesInput
-    series?: SeriesCreateNestedManyWithoutStudyInput
+    visible?: boolean
     reports?: ReportCreateNestedManyWithoutStudyInput
+    series?: SeriesCreateNestedManyWithoutStudyInput
     shareTokens?: ShareTokenCreateNestedManyWithoutStudyInput
+    tenant: TenantCreateNestedOneWithoutStudiesInput
+    User?: UserCreateNestedOneWithoutStudyInput
   }
 
   export type StudyUncheckedCreateInput = {
     id?: string
     tenantId: string
     studyUid: string
+    title?: string | null
     patientId?: string | null
     patientName?: string | null
     modality?: string | null
     slices?: number
     status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
     description?: string | null
     studyDate?: string | null
     createdAt?: Date | string
-    series?: SeriesUncheckedCreateNestedManyWithoutStudyInput
+    uploadedById?: string | null
+    visible?: boolean
     reports?: ReportUncheckedCreateNestedManyWithoutStudyInput
+    series?: SeriesUncheckedCreateNestedManyWithoutStudyInput
     shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutStudyInput
   }
 
   export type StudyUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     patientId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     slices?: IntFieldUpdateOperationsInput | number
     status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tenant?: TenantUpdateOneRequiredWithoutStudiesNestedInput
-    series?: SeriesUpdateManyWithoutStudyNestedInput
+    visible?: BoolFieldUpdateOperationsInput | boolean
     reports?: ReportUpdateManyWithoutStudyNestedInput
+    series?: SeriesUpdateManyWithoutStudyNestedInput
     shareTokens?: ShareTokenUpdateManyWithoutStudyNestedInput
+    tenant?: TenantUpdateOneRequiredWithoutStudiesNestedInput
+    User?: UserUpdateOneWithoutStudyNestedInput
   }
 
   export type StudyUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
     studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     patientId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     slices?: IntFieldUpdateOperationsInput | number
     status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    series?: SeriesUncheckedUpdateManyWithoutStudyNestedInput
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    visible?: BoolFieldUpdateOperationsInput | boolean
     reports?: ReportUncheckedUpdateManyWithoutStudyNestedInput
+    series?: SeriesUncheckedUpdateManyWithoutStudyNestedInput
     shareTokens?: ShareTokenUncheckedUpdateManyWithoutStudyNestedInput
   }
 
@@ -22270,114 +23821,125 @@ export namespace Prisma {
     id?: string
     tenantId: string
     studyUid: string
+    title?: string | null
     patientId?: string | null
     patientName?: string | null
     modality?: string | null
     slices?: number
     status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
     description?: string | null
     studyDate?: string | null
     createdAt?: Date | string
+    uploadedById?: string | null
+    visible?: boolean
   }
 
   export type StudyUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     patientId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     slices?: IntFieldUpdateOperationsInput | number
     status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visible?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type StudyUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
     studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     patientId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     slices?: IntFieldUpdateOperationsInput | number
     status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    visible?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SeriesCreateInput = {
     id?: string
     seriesUid: string
-    seriesNumber?: number | null
     modality?: string | null
     instanceCount?: number
     createdAt?: Date | string
-    study: StudyCreateNestedOneWithoutSeriesInput
+    seriesNumber?: number | null
     instances?: InstanceCreateNestedManyWithoutSeriesInput
+    study: StudyCreateNestedOneWithoutSeriesInput
   }
 
   export type SeriesUncheckedCreateInput = {
     id?: string
     seriesUid: string
-    seriesNumber?: number | null
     modality?: string | null
     instanceCount?: number
     studyId: string
     createdAt?: Date | string
+    seriesNumber?: number | null
     instances?: InstanceUncheckedCreateNestedManyWithoutSeriesInput
   }
 
   export type SeriesUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     seriesUid?: StringFieldUpdateOperationsInput | string
-    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     instanceCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    study?: StudyUpdateOneRequiredWithoutSeriesNestedInput
+    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
     instances?: InstanceUpdateManyWithoutSeriesNestedInput
+    study?: StudyUpdateOneRequiredWithoutSeriesNestedInput
   }
 
   export type SeriesUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     seriesUid?: StringFieldUpdateOperationsInput | string
-    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     instanceCount?: IntFieldUpdateOperationsInput | number
     studyId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
     instances?: InstanceUncheckedUpdateManyWithoutSeriesNestedInput
   }
 
   export type SeriesCreateManyInput = {
     id?: string
     seriesUid: string
-    seriesNumber?: number | null
     modality?: string | null
     instanceCount?: number
     studyId: string
     createdAt?: Date | string
+    seriesNumber?: number | null
   }
 
   export type SeriesUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     seriesUid?: StringFieldUpdateOperationsInput | string
-    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     instanceCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type SeriesUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     seriesUid?: StringFieldUpdateOperationsInput | string
-    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     instanceCount?: IntFieldUpdateOperationsInput | number
     studyId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type InstanceCreateInput = {
@@ -22544,8 +24106,8 @@ export namespace Prisma {
     status?: $Enums.ReportStatus
     content?: string | null
     createdAt?: Date | string
-    study: StudyCreateNestedOneWithoutReportsInput
     author?: UserCreateNestedOneWithoutReportsInput
+    study: StudyCreateNestedOneWithoutReportsInput
   }
 
   export type ReportUncheckedCreateInput = {
@@ -22562,8 +24124,8 @@ export namespace Prisma {
     status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
     content?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    study?: StudyUpdateOneRequiredWithoutReportsNestedInput
     author?: UserUpdateOneWithoutReportsNestedInput
+    study?: StudyUpdateOneRequiredWithoutReportsNestedInput
   }
 
   export type ReportUncheckedUpdateInput = {
@@ -22608,12 +24170,14 @@ export namespace Prisma {
     allowDownload?: boolean
     createdAt?: Date | string
     study: StudyCreateNestedOneWithoutShareTokensInput
+    createdBy?: UserCreateNestedOneWithoutShareTokensInput
   }
 
   export type ShareTokenUncheckedCreateInput = {
     id?: string
     token: string
     studyId: string
+    createdById?: string | null
     expiresAt: Date | string
     password?: string | null
     allowDownload?: boolean
@@ -22628,12 +24192,14 @@ export namespace Prisma {
     allowDownload?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     study?: StudyUpdateOneRequiredWithoutShareTokensNestedInput
+    createdBy?: UserUpdateOneWithoutShareTokensNestedInput
   }
 
   export type ShareTokenUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     studyId?: StringFieldUpdateOperationsInput | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     allowDownload?: BoolFieldUpdateOperationsInput | boolean
@@ -22644,6 +24210,7 @@ export namespace Prisma {
     id?: string
     token: string
     studyId: string
+    createdById?: string | null
     expiresAt: Date | string
     password?: string | null
     allowDownload?: boolean
@@ -22663,6 +24230,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     studyId?: StringFieldUpdateOperationsInput | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     allowDownload?: BoolFieldUpdateOperationsInput | boolean
@@ -22855,6 +24423,60 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PendingInviteCreateInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutPendingInvitesInput
+    invitedBy: UserCreateNestedOneWithoutPendingInvitesInput
+  }
+
+  export type PendingInviteUncheckedCreateInput = {
+    id?: string
+    email: string
+    tenantId: string
+    invitedById: string
+    createdAt?: Date | string
+  }
+
+  export type PendingInviteUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutPendingInvitesNestedInput
+    invitedBy?: UserUpdateOneRequiredWithoutPendingInvitesNestedInput
+  }
+
+  export type PendingInviteUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    invitedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PendingInviteCreateManyInput = {
+    id?: string
+    email: string
+    tenantId: string
+    invitedById: string
+    createdAt?: Date | string
+  }
+
+  export type PendingInviteUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PendingInviteUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    invitedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AuditLogCreateInput = {
     id?: string
     actorId: string
@@ -22950,10 +24572,33 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type ApiKeyListRelationFilter = {
+    every?: ApiKeyWhereInput
+    some?: ApiKeyWhereInput
+    none?: ApiKeyWhereInput
+  }
+
+  export type AuditLogListRelationFilter = {
+    every?: AuditLogWhereInput
+    some?: AuditLogWhereInput
+    none?: AuditLogWhereInput
+  }
+
+  export type BrandingNullableScalarRelationFilter = {
+    is?: BrandingWhereInput | null
+    isNot?: BrandingWhereInput | null
+  }
+
   export type MembershipListRelationFilter = {
     every?: MembershipWhereInput
     some?: MembershipWhereInput
     none?: MembershipWhereInput
+  }
+
+  export type PendingInviteListRelationFilter = {
+    every?: PendingInviteWhereInput
+    some?: PendingInviteWhereInput
+    none?: PendingInviteWhereInput
   }
 
   export type StudyListRelationFilter = {
@@ -22967,28 +24612,7 @@ export namespace Prisma {
     isNot?: SubscriptionWhereInput | null
   }
 
-  export type AuditLogListRelationFilter = {
-    every?: AuditLogWhereInput
-    some?: AuditLogWhereInput
-    none?: AuditLogWhereInput
-  }
-
-  export type ApiKeyListRelationFilter = {
-    every?: ApiKeyWhereInput
-    some?: ApiKeyWhereInput
-    none?: ApiKeyWhereInput
-  }
-
-  export type BrandingNullableScalarRelationFilter = {
-    is?: BrandingWhereInput | null
-    isNot?: BrandingWhereInput | null
-  }
-
-  export type MembershipOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type StudyOrderByRelationAggregateInput = {
+  export type ApiKeyOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -22996,7 +24620,15 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type ApiKeyOrderByRelationAggregateInput = {
+  export type MembershipOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PendingInviteOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StudyOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23085,10 +24717,9 @@ export namespace Prisma {
     none?: AccountWhereInput
   }
 
-  export type SessionListRelationFilter = {
-    every?: SessionWhereInput
-    some?: SessionWhereInput
-    none?: SessionWhereInput
+  export type NotificationPreferenceNullableScalarRelationFilter = {
+    is?: NotificationPreferenceWhereInput | null
+    isNot?: NotificationPreferenceWhereInput | null
   }
 
   export type ReportListRelationFilter = {
@@ -23097,9 +24728,16 @@ export namespace Prisma {
     none?: ReportWhereInput
   }
 
-  export type NotificationPreferenceNullableScalarRelationFilter = {
-    is?: NotificationPreferenceWhereInput | null
-    isNot?: NotificationPreferenceWhereInput | null
+  export type SessionListRelationFilter = {
+    every?: SessionWhereInput
+    some?: SessionWhereInput
+    none?: SessionWhereInput
+  }
+
+  export type ShareTokenListRelationFilter = {
+    every?: ShareTokenWhereInput
+    some?: ShareTokenWhereInput
+    none?: ShareTokenWhereInput
   }
 
   export type SortOrderInput = {
@@ -23111,11 +24749,15 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type ReportOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type SessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type ReportOrderByRelationAggregateInput = {
+  export type ShareTokenOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23181,21 +24823,14 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type EnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  export type TenantScalarRelationFilter = {
+    is?: TenantWhereInput
+    isNot?: TenantWhereInput
   }
 
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
-  }
-
-  export type TenantScalarRelationFilter = {
-    is?: TenantWhereInput
-    isNot?: TenantWhereInput
   }
 
   export type MembershipUserIdTenantIdCompoundUniqueInput = {
@@ -23225,16 +24860,6 @@ export namespace Prisma {
     tenantId?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -23384,23 +25009,23 @@ export namespace Prisma {
     not?: NestedEnumStudyStatusFilter<$PrismaModel> | $Enums.StudyStatus
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type SeriesListRelationFilter = {
     every?: SeriesWhereInput
     some?: SeriesWhereInput
     none?: SeriesWhereInput
   }
 
-  export type ShareTokenListRelationFilter = {
-    every?: ShareTokenWhereInput
-    some?: ShareTokenWhereInput
-    none?: ShareTokenWhereInput
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
   }
 
   export type SeriesOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type ShareTokenOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23408,14 +25033,18 @@ export namespace Prisma {
     id?: SortOrder
     tenantId?: SortOrder
     studyUid?: SortOrder
+    title?: SortOrder
     patientId?: SortOrder
     patientName?: SortOrder
     modality?: SortOrder
     slices?: SortOrder
     status?: SortOrder
+    reportedAt?: SortOrder
     description?: SortOrder
     studyDate?: SortOrder
     createdAt?: SortOrder
+    uploadedById?: SortOrder
+    visible?: SortOrder
   }
 
   export type StudyAvgOrderByAggregateInput = {
@@ -23426,28 +25055,36 @@ export namespace Prisma {
     id?: SortOrder
     tenantId?: SortOrder
     studyUid?: SortOrder
+    title?: SortOrder
     patientId?: SortOrder
     patientName?: SortOrder
     modality?: SortOrder
     slices?: SortOrder
     status?: SortOrder
+    reportedAt?: SortOrder
     description?: SortOrder
     studyDate?: SortOrder
     createdAt?: SortOrder
+    uploadedById?: SortOrder
+    visible?: SortOrder
   }
 
   export type StudyMinOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
     studyUid?: SortOrder
+    title?: SortOrder
     patientId?: SortOrder
     patientName?: SortOrder
     modality?: SortOrder
     slices?: SortOrder
     status?: SortOrder
+    reportedAt?: SortOrder
     description?: SortOrder
     studyDate?: SortOrder
     createdAt?: SortOrder
+    uploadedById?: SortOrder
+    visible?: SortOrder
   }
 
   export type StudySumOrderByAggregateInput = {
@@ -23480,15 +25117,23 @@ export namespace Prisma {
     _max?: NestedEnumStudyStatusFilter<$PrismaModel>
   }
 
-  export type StudyScalarRelationFilter = {
-    is?: StudyWhereInput
-    isNot?: StudyWhereInput
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type InstanceListRelationFilter = {
     every?: InstanceWhereInput
     some?: InstanceWhereInput
     none?: InstanceWhereInput
+  }
+
+  export type StudyScalarRelationFilter = {
+    is?: StudyWhereInput
+    isNot?: StudyWhereInput
   }
 
   export type InstanceOrderByRelationAggregateInput = {
@@ -23503,41 +25148,41 @@ export namespace Prisma {
   export type SeriesCountOrderByAggregateInput = {
     id?: SortOrder
     seriesUid?: SortOrder
-    seriesNumber?: SortOrder
     modality?: SortOrder
     instanceCount?: SortOrder
     studyId?: SortOrder
     createdAt?: SortOrder
+    seriesNumber?: SortOrder
   }
 
   export type SeriesAvgOrderByAggregateInput = {
-    seriesNumber?: SortOrder
     instanceCount?: SortOrder
+    seriesNumber?: SortOrder
   }
 
   export type SeriesMaxOrderByAggregateInput = {
     id?: SortOrder
     seriesUid?: SortOrder
-    seriesNumber?: SortOrder
     modality?: SortOrder
     instanceCount?: SortOrder
     studyId?: SortOrder
     createdAt?: SortOrder
+    seriesNumber?: SortOrder
   }
 
   export type SeriesMinOrderByAggregateInput = {
     id?: SortOrder
     seriesUid?: SortOrder
-    seriesNumber?: SortOrder
     modality?: SortOrder
     instanceCount?: SortOrder
     studyId?: SortOrder
     createdAt?: SortOrder
+    seriesNumber?: SortOrder
   }
 
   export type SeriesSumOrderByAggregateInput = {
-    seriesNumber?: SortOrder
     instanceCount?: SortOrder
+    seriesNumber?: SortOrder
   }
 
   export type SeriesScalarRelationFilter = {
@@ -23629,11 +25274,6 @@ export namespace Prisma {
     not?: NestedEnumReportStatusFilter<$PrismaModel> | $Enums.ReportStatus
   }
 
-  export type UserNullableScalarRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
-  }
-
   export type ReportCountOrderByAggregateInput = {
     id?: SortOrder
     studyId?: SortOrder
@@ -23671,15 +25311,11 @@ export namespace Prisma {
     _max?: NestedEnumReportStatusFilter<$PrismaModel>
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type ShareTokenCountOrderByAggregateInput = {
     id?: SortOrder
     token?: SortOrder
     studyId?: SortOrder
+    createdById?: SortOrder
     expiresAt?: SortOrder
     password?: SortOrder
     allowDownload?: SortOrder
@@ -23690,6 +25326,7 @@ export namespace Prisma {
     id?: SortOrder
     token?: SortOrder
     studyId?: SortOrder
+    createdById?: SortOrder
     expiresAt?: SortOrder
     password?: SortOrder
     allowDownload?: SortOrder
@@ -23700,18 +25337,11 @@ export namespace Prisma {
     id?: SortOrder
     token?: SortOrder
     studyId?: SortOrder
+    createdById?: SortOrder
     expiresAt?: SortOrder
     password?: SortOrder
     allowDownload?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type ApiKeyCountOrderByAggregateInput = {
@@ -23794,6 +25424,35 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
+
+  export type PendingInviteEmailTenantIdCompoundUniqueInput = {
+    email: string
+    tenantId: string
+  }
+
+  export type PendingInviteCountOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    tenantId?: SortOrder
+    invitedById?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PendingInviteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    tenantId?: SortOrder
+    invitedById?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PendingInviteMinOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    tenantId?: SortOrder
+    invitedById?: SortOrder
+    createdAt?: SortOrder
+  }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -23872,11 +25531,38 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
+  export type ApiKeyCreateNestedManyWithoutTenantInput = {
+    create?: XOR<ApiKeyCreateWithoutTenantInput, ApiKeyUncheckedCreateWithoutTenantInput> | ApiKeyCreateWithoutTenantInput[] | ApiKeyUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ApiKeyCreateOrConnectWithoutTenantInput | ApiKeyCreateOrConnectWithoutTenantInput[]
+    createMany?: ApiKeyCreateManyTenantInputEnvelope
+    connect?: ApiKeyWhereUniqueInput | ApiKeyWhereUniqueInput[]
+  }
+
+  export type AuditLogCreateNestedManyWithoutTenantInput = {
+    create?: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput> | AuditLogCreateWithoutTenantInput[] | AuditLogUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutTenantInput | AuditLogCreateOrConnectWithoutTenantInput[]
+    createMany?: AuditLogCreateManyTenantInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
+  export type BrandingCreateNestedOneWithoutTenantInput = {
+    create?: XOR<BrandingCreateWithoutTenantInput, BrandingUncheckedCreateWithoutTenantInput>
+    connectOrCreate?: BrandingCreateOrConnectWithoutTenantInput
+    connect?: BrandingWhereUniqueInput
+  }
+
   export type MembershipCreateNestedManyWithoutTenantInput = {
     create?: XOR<MembershipCreateWithoutTenantInput, MembershipUncheckedCreateWithoutTenantInput> | MembershipCreateWithoutTenantInput[] | MembershipUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: MembershipCreateOrConnectWithoutTenantInput | MembershipCreateOrConnectWithoutTenantInput[]
     createMany?: MembershipCreateManyTenantInputEnvelope
     connect?: MembershipWhereUniqueInput | MembershipWhereUniqueInput[]
+  }
+
+  export type PendingInviteCreateNestedManyWithoutTenantInput = {
+    create?: XOR<PendingInviteCreateWithoutTenantInput, PendingInviteUncheckedCreateWithoutTenantInput> | PendingInviteCreateWithoutTenantInput[] | PendingInviteUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PendingInviteCreateOrConnectWithoutTenantInput | PendingInviteCreateOrConnectWithoutTenantInput[]
+    createMany?: PendingInviteCreateManyTenantInputEnvelope
+    connect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
   }
 
   export type StudyCreateNestedManyWithoutTenantInput = {
@@ -23892,21 +25578,21 @@ export namespace Prisma {
     connect?: SubscriptionWhereUniqueInput
   }
 
-  export type AuditLogCreateNestedManyWithoutTenantInput = {
-    create?: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput> | AuditLogCreateWithoutTenantInput[] | AuditLogUncheckedCreateWithoutTenantInput[]
-    connectOrCreate?: AuditLogCreateOrConnectWithoutTenantInput | AuditLogCreateOrConnectWithoutTenantInput[]
-    createMany?: AuditLogCreateManyTenantInputEnvelope
-    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-  }
-
-  export type ApiKeyCreateNestedManyWithoutTenantInput = {
+  export type ApiKeyUncheckedCreateNestedManyWithoutTenantInput = {
     create?: XOR<ApiKeyCreateWithoutTenantInput, ApiKeyUncheckedCreateWithoutTenantInput> | ApiKeyCreateWithoutTenantInput[] | ApiKeyUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: ApiKeyCreateOrConnectWithoutTenantInput | ApiKeyCreateOrConnectWithoutTenantInput[]
     createMany?: ApiKeyCreateManyTenantInputEnvelope
     connect?: ApiKeyWhereUniqueInput | ApiKeyWhereUniqueInput[]
   }
 
-  export type BrandingCreateNestedOneWithoutTenantInput = {
+  export type AuditLogUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput> | AuditLogCreateWithoutTenantInput[] | AuditLogUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutTenantInput | AuditLogCreateOrConnectWithoutTenantInput[]
+    createMany?: AuditLogCreateManyTenantInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
+  export type BrandingUncheckedCreateNestedOneWithoutTenantInput = {
     create?: XOR<BrandingCreateWithoutTenantInput, BrandingUncheckedCreateWithoutTenantInput>
     connectOrCreate?: BrandingCreateOrConnectWithoutTenantInput
     connect?: BrandingWhereUniqueInput
@@ -23917,6 +25603,13 @@ export namespace Prisma {
     connectOrCreate?: MembershipCreateOrConnectWithoutTenantInput | MembershipCreateOrConnectWithoutTenantInput[]
     createMany?: MembershipCreateManyTenantInputEnvelope
     connect?: MembershipWhereUniqueInput | MembershipWhereUniqueInput[]
+  }
+
+  export type PendingInviteUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<PendingInviteCreateWithoutTenantInput, PendingInviteUncheckedCreateWithoutTenantInput> | PendingInviteCreateWithoutTenantInput[] | PendingInviteUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PendingInviteCreateOrConnectWithoutTenantInput | PendingInviteCreateOrConnectWithoutTenantInput[]
+    createMany?: PendingInviteCreateManyTenantInputEnvelope
+    connect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
   }
 
   export type StudyUncheckedCreateNestedManyWithoutTenantInput = {
@@ -23932,32 +25625,50 @@ export namespace Prisma {
     connect?: SubscriptionWhereUniqueInput
   }
 
-  export type AuditLogUncheckedCreateNestedManyWithoutTenantInput = {
-    create?: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput> | AuditLogCreateWithoutTenantInput[] | AuditLogUncheckedCreateWithoutTenantInput[]
-    connectOrCreate?: AuditLogCreateOrConnectWithoutTenantInput | AuditLogCreateOrConnectWithoutTenantInput[]
-    createMany?: AuditLogCreateManyTenantInputEnvelope
-    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-  }
-
-  export type ApiKeyUncheckedCreateNestedManyWithoutTenantInput = {
-    create?: XOR<ApiKeyCreateWithoutTenantInput, ApiKeyUncheckedCreateWithoutTenantInput> | ApiKeyCreateWithoutTenantInput[] | ApiKeyUncheckedCreateWithoutTenantInput[]
-    connectOrCreate?: ApiKeyCreateOrConnectWithoutTenantInput | ApiKeyCreateOrConnectWithoutTenantInput[]
-    createMany?: ApiKeyCreateManyTenantInputEnvelope
-    connect?: ApiKeyWhereUniqueInput | ApiKeyWhereUniqueInput[]
-  }
-
-  export type BrandingUncheckedCreateNestedOneWithoutTenantInput = {
-    create?: XOR<BrandingCreateWithoutTenantInput, BrandingUncheckedCreateWithoutTenantInput>
-    connectOrCreate?: BrandingCreateOrConnectWithoutTenantInput
-    connect?: BrandingWhereUniqueInput
-  }
-
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type ApiKeyUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<ApiKeyCreateWithoutTenantInput, ApiKeyUncheckedCreateWithoutTenantInput> | ApiKeyCreateWithoutTenantInput[] | ApiKeyUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ApiKeyCreateOrConnectWithoutTenantInput | ApiKeyCreateOrConnectWithoutTenantInput[]
+    upsert?: ApiKeyUpsertWithWhereUniqueWithoutTenantInput | ApiKeyUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: ApiKeyCreateManyTenantInputEnvelope
+    set?: ApiKeyWhereUniqueInput | ApiKeyWhereUniqueInput[]
+    disconnect?: ApiKeyWhereUniqueInput | ApiKeyWhereUniqueInput[]
+    delete?: ApiKeyWhereUniqueInput | ApiKeyWhereUniqueInput[]
+    connect?: ApiKeyWhereUniqueInput | ApiKeyWhereUniqueInput[]
+    update?: ApiKeyUpdateWithWhereUniqueWithoutTenantInput | ApiKeyUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: ApiKeyUpdateManyWithWhereWithoutTenantInput | ApiKeyUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: ApiKeyScalarWhereInput | ApiKeyScalarWhereInput[]
+  }
+
+  export type AuditLogUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput> | AuditLogCreateWithoutTenantInput[] | AuditLogUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutTenantInput | AuditLogCreateOrConnectWithoutTenantInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutTenantInput | AuditLogUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: AuditLogCreateManyTenantInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutTenantInput | AuditLogUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutTenantInput | AuditLogUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
+  export type BrandingUpdateOneWithoutTenantNestedInput = {
+    create?: XOR<BrandingCreateWithoutTenantInput, BrandingUncheckedCreateWithoutTenantInput>
+    connectOrCreate?: BrandingCreateOrConnectWithoutTenantInput
+    upsert?: BrandingUpsertWithoutTenantInput
+    disconnect?: BrandingWhereInput | boolean
+    delete?: BrandingWhereInput | boolean
+    connect?: BrandingWhereUniqueInput
+    update?: XOR<XOR<BrandingUpdateToOneWithWhereWithoutTenantInput, BrandingUpdateWithoutTenantInput>, BrandingUncheckedUpdateWithoutTenantInput>
   }
 
   export type MembershipUpdateManyWithoutTenantNestedInput = {
@@ -23972,6 +25683,20 @@ export namespace Prisma {
     update?: MembershipUpdateWithWhereUniqueWithoutTenantInput | MembershipUpdateWithWhereUniqueWithoutTenantInput[]
     updateMany?: MembershipUpdateManyWithWhereWithoutTenantInput | MembershipUpdateManyWithWhereWithoutTenantInput[]
     deleteMany?: MembershipScalarWhereInput | MembershipScalarWhereInput[]
+  }
+
+  export type PendingInviteUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<PendingInviteCreateWithoutTenantInput, PendingInviteUncheckedCreateWithoutTenantInput> | PendingInviteCreateWithoutTenantInput[] | PendingInviteUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PendingInviteCreateOrConnectWithoutTenantInput | PendingInviteCreateOrConnectWithoutTenantInput[]
+    upsert?: PendingInviteUpsertWithWhereUniqueWithoutTenantInput | PendingInviteUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: PendingInviteCreateManyTenantInputEnvelope
+    set?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    disconnect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    delete?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    connect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    update?: PendingInviteUpdateWithWhereUniqueWithoutTenantInput | PendingInviteUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: PendingInviteUpdateManyWithWhereWithoutTenantInput | PendingInviteUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: PendingInviteScalarWhereInput | PendingInviteScalarWhereInput[]
   }
 
   export type StudyUpdateManyWithoutTenantNestedInput = {
@@ -23998,21 +25723,7 @@ export namespace Prisma {
     update?: XOR<XOR<SubscriptionUpdateToOneWithWhereWithoutTenantInput, SubscriptionUpdateWithoutTenantInput>, SubscriptionUncheckedUpdateWithoutTenantInput>
   }
 
-  export type AuditLogUpdateManyWithoutTenantNestedInput = {
-    create?: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput> | AuditLogCreateWithoutTenantInput[] | AuditLogUncheckedCreateWithoutTenantInput[]
-    connectOrCreate?: AuditLogCreateOrConnectWithoutTenantInput | AuditLogCreateOrConnectWithoutTenantInput[]
-    upsert?: AuditLogUpsertWithWhereUniqueWithoutTenantInput | AuditLogUpsertWithWhereUniqueWithoutTenantInput[]
-    createMany?: AuditLogCreateManyTenantInputEnvelope
-    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    update?: AuditLogUpdateWithWhereUniqueWithoutTenantInput | AuditLogUpdateWithWhereUniqueWithoutTenantInput[]
-    updateMany?: AuditLogUpdateManyWithWhereWithoutTenantInput | AuditLogUpdateManyWithWhereWithoutTenantInput[]
-    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
-  }
-
-  export type ApiKeyUpdateManyWithoutTenantNestedInput = {
+  export type ApiKeyUncheckedUpdateManyWithoutTenantNestedInput = {
     create?: XOR<ApiKeyCreateWithoutTenantInput, ApiKeyUncheckedCreateWithoutTenantInput> | ApiKeyCreateWithoutTenantInput[] | ApiKeyUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: ApiKeyCreateOrConnectWithoutTenantInput | ApiKeyCreateOrConnectWithoutTenantInput[]
     upsert?: ApiKeyUpsertWithWhereUniqueWithoutTenantInput | ApiKeyUpsertWithWhereUniqueWithoutTenantInput[]
@@ -24026,7 +25737,21 @@ export namespace Prisma {
     deleteMany?: ApiKeyScalarWhereInput | ApiKeyScalarWhereInput[]
   }
 
-  export type BrandingUpdateOneWithoutTenantNestedInput = {
+  export type AuditLogUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput> | AuditLogCreateWithoutTenantInput[] | AuditLogUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutTenantInput | AuditLogCreateOrConnectWithoutTenantInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutTenantInput | AuditLogUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: AuditLogCreateManyTenantInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutTenantInput | AuditLogUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutTenantInput | AuditLogUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
+  export type BrandingUncheckedUpdateOneWithoutTenantNestedInput = {
     create?: XOR<BrandingCreateWithoutTenantInput, BrandingUncheckedCreateWithoutTenantInput>
     connectOrCreate?: BrandingCreateOrConnectWithoutTenantInput
     upsert?: BrandingUpsertWithoutTenantInput
@@ -24048,6 +25773,20 @@ export namespace Prisma {
     update?: MembershipUpdateWithWhereUniqueWithoutTenantInput | MembershipUpdateWithWhereUniqueWithoutTenantInput[]
     updateMany?: MembershipUpdateManyWithWhereWithoutTenantInput | MembershipUpdateManyWithWhereWithoutTenantInput[]
     deleteMany?: MembershipScalarWhereInput | MembershipScalarWhereInput[]
+  }
+
+  export type PendingInviteUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<PendingInviteCreateWithoutTenantInput, PendingInviteUncheckedCreateWithoutTenantInput> | PendingInviteCreateWithoutTenantInput[] | PendingInviteUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PendingInviteCreateOrConnectWithoutTenantInput | PendingInviteCreateOrConnectWithoutTenantInput[]
+    upsert?: PendingInviteUpsertWithWhereUniqueWithoutTenantInput | PendingInviteUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: PendingInviteCreateManyTenantInputEnvelope
+    set?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    disconnect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    delete?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    connect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    update?: PendingInviteUpdateWithWhereUniqueWithoutTenantInput | PendingInviteUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: PendingInviteUpdateManyWithWhereWithoutTenantInput | PendingInviteUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: PendingInviteScalarWhereInput | PendingInviteScalarWhereInput[]
   }
 
   export type StudyUncheckedUpdateManyWithoutTenantNestedInput = {
@@ -24074,56 +25813,11 @@ export namespace Prisma {
     update?: XOR<XOR<SubscriptionUpdateToOneWithWhereWithoutTenantInput, SubscriptionUpdateWithoutTenantInput>, SubscriptionUncheckedUpdateWithoutTenantInput>
   }
 
-  export type AuditLogUncheckedUpdateManyWithoutTenantNestedInput = {
-    create?: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput> | AuditLogCreateWithoutTenantInput[] | AuditLogUncheckedCreateWithoutTenantInput[]
-    connectOrCreate?: AuditLogCreateOrConnectWithoutTenantInput | AuditLogCreateOrConnectWithoutTenantInput[]
-    upsert?: AuditLogUpsertWithWhereUniqueWithoutTenantInput | AuditLogUpsertWithWhereUniqueWithoutTenantInput[]
-    createMany?: AuditLogCreateManyTenantInputEnvelope
-    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
-    update?: AuditLogUpdateWithWhereUniqueWithoutTenantInput | AuditLogUpdateWithWhereUniqueWithoutTenantInput[]
-    updateMany?: AuditLogUpdateManyWithWhereWithoutTenantInput | AuditLogUpdateManyWithWhereWithoutTenantInput[]
-    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
-  }
-
-  export type ApiKeyUncheckedUpdateManyWithoutTenantNestedInput = {
-    create?: XOR<ApiKeyCreateWithoutTenantInput, ApiKeyUncheckedCreateWithoutTenantInput> | ApiKeyCreateWithoutTenantInput[] | ApiKeyUncheckedCreateWithoutTenantInput[]
-    connectOrCreate?: ApiKeyCreateOrConnectWithoutTenantInput | ApiKeyCreateOrConnectWithoutTenantInput[]
-    upsert?: ApiKeyUpsertWithWhereUniqueWithoutTenantInput | ApiKeyUpsertWithWhereUniqueWithoutTenantInput[]
-    createMany?: ApiKeyCreateManyTenantInputEnvelope
-    set?: ApiKeyWhereUniqueInput | ApiKeyWhereUniqueInput[]
-    disconnect?: ApiKeyWhereUniqueInput | ApiKeyWhereUniqueInput[]
-    delete?: ApiKeyWhereUniqueInput | ApiKeyWhereUniqueInput[]
-    connect?: ApiKeyWhereUniqueInput | ApiKeyWhereUniqueInput[]
-    update?: ApiKeyUpdateWithWhereUniqueWithoutTenantInput | ApiKeyUpdateWithWhereUniqueWithoutTenantInput[]
-    updateMany?: ApiKeyUpdateManyWithWhereWithoutTenantInput | ApiKeyUpdateManyWithWhereWithoutTenantInput[]
-    deleteMany?: ApiKeyScalarWhereInput | ApiKeyScalarWhereInput[]
-  }
-
-  export type BrandingUncheckedUpdateOneWithoutTenantNestedInput = {
-    create?: XOR<BrandingCreateWithoutTenantInput, BrandingUncheckedCreateWithoutTenantInput>
-    connectOrCreate?: BrandingCreateOrConnectWithoutTenantInput
-    upsert?: BrandingUpsertWithoutTenantInput
-    disconnect?: BrandingWhereInput | boolean
-    delete?: BrandingWhereInput | boolean
-    connect?: BrandingWhereUniqueInput
-    update?: XOR<XOR<BrandingUpdateToOneWithWhereWithoutTenantInput, BrandingUpdateWithoutTenantInput>, BrandingUncheckedUpdateWithoutTenantInput>
-  }
-
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
     createMany?: AccountCreateManyUserInputEnvelope
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-  }
-
-  export type SessionCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
   export type MembershipCreateNestedManyWithoutUserInput = {
@@ -24133,6 +25827,19 @@ export namespace Prisma {
     connect?: MembershipWhereUniqueInput | MembershipWhereUniqueInput[]
   }
 
+  export type NotificationPreferenceCreateNestedOneWithoutUserInput = {
+    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
+    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
+    connect?: NotificationPreferenceWhereUniqueInput
+  }
+
+  export type PendingInviteCreateNestedManyWithoutInvitedByInput = {
+    create?: XOR<PendingInviteCreateWithoutInvitedByInput, PendingInviteUncheckedCreateWithoutInvitedByInput> | PendingInviteCreateWithoutInvitedByInput[] | PendingInviteUncheckedCreateWithoutInvitedByInput[]
+    connectOrCreate?: PendingInviteCreateOrConnectWithoutInvitedByInput | PendingInviteCreateOrConnectWithoutInvitedByInput[]
+    createMany?: PendingInviteCreateManyInvitedByInputEnvelope
+    connect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+  }
+
   export type ReportCreateNestedManyWithoutAuthorInput = {
     create?: XOR<ReportCreateWithoutAuthorInput, ReportUncheckedCreateWithoutAuthorInput> | ReportCreateWithoutAuthorInput[] | ReportUncheckedCreateWithoutAuthorInput[]
     connectOrCreate?: ReportCreateOrConnectWithoutAuthorInput | ReportCreateOrConnectWithoutAuthorInput[]
@@ -24140,10 +25847,25 @@ export namespace Prisma {
     connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
   }
 
-  export type NotificationPreferenceCreateNestedOneWithoutUserInput = {
-    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
-    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
-    connect?: NotificationPreferenceWhereUniqueInput
+  export type SessionCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type StudyCreateNestedManyWithoutUserInput = {
+    create?: XOR<StudyCreateWithoutUserInput, StudyUncheckedCreateWithoutUserInput> | StudyCreateWithoutUserInput[] | StudyUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: StudyCreateOrConnectWithoutUserInput | StudyCreateOrConnectWithoutUserInput[]
+    createMany?: StudyCreateManyUserInputEnvelope
+    connect?: StudyWhereUniqueInput | StudyWhereUniqueInput[]
+  }
+
+  export type ShareTokenCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<ShareTokenCreateWithoutCreatedByInput, ShareTokenUncheckedCreateWithoutCreatedByInput> | ShareTokenCreateWithoutCreatedByInput[] | ShareTokenUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ShareTokenCreateOrConnectWithoutCreatedByInput | ShareTokenCreateOrConnectWithoutCreatedByInput[]
+    createMany?: ShareTokenCreateManyCreatedByInputEnvelope
+    connect?: ShareTokenWhereUniqueInput | ShareTokenWhereUniqueInput[]
   }
 
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
@@ -24153,18 +25875,24 @@ export namespace Prisma {
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
   }
 
-  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-  }
-
   export type MembershipUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<MembershipCreateWithoutUserInput, MembershipUncheckedCreateWithoutUserInput> | MembershipCreateWithoutUserInput[] | MembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MembershipCreateOrConnectWithoutUserInput | MembershipCreateOrConnectWithoutUserInput[]
     createMany?: MembershipCreateManyUserInputEnvelope
     connect?: MembershipWhereUniqueInput | MembershipWhereUniqueInput[]
+  }
+
+  export type NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
+    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
+    connect?: NotificationPreferenceWhereUniqueInput
+  }
+
+  export type PendingInviteUncheckedCreateNestedManyWithoutInvitedByInput = {
+    create?: XOR<PendingInviteCreateWithoutInvitedByInput, PendingInviteUncheckedCreateWithoutInvitedByInput> | PendingInviteCreateWithoutInvitedByInput[] | PendingInviteUncheckedCreateWithoutInvitedByInput[]
+    connectOrCreate?: PendingInviteCreateOrConnectWithoutInvitedByInput | PendingInviteCreateOrConnectWithoutInvitedByInput[]
+    createMany?: PendingInviteCreateManyInvitedByInputEnvelope
+    connect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
   }
 
   export type ReportUncheckedCreateNestedManyWithoutAuthorInput = {
@@ -24174,10 +25902,25 @@ export namespace Prisma {
     connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
   }
 
-  export type NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput = {
-    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
-    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
-    connect?: NotificationPreferenceWhereUniqueInput
+  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type StudyUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<StudyCreateWithoutUserInput, StudyUncheckedCreateWithoutUserInput> | StudyCreateWithoutUserInput[] | StudyUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: StudyCreateOrConnectWithoutUserInput | StudyCreateOrConnectWithoutUserInput[]
+    createMany?: StudyCreateManyUserInputEnvelope
+    connect?: StudyWhereUniqueInput | StudyWhereUniqueInput[]
+  }
+
+  export type ShareTokenUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<ShareTokenCreateWithoutCreatedByInput, ShareTokenUncheckedCreateWithoutCreatedByInput> | ShareTokenCreateWithoutCreatedByInput[] | ShareTokenUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ShareTokenCreateOrConnectWithoutCreatedByInput | ShareTokenCreateOrConnectWithoutCreatedByInput[]
+    createMany?: ShareTokenCreateManyCreatedByInputEnvelope
+    connect?: ShareTokenWhereUniqueInput | ShareTokenWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -24202,20 +25945,6 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
-  export type SessionUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
-  }
-
   export type MembershipUpdateManyWithoutUserNestedInput = {
     create?: XOR<MembershipCreateWithoutUserInput, MembershipUncheckedCreateWithoutUserInput> | MembershipCreateWithoutUserInput[] | MembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MembershipCreateOrConnectWithoutUserInput | MembershipCreateOrConnectWithoutUserInput[]
@@ -24228,6 +25957,30 @@ export namespace Prisma {
     update?: MembershipUpdateWithWhereUniqueWithoutUserInput | MembershipUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: MembershipUpdateManyWithWhereWithoutUserInput | MembershipUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: MembershipScalarWhereInput | MembershipScalarWhereInput[]
+  }
+
+  export type NotificationPreferenceUpdateOneWithoutUserNestedInput = {
+    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
+    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
+    upsert?: NotificationPreferenceUpsertWithoutUserInput
+    disconnect?: NotificationPreferenceWhereInput | boolean
+    delete?: NotificationPreferenceWhereInput | boolean
+    connect?: NotificationPreferenceWhereUniqueInput
+    update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutUserInput, NotificationPreferenceUpdateWithoutUserInput>, NotificationPreferenceUncheckedUpdateWithoutUserInput>
+  }
+
+  export type PendingInviteUpdateManyWithoutInvitedByNestedInput = {
+    create?: XOR<PendingInviteCreateWithoutInvitedByInput, PendingInviteUncheckedCreateWithoutInvitedByInput> | PendingInviteCreateWithoutInvitedByInput[] | PendingInviteUncheckedCreateWithoutInvitedByInput[]
+    connectOrCreate?: PendingInviteCreateOrConnectWithoutInvitedByInput | PendingInviteCreateOrConnectWithoutInvitedByInput[]
+    upsert?: PendingInviteUpsertWithWhereUniqueWithoutInvitedByInput | PendingInviteUpsertWithWhereUniqueWithoutInvitedByInput[]
+    createMany?: PendingInviteCreateManyInvitedByInputEnvelope
+    set?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    disconnect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    delete?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    connect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    update?: PendingInviteUpdateWithWhereUniqueWithoutInvitedByInput | PendingInviteUpdateWithWhereUniqueWithoutInvitedByInput[]
+    updateMany?: PendingInviteUpdateManyWithWhereWithoutInvitedByInput | PendingInviteUpdateManyWithWhereWithoutInvitedByInput[]
+    deleteMany?: PendingInviteScalarWhereInput | PendingInviteScalarWhereInput[]
   }
 
   export type ReportUpdateManyWithoutAuthorNestedInput = {
@@ -24244,14 +25997,46 @@ export namespace Prisma {
     deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
   }
 
-  export type NotificationPreferenceUpdateOneWithoutUserNestedInput = {
-    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
-    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
-    upsert?: NotificationPreferenceUpsertWithoutUserInput
-    disconnect?: NotificationPreferenceWhereInput | boolean
-    delete?: NotificationPreferenceWhereInput | boolean
-    connect?: NotificationPreferenceWhereUniqueInput
-    update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutUserInput, NotificationPreferenceUpdateWithoutUserInput>, NotificationPreferenceUncheckedUpdateWithoutUserInput>
+  export type SessionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
+  export type StudyUpdateManyWithoutUserNestedInput = {
+    create?: XOR<StudyCreateWithoutUserInput, StudyUncheckedCreateWithoutUserInput> | StudyCreateWithoutUserInput[] | StudyUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: StudyCreateOrConnectWithoutUserInput | StudyCreateOrConnectWithoutUserInput[]
+    upsert?: StudyUpsertWithWhereUniqueWithoutUserInput | StudyUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: StudyCreateManyUserInputEnvelope
+    set?: StudyWhereUniqueInput | StudyWhereUniqueInput[]
+    disconnect?: StudyWhereUniqueInput | StudyWhereUniqueInput[]
+    delete?: StudyWhereUniqueInput | StudyWhereUniqueInput[]
+    connect?: StudyWhereUniqueInput | StudyWhereUniqueInput[]
+    update?: StudyUpdateWithWhereUniqueWithoutUserInput | StudyUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: StudyUpdateManyWithWhereWithoutUserInput | StudyUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: StudyScalarWhereInput | StudyScalarWhereInput[]
+  }
+
+  export type ShareTokenUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<ShareTokenCreateWithoutCreatedByInput, ShareTokenUncheckedCreateWithoutCreatedByInput> | ShareTokenCreateWithoutCreatedByInput[] | ShareTokenUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ShareTokenCreateOrConnectWithoutCreatedByInput | ShareTokenCreateOrConnectWithoutCreatedByInput[]
+    upsert?: ShareTokenUpsertWithWhereUniqueWithoutCreatedByInput | ShareTokenUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: ShareTokenCreateManyCreatedByInputEnvelope
+    set?: ShareTokenWhereUniqueInput | ShareTokenWhereUniqueInput[]
+    disconnect?: ShareTokenWhereUniqueInput | ShareTokenWhereUniqueInput[]
+    delete?: ShareTokenWhereUniqueInput | ShareTokenWhereUniqueInput[]
+    connect?: ShareTokenWhereUniqueInput | ShareTokenWhereUniqueInput[]
+    update?: ShareTokenUpdateWithWhereUniqueWithoutCreatedByInput | ShareTokenUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: ShareTokenUpdateManyWithWhereWithoutCreatedByInput | ShareTokenUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: ShareTokenScalarWhereInput | ShareTokenScalarWhereInput[]
   }
 
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
@@ -24268,20 +26053,6 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
-  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
-  }
-
   export type MembershipUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<MembershipCreateWithoutUserInput, MembershipUncheckedCreateWithoutUserInput> | MembershipCreateWithoutUserInput[] | MembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: MembershipCreateOrConnectWithoutUserInput | MembershipCreateOrConnectWithoutUserInput[]
@@ -24294,6 +26065,30 @@ export namespace Prisma {
     update?: MembershipUpdateWithWhereUniqueWithoutUserInput | MembershipUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: MembershipUpdateManyWithWhereWithoutUserInput | MembershipUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: MembershipScalarWhereInput | MembershipScalarWhereInput[]
+  }
+
+  export type NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
+    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
+    upsert?: NotificationPreferenceUpsertWithoutUserInput
+    disconnect?: NotificationPreferenceWhereInput | boolean
+    delete?: NotificationPreferenceWhereInput | boolean
+    connect?: NotificationPreferenceWhereUniqueInput
+    update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutUserInput, NotificationPreferenceUpdateWithoutUserInput>, NotificationPreferenceUncheckedUpdateWithoutUserInput>
+  }
+
+  export type PendingInviteUncheckedUpdateManyWithoutInvitedByNestedInput = {
+    create?: XOR<PendingInviteCreateWithoutInvitedByInput, PendingInviteUncheckedCreateWithoutInvitedByInput> | PendingInviteCreateWithoutInvitedByInput[] | PendingInviteUncheckedCreateWithoutInvitedByInput[]
+    connectOrCreate?: PendingInviteCreateOrConnectWithoutInvitedByInput | PendingInviteCreateOrConnectWithoutInvitedByInput[]
+    upsert?: PendingInviteUpsertWithWhereUniqueWithoutInvitedByInput | PendingInviteUpsertWithWhereUniqueWithoutInvitedByInput[]
+    createMany?: PendingInviteCreateManyInvitedByInputEnvelope
+    set?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    disconnect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    delete?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    connect?: PendingInviteWhereUniqueInput | PendingInviteWhereUniqueInput[]
+    update?: PendingInviteUpdateWithWhereUniqueWithoutInvitedByInput | PendingInviteUpdateWithWhereUniqueWithoutInvitedByInput[]
+    updateMany?: PendingInviteUpdateManyWithWhereWithoutInvitedByInput | PendingInviteUpdateManyWithWhereWithoutInvitedByInput[]
+    deleteMany?: PendingInviteScalarWhereInput | PendingInviteScalarWhereInput[]
   }
 
   export type ReportUncheckedUpdateManyWithoutAuthorNestedInput = {
@@ -24310,20 +26105,46 @@ export namespace Prisma {
     deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
   }
 
-  export type NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput = {
-    create?: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
-    connectOrCreate?: NotificationPreferenceCreateOrConnectWithoutUserInput
-    upsert?: NotificationPreferenceUpsertWithoutUserInput
-    disconnect?: NotificationPreferenceWhereInput | boolean
-    delete?: NotificationPreferenceWhereInput | boolean
-    connect?: NotificationPreferenceWhereUniqueInput
-    update?: XOR<XOR<NotificationPreferenceUpdateToOneWithWhereWithoutUserInput, NotificationPreferenceUpdateWithoutUserInput>, NotificationPreferenceUncheckedUpdateWithoutUserInput>
+  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutMembershipsInput = {
-    create?: XOR<UserCreateWithoutMembershipsInput, UserUncheckedCreateWithoutMembershipsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutMembershipsInput
-    connect?: UserWhereUniqueInput
+  export type StudyUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<StudyCreateWithoutUserInput, StudyUncheckedCreateWithoutUserInput> | StudyCreateWithoutUserInput[] | StudyUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: StudyCreateOrConnectWithoutUserInput | StudyCreateOrConnectWithoutUserInput[]
+    upsert?: StudyUpsertWithWhereUniqueWithoutUserInput | StudyUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: StudyCreateManyUserInputEnvelope
+    set?: StudyWhereUniqueInput | StudyWhereUniqueInput[]
+    disconnect?: StudyWhereUniqueInput | StudyWhereUniqueInput[]
+    delete?: StudyWhereUniqueInput | StudyWhereUniqueInput[]
+    connect?: StudyWhereUniqueInput | StudyWhereUniqueInput[]
+    update?: StudyUpdateWithWhereUniqueWithoutUserInput | StudyUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: StudyUpdateManyWithWhereWithoutUserInput | StudyUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: StudyScalarWhereInput | StudyScalarWhereInput[]
+  }
+
+  export type ShareTokenUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<ShareTokenCreateWithoutCreatedByInput, ShareTokenUncheckedCreateWithoutCreatedByInput> | ShareTokenCreateWithoutCreatedByInput[] | ShareTokenUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ShareTokenCreateOrConnectWithoutCreatedByInput | ShareTokenCreateOrConnectWithoutCreatedByInput[]
+    upsert?: ShareTokenUpsertWithWhereUniqueWithoutCreatedByInput | ShareTokenUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: ShareTokenCreateManyCreatedByInputEnvelope
+    set?: ShareTokenWhereUniqueInput | ShareTokenWhereUniqueInput[]
+    disconnect?: ShareTokenWhereUniqueInput | ShareTokenWhereUniqueInput[]
+    delete?: ShareTokenWhereUniqueInput | ShareTokenWhereUniqueInput[]
+    connect?: ShareTokenWhereUniqueInput | ShareTokenWhereUniqueInput[]
+    update?: ShareTokenUpdateWithWhereUniqueWithoutCreatedByInput | ShareTokenUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: ShareTokenUpdateManyWithWhereWithoutCreatedByInput | ShareTokenUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: ShareTokenScalarWhereInput | ShareTokenScalarWhereInput[]
   }
 
   export type TenantCreateNestedOneWithoutMembersInput = {
@@ -24332,16 +26153,10 @@ export namespace Prisma {
     connect?: TenantWhereUniqueInput
   }
 
-  export type EnumRoleFieldUpdateOperationsInput = {
-    set?: $Enums.Role
-  }
-
-  export type UserUpdateOneRequiredWithoutMembershipsNestedInput = {
+  export type UserCreateNestedOneWithoutMembershipsInput = {
     create?: XOR<UserCreateWithoutMembershipsInput, UserUncheckedCreateWithoutMembershipsInput>
     connectOrCreate?: UserCreateOrConnectWithoutMembershipsInput
-    upsert?: UserUpsertWithoutMembershipsInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMembershipsInput, UserUpdateWithoutMembershipsInput>, UserUncheckedUpdateWithoutMembershipsInput>
   }
 
   export type TenantUpdateOneRequiredWithoutMembersNestedInput = {
@@ -24350,6 +26165,14 @@ export namespace Prisma {
     upsert?: TenantUpsertWithoutMembersInput
     connect?: TenantWhereUniqueInput
     update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutMembersInput, TenantUpdateWithoutMembersInput>, TenantUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutMembershipsNestedInput = {
+    create?: XOR<UserCreateWithoutMembershipsInput, UserUncheckedCreateWithoutMembershipsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMembershipsInput
+    upsert?: UserUpsertWithoutMembershipsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMembershipsInput, UserUpdateWithoutMembershipsInput>, UserUncheckedUpdateWithoutMembershipsInput>
   }
 
   export type UserCreateNestedOneWithoutAccountsInput = {
@@ -24388,10 +26211,11 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
-  export type TenantCreateNestedOneWithoutStudiesInput = {
-    create?: XOR<TenantCreateWithoutStudiesInput, TenantUncheckedCreateWithoutStudiesInput>
-    connectOrCreate?: TenantCreateOrConnectWithoutStudiesInput
-    connect?: TenantWhereUniqueInput
+  export type ReportCreateNestedManyWithoutStudyInput = {
+    create?: XOR<ReportCreateWithoutStudyInput, ReportUncheckedCreateWithoutStudyInput> | ReportCreateWithoutStudyInput[] | ReportUncheckedCreateWithoutStudyInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutStudyInput | ReportCreateOrConnectWithoutStudyInput[]
+    createMany?: ReportCreateManyStudyInputEnvelope
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
   }
 
   export type SeriesCreateNestedManyWithoutStudyInput = {
@@ -24401,13 +26225,6 @@ export namespace Prisma {
     connect?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
   }
 
-  export type ReportCreateNestedManyWithoutStudyInput = {
-    create?: XOR<ReportCreateWithoutStudyInput, ReportUncheckedCreateWithoutStudyInput> | ReportCreateWithoutStudyInput[] | ReportUncheckedCreateWithoutStudyInput[]
-    connectOrCreate?: ReportCreateOrConnectWithoutStudyInput | ReportCreateOrConnectWithoutStudyInput[]
-    createMany?: ReportCreateManyStudyInputEnvelope
-    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
-  }
-
   export type ShareTokenCreateNestedManyWithoutStudyInput = {
     create?: XOR<ShareTokenCreateWithoutStudyInput, ShareTokenUncheckedCreateWithoutStudyInput> | ShareTokenCreateWithoutStudyInput[] | ShareTokenUncheckedCreateWithoutStudyInput[]
     connectOrCreate?: ShareTokenCreateOrConnectWithoutStudyInput | ShareTokenCreateOrConnectWithoutStudyInput[]
@@ -24415,11 +26232,16 @@ export namespace Prisma {
     connect?: ShareTokenWhereUniqueInput | ShareTokenWhereUniqueInput[]
   }
 
-  export type SeriesUncheckedCreateNestedManyWithoutStudyInput = {
-    create?: XOR<SeriesCreateWithoutStudyInput, SeriesUncheckedCreateWithoutStudyInput> | SeriesCreateWithoutStudyInput[] | SeriesUncheckedCreateWithoutStudyInput[]
-    connectOrCreate?: SeriesCreateOrConnectWithoutStudyInput | SeriesCreateOrConnectWithoutStudyInput[]
-    createMany?: SeriesCreateManyStudyInputEnvelope
-    connect?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
+  export type TenantCreateNestedOneWithoutStudiesInput = {
+    create?: XOR<TenantCreateWithoutStudiesInput, TenantUncheckedCreateWithoutStudiesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutStudiesInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutStudyInput = {
+    create?: XOR<UserCreateWithoutStudyInput, UserUncheckedCreateWithoutStudyInput>
+    connectOrCreate?: UserCreateOrConnectWithoutStudyInput
+    connect?: UserWhereUniqueInput
   }
 
   export type ReportUncheckedCreateNestedManyWithoutStudyInput = {
@@ -24427,6 +26249,13 @@ export namespace Prisma {
     connectOrCreate?: ReportCreateOrConnectWithoutStudyInput | ReportCreateOrConnectWithoutStudyInput[]
     createMany?: ReportCreateManyStudyInputEnvelope
     connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+  }
+
+  export type SeriesUncheckedCreateNestedManyWithoutStudyInput = {
+    create?: XOR<SeriesCreateWithoutStudyInput, SeriesUncheckedCreateWithoutStudyInput> | SeriesCreateWithoutStudyInput[] | SeriesUncheckedCreateWithoutStudyInput[]
+    connectOrCreate?: SeriesCreateOrConnectWithoutStudyInput | SeriesCreateOrConnectWithoutStudyInput[]
+    createMany?: SeriesCreateManyStudyInputEnvelope
+    connect?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
   }
 
   export type ShareTokenUncheckedCreateNestedManyWithoutStudyInput = {
@@ -24448,26 +26277,8 @@ export namespace Prisma {
     set?: $Enums.StudyStatus
   }
 
-  export type TenantUpdateOneRequiredWithoutStudiesNestedInput = {
-    create?: XOR<TenantCreateWithoutStudiesInput, TenantUncheckedCreateWithoutStudiesInput>
-    connectOrCreate?: TenantCreateOrConnectWithoutStudiesInput
-    upsert?: TenantUpsertWithoutStudiesInput
-    connect?: TenantWhereUniqueInput
-    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutStudiesInput, TenantUpdateWithoutStudiesInput>, TenantUncheckedUpdateWithoutStudiesInput>
-  }
-
-  export type SeriesUpdateManyWithoutStudyNestedInput = {
-    create?: XOR<SeriesCreateWithoutStudyInput, SeriesUncheckedCreateWithoutStudyInput> | SeriesCreateWithoutStudyInput[] | SeriesUncheckedCreateWithoutStudyInput[]
-    connectOrCreate?: SeriesCreateOrConnectWithoutStudyInput | SeriesCreateOrConnectWithoutStudyInput[]
-    upsert?: SeriesUpsertWithWhereUniqueWithoutStudyInput | SeriesUpsertWithWhereUniqueWithoutStudyInput[]
-    createMany?: SeriesCreateManyStudyInputEnvelope
-    set?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
-    disconnect?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
-    delete?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
-    connect?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
-    update?: SeriesUpdateWithWhereUniqueWithoutStudyInput | SeriesUpdateWithWhereUniqueWithoutStudyInput[]
-    updateMany?: SeriesUpdateManyWithWhereWithoutStudyInput | SeriesUpdateManyWithWhereWithoutStudyInput[]
-    deleteMany?: SeriesScalarWhereInput | SeriesScalarWhereInput[]
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type ReportUpdateManyWithoutStudyNestedInput = {
@@ -24484,6 +26295,20 @@ export namespace Prisma {
     deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
   }
 
+  export type SeriesUpdateManyWithoutStudyNestedInput = {
+    create?: XOR<SeriesCreateWithoutStudyInput, SeriesUncheckedCreateWithoutStudyInput> | SeriesCreateWithoutStudyInput[] | SeriesUncheckedCreateWithoutStudyInput[]
+    connectOrCreate?: SeriesCreateOrConnectWithoutStudyInput | SeriesCreateOrConnectWithoutStudyInput[]
+    upsert?: SeriesUpsertWithWhereUniqueWithoutStudyInput | SeriesUpsertWithWhereUniqueWithoutStudyInput[]
+    createMany?: SeriesCreateManyStudyInputEnvelope
+    set?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
+    disconnect?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
+    delete?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
+    connect?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
+    update?: SeriesUpdateWithWhereUniqueWithoutStudyInput | SeriesUpdateWithWhereUniqueWithoutStudyInput[]
+    updateMany?: SeriesUpdateManyWithWhereWithoutStudyInput | SeriesUpdateManyWithWhereWithoutStudyInput[]
+    deleteMany?: SeriesScalarWhereInput | SeriesScalarWhereInput[]
+  }
+
   export type ShareTokenUpdateManyWithoutStudyNestedInput = {
     create?: XOR<ShareTokenCreateWithoutStudyInput, ShareTokenUncheckedCreateWithoutStudyInput> | ShareTokenCreateWithoutStudyInput[] | ShareTokenUncheckedCreateWithoutStudyInput[]
     connectOrCreate?: ShareTokenCreateOrConnectWithoutStudyInput | ShareTokenCreateOrConnectWithoutStudyInput[]
@@ -24498,18 +26323,22 @@ export namespace Prisma {
     deleteMany?: ShareTokenScalarWhereInput | ShareTokenScalarWhereInput[]
   }
 
-  export type SeriesUncheckedUpdateManyWithoutStudyNestedInput = {
-    create?: XOR<SeriesCreateWithoutStudyInput, SeriesUncheckedCreateWithoutStudyInput> | SeriesCreateWithoutStudyInput[] | SeriesUncheckedCreateWithoutStudyInput[]
-    connectOrCreate?: SeriesCreateOrConnectWithoutStudyInput | SeriesCreateOrConnectWithoutStudyInput[]
-    upsert?: SeriesUpsertWithWhereUniqueWithoutStudyInput | SeriesUpsertWithWhereUniqueWithoutStudyInput[]
-    createMany?: SeriesCreateManyStudyInputEnvelope
-    set?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
-    disconnect?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
-    delete?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
-    connect?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
-    update?: SeriesUpdateWithWhereUniqueWithoutStudyInput | SeriesUpdateWithWhereUniqueWithoutStudyInput[]
-    updateMany?: SeriesUpdateManyWithWhereWithoutStudyInput | SeriesUpdateManyWithWhereWithoutStudyInput[]
-    deleteMany?: SeriesScalarWhereInput | SeriesScalarWhereInput[]
+  export type TenantUpdateOneRequiredWithoutStudiesNestedInput = {
+    create?: XOR<TenantCreateWithoutStudiesInput, TenantUncheckedCreateWithoutStudiesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutStudiesInput
+    upsert?: TenantUpsertWithoutStudiesInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutStudiesInput, TenantUpdateWithoutStudiesInput>, TenantUncheckedUpdateWithoutStudiesInput>
+  }
+
+  export type UserUpdateOneWithoutStudyNestedInput = {
+    create?: XOR<UserCreateWithoutStudyInput, UserUncheckedCreateWithoutStudyInput>
+    connectOrCreate?: UserCreateOrConnectWithoutStudyInput
+    upsert?: UserUpsertWithoutStudyInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutStudyInput, UserUpdateWithoutStudyInput>, UserUncheckedUpdateWithoutStudyInput>
   }
 
   export type ReportUncheckedUpdateManyWithoutStudyNestedInput = {
@@ -24526,6 +26355,20 @@ export namespace Prisma {
     deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
   }
 
+  export type SeriesUncheckedUpdateManyWithoutStudyNestedInput = {
+    create?: XOR<SeriesCreateWithoutStudyInput, SeriesUncheckedCreateWithoutStudyInput> | SeriesCreateWithoutStudyInput[] | SeriesUncheckedCreateWithoutStudyInput[]
+    connectOrCreate?: SeriesCreateOrConnectWithoutStudyInput | SeriesCreateOrConnectWithoutStudyInput[]
+    upsert?: SeriesUpsertWithWhereUniqueWithoutStudyInput | SeriesUpsertWithWhereUniqueWithoutStudyInput[]
+    createMany?: SeriesCreateManyStudyInputEnvelope
+    set?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
+    disconnect?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
+    delete?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
+    connect?: SeriesWhereUniqueInput | SeriesWhereUniqueInput[]
+    update?: SeriesUpdateWithWhereUniqueWithoutStudyInput | SeriesUpdateWithWhereUniqueWithoutStudyInput[]
+    updateMany?: SeriesUpdateManyWithWhereWithoutStudyInput | SeriesUpdateManyWithWhereWithoutStudyInput[]
+    deleteMany?: SeriesScalarWhereInput | SeriesScalarWhereInput[]
+  }
+
   export type ShareTokenUncheckedUpdateManyWithoutStudyNestedInput = {
     create?: XOR<ShareTokenCreateWithoutStudyInput, ShareTokenUncheckedCreateWithoutStudyInput> | ShareTokenCreateWithoutStudyInput[] | ShareTokenUncheckedCreateWithoutStudyInput[]
     connectOrCreate?: ShareTokenCreateOrConnectWithoutStudyInput | ShareTokenCreateOrConnectWithoutStudyInput[]
@@ -24540,12 +26383,6 @@ export namespace Prisma {
     deleteMany?: ShareTokenScalarWhereInput | ShareTokenScalarWhereInput[]
   }
 
-  export type StudyCreateNestedOneWithoutSeriesInput = {
-    create?: XOR<StudyCreateWithoutSeriesInput, StudyUncheckedCreateWithoutSeriesInput>
-    connectOrCreate?: StudyCreateOrConnectWithoutSeriesInput
-    connect?: StudyWhereUniqueInput
-  }
-
   export type InstanceCreateNestedManyWithoutSeriesInput = {
     create?: XOR<InstanceCreateWithoutSeriesInput, InstanceUncheckedCreateWithoutSeriesInput> | InstanceCreateWithoutSeriesInput[] | InstanceUncheckedCreateWithoutSeriesInput[]
     connectOrCreate?: InstanceCreateOrConnectWithoutSeriesInput | InstanceCreateOrConnectWithoutSeriesInput[]
@@ -24553,19 +26390,17 @@ export namespace Prisma {
     connect?: InstanceWhereUniqueInput | InstanceWhereUniqueInput[]
   }
 
+  export type StudyCreateNestedOneWithoutSeriesInput = {
+    create?: XOR<StudyCreateWithoutSeriesInput, StudyUncheckedCreateWithoutSeriesInput>
+    connectOrCreate?: StudyCreateOrConnectWithoutSeriesInput
+    connect?: StudyWhereUniqueInput
+  }
+
   export type InstanceUncheckedCreateNestedManyWithoutSeriesInput = {
     create?: XOR<InstanceCreateWithoutSeriesInput, InstanceUncheckedCreateWithoutSeriesInput> | InstanceCreateWithoutSeriesInput[] | InstanceUncheckedCreateWithoutSeriesInput[]
     connectOrCreate?: InstanceCreateOrConnectWithoutSeriesInput | InstanceCreateOrConnectWithoutSeriesInput[]
     createMany?: InstanceCreateManySeriesInputEnvelope
     connect?: InstanceWhereUniqueInput | InstanceWhereUniqueInput[]
-  }
-
-  export type StudyUpdateOneRequiredWithoutSeriesNestedInput = {
-    create?: XOR<StudyCreateWithoutSeriesInput, StudyUncheckedCreateWithoutSeriesInput>
-    connectOrCreate?: StudyCreateOrConnectWithoutSeriesInput
-    upsert?: StudyUpsertWithoutSeriesInput
-    connect?: StudyWhereUniqueInput
-    update?: XOR<XOR<StudyUpdateToOneWithWhereWithoutSeriesInput, StudyUpdateWithoutSeriesInput>, StudyUncheckedUpdateWithoutSeriesInput>
   }
 
   export type InstanceUpdateManyWithoutSeriesNestedInput = {
@@ -24580,6 +26415,14 @@ export namespace Prisma {
     update?: InstanceUpdateWithWhereUniqueWithoutSeriesInput | InstanceUpdateWithWhereUniqueWithoutSeriesInput[]
     updateMany?: InstanceUpdateManyWithWhereWithoutSeriesInput | InstanceUpdateManyWithWhereWithoutSeriesInput[]
     deleteMany?: InstanceScalarWhereInput | InstanceScalarWhereInput[]
+  }
+
+  export type StudyUpdateOneRequiredWithoutSeriesNestedInput = {
+    create?: XOR<StudyCreateWithoutSeriesInput, StudyUncheckedCreateWithoutSeriesInput>
+    connectOrCreate?: StudyCreateOrConnectWithoutSeriesInput
+    upsert?: StudyUpsertWithoutSeriesInput
+    connect?: StudyWhereUniqueInput
+    update?: XOR<XOR<StudyUpdateToOneWithWhereWithoutSeriesInput, StudyUpdateWithoutSeriesInput>, StudyUncheckedUpdateWithoutSeriesInput>
   }
 
   export type InstanceUncheckedUpdateManyWithoutSeriesNestedInput = {
@@ -24624,28 +26467,20 @@ export namespace Prisma {
     update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutSubscriptionInput, TenantUpdateWithoutSubscriptionInput>, TenantUncheckedUpdateWithoutSubscriptionInput>
   }
 
-  export type StudyCreateNestedOneWithoutReportsInput = {
-    create?: XOR<StudyCreateWithoutReportsInput, StudyUncheckedCreateWithoutReportsInput>
-    connectOrCreate?: StudyCreateOrConnectWithoutReportsInput
-    connect?: StudyWhereUniqueInput
-  }
-
   export type UserCreateNestedOneWithoutReportsInput = {
     create?: XOR<UserCreateWithoutReportsInput, UserUncheckedCreateWithoutReportsInput>
     connectOrCreate?: UserCreateOrConnectWithoutReportsInput
     connect?: UserWhereUniqueInput
   }
 
-  export type EnumReportStatusFieldUpdateOperationsInput = {
-    set?: $Enums.ReportStatus
-  }
-
-  export type StudyUpdateOneRequiredWithoutReportsNestedInput = {
+  export type StudyCreateNestedOneWithoutReportsInput = {
     create?: XOR<StudyCreateWithoutReportsInput, StudyUncheckedCreateWithoutReportsInput>
     connectOrCreate?: StudyCreateOrConnectWithoutReportsInput
-    upsert?: StudyUpsertWithoutReportsInput
     connect?: StudyWhereUniqueInput
-    update?: XOR<XOR<StudyUpdateToOneWithWhereWithoutReportsInput, StudyUpdateWithoutReportsInput>, StudyUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type EnumReportStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ReportStatus
   }
 
   export type UserUpdateOneWithoutReportsNestedInput = {
@@ -24658,14 +26493,24 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReportsInput, UserUpdateWithoutReportsInput>, UserUncheckedUpdateWithoutReportsInput>
   }
 
+  export type StudyUpdateOneRequiredWithoutReportsNestedInput = {
+    create?: XOR<StudyCreateWithoutReportsInput, StudyUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: StudyCreateOrConnectWithoutReportsInput
+    upsert?: StudyUpsertWithoutReportsInput
+    connect?: StudyWhereUniqueInput
+    update?: XOR<XOR<StudyUpdateToOneWithWhereWithoutReportsInput, StudyUpdateWithoutReportsInput>, StudyUncheckedUpdateWithoutReportsInput>
+  }
+
   export type StudyCreateNestedOneWithoutShareTokensInput = {
     create?: XOR<StudyCreateWithoutShareTokensInput, StudyUncheckedCreateWithoutShareTokensInput>
     connectOrCreate?: StudyCreateOrConnectWithoutShareTokensInput
     connect?: StudyWhereUniqueInput
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
+  export type UserCreateNestedOneWithoutShareTokensInput = {
+    create?: XOR<UserCreateWithoutShareTokensInput, UserUncheckedCreateWithoutShareTokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutShareTokensInput
+    connect?: UserWhereUniqueInput
   }
 
   export type StudyUpdateOneRequiredWithoutShareTokensNestedInput = {
@@ -24674,6 +26519,16 @@ export namespace Prisma {
     upsert?: StudyUpsertWithoutShareTokensInput
     connect?: StudyWhereUniqueInput
     update?: XOR<XOR<StudyUpdateToOneWithWhereWithoutShareTokensInput, StudyUpdateWithoutShareTokensInput>, StudyUncheckedUpdateWithoutShareTokensInput>
+  }
+
+  export type UserUpdateOneWithoutShareTokensNestedInput = {
+    create?: XOR<UserCreateWithoutShareTokensInput, UserUncheckedCreateWithoutShareTokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutShareTokensInput
+    upsert?: UserUpsertWithoutShareTokensInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutShareTokensInput, UserUpdateWithoutShareTokensInput>, UserUncheckedUpdateWithoutShareTokensInput>
   }
 
   export type TenantCreateNestedOneWithoutApiKeysInput = {
@@ -24716,6 +26571,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutNotificationPreferenceInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationPreferenceInput, UserUpdateWithoutNotificationPreferenceInput>, UserUncheckedUpdateWithoutNotificationPreferenceInput>
+  }
+
+  export type TenantCreateNestedOneWithoutPendingInvitesInput = {
+    create?: XOR<TenantCreateWithoutPendingInvitesInput, TenantUncheckedCreateWithoutPendingInvitesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutPendingInvitesInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutPendingInvitesInput = {
+    create?: XOR<UserCreateWithoutPendingInvitesInput, UserUncheckedCreateWithoutPendingInvitesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPendingInvitesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TenantUpdateOneRequiredWithoutPendingInvitesNestedInput = {
+    create?: XOR<TenantCreateWithoutPendingInvitesInput, TenantUncheckedCreateWithoutPendingInvitesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutPendingInvitesInput
+    upsert?: TenantUpsertWithoutPendingInvitesInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutPendingInvitesInput, TenantUpdateWithoutPendingInvitesInput>, TenantUncheckedUpdateWithoutPendingInvitesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutPendingInvitesNestedInput = {
+    create?: XOR<UserCreateWithoutPendingInvitesInput, UserUncheckedCreateWithoutPendingInvitesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPendingInvitesInput
+    upsert?: UserUpsertWithoutPendingInvitesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPendingInvitesInput, UserUpdateWithoutPendingInvitesInput>, UserUncheckedUpdateWithoutPendingInvitesInput>
   }
 
   export type TenantCreateNestedOneWithoutAuditLogsInput = {
@@ -24866,23 +26749,6 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type NestedEnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
-  }
-
-  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
-  }
-
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -24915,6 +26781,11 @@ export namespace Prisma {
     in?: $Enums.StudyStatus[] | ListEnumStudyStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.StudyStatus[] | ListEnumStudyStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumStudyStatusFilter<$PrismaModel> | $Enums.StudyStatus
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -24954,6 +26825,14 @@ export namespace Prisma {
     _max?: NestedEnumStudyStatusFilter<$PrismaModel>
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedEnumReportStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ReportStatus | EnumReportStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
@@ -24969,19 +26848,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumReportStatusFilter<$PrismaModel>
     _max?: NestedEnumReportStatusFilter<$PrismaModel>
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -25007,9 +26873,84 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type ApiKeyCreateWithoutTenantInput = {
+    id?: string
+    name: string
+    prefix: string
+    hash: string
+    lastUsedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ApiKeyUncheckedCreateWithoutTenantInput = {
+    id?: string
+    name: string
+    prefix: string
+    hash: string
+    lastUsedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ApiKeyCreateOrConnectWithoutTenantInput = {
+    where: ApiKeyWhereUniqueInput
+    create: XOR<ApiKeyCreateWithoutTenantInput, ApiKeyUncheckedCreateWithoutTenantInput>
+  }
+
+  export type ApiKeyCreateManyTenantInputEnvelope = {
+    data: ApiKeyCreateManyTenantInput | ApiKeyCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AuditLogCreateWithoutTenantInput = {
+    id?: string
+    actorId: string
+    action: string
+    targetId?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type AuditLogUncheckedCreateWithoutTenantInput = {
+    id?: string
+    actorId: string
+    action: string
+    targetId?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type AuditLogCreateOrConnectWithoutTenantInput = {
+    where: AuditLogWhereUniqueInput
+    create: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput>
+  }
+
+  export type AuditLogCreateManyTenantInputEnvelope = {
+    data: AuditLogCreateManyTenantInput | AuditLogCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BrandingCreateWithoutTenantInput = {
+    id?: string
+    logoUrl?: string | null
+    primaryColor?: string | null
+    accentColor?: string | null
+  }
+
+  export type BrandingUncheckedCreateWithoutTenantInput = {
+    id?: string
+    logoUrl?: string | null
+    primaryColor?: string | null
+    accentColor?: string | null
+  }
+
+  export type BrandingCreateOrConnectWithoutTenantInput = {
+    where: BrandingWhereUniqueInput
+    create: XOR<BrandingCreateWithoutTenantInput, BrandingUncheckedCreateWithoutTenantInput>
+  }
+
   export type MembershipCreateWithoutTenantInput = {
     id?: string
-    role?: $Enums.Role
+    role?: string
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutMembershipsInput
   }
@@ -25017,7 +26958,7 @@ export namespace Prisma {
   export type MembershipUncheckedCreateWithoutTenantInput = {
     id?: string
     userId: string
-    role?: $Enums.Role
+    role?: string
     createdAt?: Date | string
   }
 
@@ -25031,35 +26972,67 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PendingInviteCreateWithoutTenantInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+    invitedBy: UserCreateNestedOneWithoutPendingInvitesInput
+  }
+
+  export type PendingInviteUncheckedCreateWithoutTenantInput = {
+    id?: string
+    email: string
+    invitedById: string
+    createdAt?: Date | string
+  }
+
+  export type PendingInviteCreateOrConnectWithoutTenantInput = {
+    where: PendingInviteWhereUniqueInput
+    create: XOR<PendingInviteCreateWithoutTenantInput, PendingInviteUncheckedCreateWithoutTenantInput>
+  }
+
+  export type PendingInviteCreateManyTenantInputEnvelope = {
+    data: PendingInviteCreateManyTenantInput | PendingInviteCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
   export type StudyCreateWithoutTenantInput = {
     id?: string
     studyUid: string
+    title?: string | null
     patientId?: string | null
     patientName?: string | null
     modality?: string | null
     slices?: number
     status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
     description?: string | null
     studyDate?: string | null
     createdAt?: Date | string
-    series?: SeriesCreateNestedManyWithoutStudyInput
+    visible?: boolean
     reports?: ReportCreateNestedManyWithoutStudyInput
+    series?: SeriesCreateNestedManyWithoutStudyInput
     shareTokens?: ShareTokenCreateNestedManyWithoutStudyInput
+    User?: UserCreateNestedOneWithoutStudyInput
   }
 
   export type StudyUncheckedCreateWithoutTenantInput = {
     id?: string
     studyUid: string
+    title?: string | null
     patientId?: string | null
     patientName?: string | null
     modality?: string | null
     slices?: number
     status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
     description?: string | null
     studyDate?: string | null
     createdAt?: Date | string
-    series?: SeriesUncheckedCreateNestedManyWithoutStudyInput
+    uploadedById?: string | null
+    visible?: boolean
     reports?: ReportUncheckedCreateNestedManyWithoutStudyInput
+    series?: SeriesUncheckedCreateNestedManyWithoutStudyInput
     shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutStudyInput
   }
 
@@ -25100,79 +27073,87 @@ export namespace Prisma {
     create: XOR<SubscriptionCreateWithoutTenantInput, SubscriptionUncheckedCreateWithoutTenantInput>
   }
 
-  export type AuditLogCreateWithoutTenantInput = {
-    id?: string
-    actorId: string
-    action: string
-    targetId?: string | null
-    metadata?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-  }
-
-  export type AuditLogUncheckedCreateWithoutTenantInput = {
-    id?: string
-    actorId: string
-    action: string
-    targetId?: string | null
-    metadata?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-  }
-
-  export type AuditLogCreateOrConnectWithoutTenantInput = {
-    where: AuditLogWhereUniqueInput
-    create: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput>
-  }
-
-  export type AuditLogCreateManyTenantInputEnvelope = {
-    data: AuditLogCreateManyTenantInput | AuditLogCreateManyTenantInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ApiKeyCreateWithoutTenantInput = {
-    id?: string
-    name: string
-    prefix: string
-    hash: string
-    lastUsedAt?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type ApiKeyUncheckedCreateWithoutTenantInput = {
-    id?: string
-    name: string
-    prefix: string
-    hash: string
-    lastUsedAt?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type ApiKeyCreateOrConnectWithoutTenantInput = {
+  export type ApiKeyUpsertWithWhereUniqueWithoutTenantInput = {
     where: ApiKeyWhereUniqueInput
+    update: XOR<ApiKeyUpdateWithoutTenantInput, ApiKeyUncheckedUpdateWithoutTenantInput>
     create: XOR<ApiKeyCreateWithoutTenantInput, ApiKeyUncheckedCreateWithoutTenantInput>
   }
 
-  export type ApiKeyCreateManyTenantInputEnvelope = {
-    data: ApiKeyCreateManyTenantInput | ApiKeyCreateManyTenantInput[]
-    skipDuplicates?: boolean
+  export type ApiKeyUpdateWithWhereUniqueWithoutTenantInput = {
+    where: ApiKeyWhereUniqueInput
+    data: XOR<ApiKeyUpdateWithoutTenantInput, ApiKeyUncheckedUpdateWithoutTenantInput>
   }
 
-  export type BrandingCreateWithoutTenantInput = {
-    id?: string
-    logoUrl?: string | null
-    primaryColor?: string | null
-    accentColor?: string | null
+  export type ApiKeyUpdateManyWithWhereWithoutTenantInput = {
+    where: ApiKeyScalarWhereInput
+    data: XOR<ApiKeyUpdateManyMutationInput, ApiKeyUncheckedUpdateManyWithoutTenantInput>
   }
 
-  export type BrandingUncheckedCreateWithoutTenantInput = {
-    id?: string
-    logoUrl?: string | null
-    primaryColor?: string | null
-    accentColor?: string | null
+  export type ApiKeyScalarWhereInput = {
+    AND?: ApiKeyScalarWhereInput | ApiKeyScalarWhereInput[]
+    OR?: ApiKeyScalarWhereInput[]
+    NOT?: ApiKeyScalarWhereInput | ApiKeyScalarWhereInput[]
+    id?: StringFilter<"ApiKey"> | string
+    tenantId?: StringFilter<"ApiKey"> | string
+    name?: StringFilter<"ApiKey"> | string
+    prefix?: StringFilter<"ApiKey"> | string
+    hash?: StringFilter<"ApiKey"> | string
+    lastUsedAt?: DateTimeNullableFilter<"ApiKey"> | Date | string | null
+    createdAt?: DateTimeFilter<"ApiKey"> | Date | string
   }
 
-  export type BrandingCreateOrConnectWithoutTenantInput = {
-    where: BrandingWhereUniqueInput
+  export type AuditLogUpsertWithWhereUniqueWithoutTenantInput = {
+    where: AuditLogWhereUniqueInput
+    update: XOR<AuditLogUpdateWithoutTenantInput, AuditLogUncheckedUpdateWithoutTenantInput>
+    create: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput>
+  }
+
+  export type AuditLogUpdateWithWhereUniqueWithoutTenantInput = {
+    where: AuditLogWhereUniqueInput
+    data: XOR<AuditLogUpdateWithoutTenantInput, AuditLogUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type AuditLogUpdateManyWithWhereWithoutTenantInput = {
+    where: AuditLogScalarWhereInput
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyWithoutTenantInput>
+  }
+
+  export type AuditLogScalarWhereInput = {
+    AND?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+    OR?: AuditLogScalarWhereInput[]
+    NOT?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+    id?: StringFilter<"AuditLog"> | string
+    tenantId?: StringFilter<"AuditLog"> | string
+    actorId?: StringFilter<"AuditLog"> | string
+    action?: StringFilter<"AuditLog"> | string
+    targetId?: StringNullableFilter<"AuditLog"> | string | null
+    metadata?: JsonNullableFilter<"AuditLog">
+    createdAt?: DateTimeFilter<"AuditLog"> | Date | string
+  }
+
+  export type BrandingUpsertWithoutTenantInput = {
+    update: XOR<BrandingUpdateWithoutTenantInput, BrandingUncheckedUpdateWithoutTenantInput>
     create: XOR<BrandingCreateWithoutTenantInput, BrandingUncheckedCreateWithoutTenantInput>
+    where?: BrandingWhereInput
+  }
+
+  export type BrandingUpdateToOneWithWhereWithoutTenantInput = {
+    where?: BrandingWhereInput
+    data: XOR<BrandingUpdateWithoutTenantInput, BrandingUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type BrandingUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    accentColor?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type BrandingUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    accentColor?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MembershipUpsertWithWhereUniqueWithoutTenantInput = {
@@ -25198,8 +27179,35 @@ export namespace Prisma {
     id?: StringFilter<"Membership"> | string
     userId?: StringFilter<"Membership"> | string
     tenantId?: StringFilter<"Membership"> | string
-    role?: EnumRoleFilter<"Membership"> | $Enums.Role
+    role?: StringFilter<"Membership"> | string
     createdAt?: DateTimeFilter<"Membership"> | Date | string
+  }
+
+  export type PendingInviteUpsertWithWhereUniqueWithoutTenantInput = {
+    where: PendingInviteWhereUniqueInput
+    update: XOR<PendingInviteUpdateWithoutTenantInput, PendingInviteUncheckedUpdateWithoutTenantInput>
+    create: XOR<PendingInviteCreateWithoutTenantInput, PendingInviteUncheckedCreateWithoutTenantInput>
+  }
+
+  export type PendingInviteUpdateWithWhereUniqueWithoutTenantInput = {
+    where: PendingInviteWhereUniqueInput
+    data: XOR<PendingInviteUpdateWithoutTenantInput, PendingInviteUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type PendingInviteUpdateManyWithWhereWithoutTenantInput = {
+    where: PendingInviteScalarWhereInput
+    data: XOR<PendingInviteUpdateManyMutationInput, PendingInviteUncheckedUpdateManyWithoutTenantInput>
+  }
+
+  export type PendingInviteScalarWhereInput = {
+    AND?: PendingInviteScalarWhereInput | PendingInviteScalarWhereInput[]
+    OR?: PendingInviteScalarWhereInput[]
+    NOT?: PendingInviteScalarWhereInput | PendingInviteScalarWhereInput[]
+    id?: StringFilter<"PendingInvite"> | string
+    email?: StringFilter<"PendingInvite"> | string
+    tenantId?: StringFilter<"PendingInvite"> | string
+    invitedById?: StringFilter<"PendingInvite"> | string
+    createdAt?: DateTimeFilter<"PendingInvite"> | Date | string
   }
 
   export type StudyUpsertWithWhereUniqueWithoutTenantInput = {
@@ -25225,14 +27233,18 @@ export namespace Prisma {
     id?: StringFilter<"Study"> | string
     tenantId?: StringFilter<"Study"> | string
     studyUid?: StringFilter<"Study"> | string
+    title?: StringNullableFilter<"Study"> | string | null
     patientId?: StringNullableFilter<"Study"> | string | null
     patientName?: StringNullableFilter<"Study"> | string | null
     modality?: StringNullableFilter<"Study"> | string | null
     slices?: IntFilter<"Study"> | number
     status?: EnumStudyStatusFilter<"Study"> | $Enums.StudyStatus
+    reportedAt?: DateTimeNullableFilter<"Study"> | Date | string | null
     description?: StringNullableFilter<"Study"> | string | null
     studyDate?: StringNullableFilter<"Study"> | string | null
     createdAt?: DateTimeFilter<"Study"> | Date | string
+    uploadedById?: StringNullableFilter<"Study"> | string | null
+    visible?: BoolFilter<"Study"> | boolean
   }
 
   export type SubscriptionUpsertWithoutTenantInput = {
@@ -25266,89 +27278,6 @@ export namespace Prisma {
     currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type AuditLogUpsertWithWhereUniqueWithoutTenantInput = {
-    where: AuditLogWhereUniqueInput
-    update: XOR<AuditLogUpdateWithoutTenantInput, AuditLogUncheckedUpdateWithoutTenantInput>
-    create: XOR<AuditLogCreateWithoutTenantInput, AuditLogUncheckedCreateWithoutTenantInput>
-  }
-
-  export type AuditLogUpdateWithWhereUniqueWithoutTenantInput = {
-    where: AuditLogWhereUniqueInput
-    data: XOR<AuditLogUpdateWithoutTenantInput, AuditLogUncheckedUpdateWithoutTenantInput>
-  }
-
-  export type AuditLogUpdateManyWithWhereWithoutTenantInput = {
-    where: AuditLogScalarWhereInput
-    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyWithoutTenantInput>
-  }
-
-  export type AuditLogScalarWhereInput = {
-    AND?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
-    OR?: AuditLogScalarWhereInput[]
-    NOT?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
-    id?: StringFilter<"AuditLog"> | string
-    tenantId?: StringFilter<"AuditLog"> | string
-    actorId?: StringFilter<"AuditLog"> | string
-    action?: StringFilter<"AuditLog"> | string
-    targetId?: StringNullableFilter<"AuditLog"> | string | null
-    metadata?: JsonNullableFilter<"AuditLog">
-    createdAt?: DateTimeFilter<"AuditLog"> | Date | string
-  }
-
-  export type ApiKeyUpsertWithWhereUniqueWithoutTenantInput = {
-    where: ApiKeyWhereUniqueInput
-    update: XOR<ApiKeyUpdateWithoutTenantInput, ApiKeyUncheckedUpdateWithoutTenantInput>
-    create: XOR<ApiKeyCreateWithoutTenantInput, ApiKeyUncheckedCreateWithoutTenantInput>
-  }
-
-  export type ApiKeyUpdateWithWhereUniqueWithoutTenantInput = {
-    where: ApiKeyWhereUniqueInput
-    data: XOR<ApiKeyUpdateWithoutTenantInput, ApiKeyUncheckedUpdateWithoutTenantInput>
-  }
-
-  export type ApiKeyUpdateManyWithWhereWithoutTenantInput = {
-    where: ApiKeyScalarWhereInput
-    data: XOR<ApiKeyUpdateManyMutationInput, ApiKeyUncheckedUpdateManyWithoutTenantInput>
-  }
-
-  export type ApiKeyScalarWhereInput = {
-    AND?: ApiKeyScalarWhereInput | ApiKeyScalarWhereInput[]
-    OR?: ApiKeyScalarWhereInput[]
-    NOT?: ApiKeyScalarWhereInput | ApiKeyScalarWhereInput[]
-    id?: StringFilter<"ApiKey"> | string
-    tenantId?: StringFilter<"ApiKey"> | string
-    name?: StringFilter<"ApiKey"> | string
-    prefix?: StringFilter<"ApiKey"> | string
-    hash?: StringFilter<"ApiKey"> | string
-    lastUsedAt?: DateTimeNullableFilter<"ApiKey"> | Date | string | null
-    createdAt?: DateTimeFilter<"ApiKey"> | Date | string
-  }
-
-  export type BrandingUpsertWithoutTenantInput = {
-    update: XOR<BrandingUpdateWithoutTenantInput, BrandingUncheckedUpdateWithoutTenantInput>
-    create: XOR<BrandingCreateWithoutTenantInput, BrandingUncheckedCreateWithoutTenantInput>
-    where?: BrandingWhereInput
-  }
-
-  export type BrandingUpdateToOneWithWhereWithoutTenantInput = {
-    where?: BrandingWhereInput
-    data: XOR<BrandingUpdateWithoutTenantInput, BrandingUncheckedUpdateWithoutTenantInput>
-  }
-
-  export type BrandingUpdateWithoutTenantInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
-    accentColor?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type BrandingUncheckedUpdateWithoutTenantInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
-    accentColor?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -25389,31 +27318,9 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type SessionCreateWithoutUserInput = {
-    id?: string
-    sessionToken: string
-    expires: Date | string
-  }
-
-  export type SessionUncheckedCreateWithoutUserInput = {
-    id?: string
-    sessionToken: string
-    expires: Date | string
-  }
-
-  export type SessionCreateOrConnectWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SessionCreateManyUserInputEnvelope = {
-    data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
   export type MembershipCreateWithoutUserInput = {
     id?: string
-    role?: $Enums.Role
+    role?: string
     createdAt?: Date | string
     tenant: TenantCreateNestedOneWithoutMembersInput
   }
@@ -25421,7 +27328,7 @@ export namespace Prisma {
   export type MembershipUncheckedCreateWithoutUserInput = {
     id?: string
     tenantId: string
-    role?: $Enums.Role
+    role?: string
     createdAt?: Date | string
   }
 
@@ -25432,6 +27339,51 @@ export namespace Prisma {
 
   export type MembershipCreateManyUserInputEnvelope = {
     data: MembershipCreateManyUserInput | MembershipCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type NotificationPreferenceCreateWithoutUserInput = {
+    id?: string
+    email?: boolean
+    browser?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NotificationPreferenceUncheckedCreateWithoutUserInput = {
+    id?: string
+    email?: boolean
+    browser?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NotificationPreferenceCreateOrConnectWithoutUserInput = {
+    where: NotificationPreferenceWhereUniqueInput
+    create: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
+  }
+
+  export type PendingInviteCreateWithoutInvitedByInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutPendingInvitesInput
+  }
+
+  export type PendingInviteUncheckedCreateWithoutInvitedByInput = {
+    id?: string
+    email: string
+    tenantId: string
+    createdAt?: Date | string
+  }
+
+  export type PendingInviteCreateOrConnectWithoutInvitedByInput = {
+    where: PendingInviteWhereUniqueInput
+    create: XOR<PendingInviteCreateWithoutInvitedByInput, PendingInviteUncheckedCreateWithoutInvitedByInput>
+  }
+
+  export type PendingInviteCreateManyInvitedByInputEnvelope = {
+    data: PendingInviteCreateManyInvitedByInput | PendingInviteCreateManyInvitedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -25461,25 +27413,106 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type NotificationPreferenceCreateWithoutUserInput = {
+  export type SessionCreateWithoutUserInput = {
     id?: string
-    email?: boolean
-    browser?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    sessionToken: string
+    expires: Date | string
   }
 
-  export type NotificationPreferenceUncheckedCreateWithoutUserInput = {
+  export type SessionUncheckedCreateWithoutUserInput = {
     id?: string
-    email?: boolean
-    browser?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    sessionToken: string
+    expires: Date | string
   }
 
-  export type NotificationPreferenceCreateOrConnectWithoutUserInput = {
-    where: NotificationPreferenceWhereUniqueInput
-    create: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
+  export type SessionCreateOrConnectWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionCreateManyUserInputEnvelope = {
+    data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StudyCreateWithoutUserInput = {
+    id?: string
+    studyUid: string
+    title?: string | null
+    patientId?: string | null
+    patientName?: string | null
+    modality?: string | null
+    slices?: number
+    status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
+    description?: string | null
+    studyDate?: string | null
+    createdAt?: Date | string
+    visible?: boolean
+    reports?: ReportCreateNestedManyWithoutStudyInput
+    series?: SeriesCreateNestedManyWithoutStudyInput
+    shareTokens?: ShareTokenCreateNestedManyWithoutStudyInput
+    tenant: TenantCreateNestedOneWithoutStudiesInput
+  }
+
+  export type StudyUncheckedCreateWithoutUserInput = {
+    id?: string
+    tenantId: string
+    studyUid: string
+    title?: string | null
+    patientId?: string | null
+    patientName?: string | null
+    modality?: string | null
+    slices?: number
+    status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
+    description?: string | null
+    studyDate?: string | null
+    createdAt?: Date | string
+    visible?: boolean
+    reports?: ReportUncheckedCreateNestedManyWithoutStudyInput
+    series?: SeriesUncheckedCreateNestedManyWithoutStudyInput
+    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutStudyInput
+  }
+
+  export type StudyCreateOrConnectWithoutUserInput = {
+    where: StudyWhereUniqueInput
+    create: XOR<StudyCreateWithoutUserInput, StudyUncheckedCreateWithoutUserInput>
+  }
+
+  export type StudyCreateManyUserInputEnvelope = {
+    data: StudyCreateManyUserInput | StudyCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ShareTokenCreateWithoutCreatedByInput = {
+    id?: string
+    token: string
+    expiresAt: Date | string
+    password?: string | null
+    allowDownload?: boolean
+    createdAt?: Date | string
+    study: StudyCreateNestedOneWithoutShareTokensInput
+  }
+
+  export type ShareTokenUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    token: string
+    studyId: string
+    expiresAt: Date | string
+    password?: string | null
+    allowDownload?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ShareTokenCreateOrConnectWithoutCreatedByInput = {
+    where: ShareTokenWhereUniqueInput
+    create: XOR<ShareTokenCreateWithoutCreatedByInput, ShareTokenUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type ShareTokenCreateManyCreatedByInputEnvelope = {
+    data: ShareTokenCreateManyCreatedByInput | ShareTokenCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
   }
 
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
@@ -25516,32 +27549,6 @@ export namespace Prisma {
     session_state?: StringNullableFilter<"Account"> | string | null
   }
 
-  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-  }
-
-  export type SessionUpdateManyWithWhereWithoutUserInput = {
-    where: SessionScalarWhereInput
-    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type SessionScalarWhereInput = {
-    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    OR?: SessionScalarWhereInput[]
-    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    id?: StringFilter<"Session"> | string
-    sessionToken?: StringFilter<"Session"> | string
-    userId?: StringFilter<"Session"> | string
-    expires?: DateTimeFilter<"Session"> | Date | string
-  }
-
   export type MembershipUpsertWithWhereUniqueWithoutUserInput = {
     where: MembershipWhereUniqueInput
     update: XOR<MembershipUpdateWithoutUserInput, MembershipUncheckedUpdateWithoutUserInput>
@@ -25556,6 +27563,49 @@ export namespace Prisma {
   export type MembershipUpdateManyWithWhereWithoutUserInput = {
     where: MembershipScalarWhereInput
     data: XOR<MembershipUpdateManyMutationInput, MembershipUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type NotificationPreferenceUpsertWithoutUserInput = {
+    update: XOR<NotificationPreferenceUpdateWithoutUserInput, NotificationPreferenceUncheckedUpdateWithoutUserInput>
+    create: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
+    where?: NotificationPreferenceWhereInput
+  }
+
+  export type NotificationPreferenceUpdateToOneWithWhereWithoutUserInput = {
+    where?: NotificationPreferenceWhereInput
+    data: XOR<NotificationPreferenceUpdateWithoutUserInput, NotificationPreferenceUncheckedUpdateWithoutUserInput>
+  }
+
+  export type NotificationPreferenceUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: BoolFieldUpdateOperationsInput | boolean
+    browser?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationPreferenceUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: BoolFieldUpdateOperationsInput | boolean
+    browser?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PendingInviteUpsertWithWhereUniqueWithoutInvitedByInput = {
+    where: PendingInviteWhereUniqueInput
+    update: XOR<PendingInviteUpdateWithoutInvitedByInput, PendingInviteUncheckedUpdateWithoutInvitedByInput>
+    create: XOR<PendingInviteCreateWithoutInvitedByInput, PendingInviteUncheckedCreateWithoutInvitedByInput>
+  }
+
+  export type PendingInviteUpdateWithWhereUniqueWithoutInvitedByInput = {
+    where: PendingInviteWhereUniqueInput
+    data: XOR<PendingInviteUpdateWithoutInvitedByInput, PendingInviteUncheckedUpdateWithoutInvitedByInput>
+  }
+
+  export type PendingInviteUpdateManyWithWhereWithoutInvitedByInput = {
+    where: PendingInviteScalarWhereInput
+    data: XOR<PendingInviteUpdateManyMutationInput, PendingInviteUncheckedUpdateManyWithoutInvitedByInput>
   }
 
   export type ReportUpsertWithWhereUniqueWithoutAuthorInput = {
@@ -25586,31 +27636,107 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Report"> | Date | string
   }
 
-  export type NotificationPreferenceUpsertWithoutUserInput = {
-    update: XOR<NotificationPreferenceUpdateWithoutUserInput, NotificationPreferenceUncheckedUpdateWithoutUserInput>
-    create: XOR<NotificationPreferenceCreateWithoutUserInput, NotificationPreferenceUncheckedCreateWithoutUserInput>
-    where?: NotificationPreferenceWhereInput
+  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
   }
 
-  export type NotificationPreferenceUpdateToOneWithWhereWithoutUserInput = {
-    where?: NotificationPreferenceWhereInput
-    data: XOR<NotificationPreferenceUpdateWithoutUserInput, NotificationPreferenceUncheckedUpdateWithoutUserInput>
+  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
   }
 
-  export type NotificationPreferenceUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: BoolFieldUpdateOperationsInput | boolean
-    browser?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type SessionUpdateManyWithWhereWithoutUserInput = {
+    where: SessionScalarWhereInput
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type NotificationPreferenceUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: BoolFieldUpdateOperationsInput | boolean
-    browser?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type SessionScalarWhereInput = {
+    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    OR?: SessionScalarWhereInput[]
+    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    id?: StringFilter<"Session"> | string
+    sessionToken?: StringFilter<"Session"> | string
+    userId?: StringFilter<"Session"> | string
+    expires?: DateTimeFilter<"Session"> | Date | string
+  }
+
+  export type StudyUpsertWithWhereUniqueWithoutUserInput = {
+    where: StudyWhereUniqueInput
+    update: XOR<StudyUpdateWithoutUserInput, StudyUncheckedUpdateWithoutUserInput>
+    create: XOR<StudyCreateWithoutUserInput, StudyUncheckedCreateWithoutUserInput>
+  }
+
+  export type StudyUpdateWithWhereUniqueWithoutUserInput = {
+    where: StudyWhereUniqueInput
+    data: XOR<StudyUpdateWithoutUserInput, StudyUncheckedUpdateWithoutUserInput>
+  }
+
+  export type StudyUpdateManyWithWhereWithoutUserInput = {
+    where: StudyScalarWhereInput
+    data: XOR<StudyUpdateManyMutationInput, StudyUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ShareTokenUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: ShareTokenWhereUniqueInput
+    update: XOR<ShareTokenUpdateWithoutCreatedByInput, ShareTokenUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<ShareTokenCreateWithoutCreatedByInput, ShareTokenUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type ShareTokenUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: ShareTokenWhereUniqueInput
+    data: XOR<ShareTokenUpdateWithoutCreatedByInput, ShareTokenUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type ShareTokenUpdateManyWithWhereWithoutCreatedByInput = {
+    where: ShareTokenScalarWhereInput
+    data: XOR<ShareTokenUpdateManyMutationInput, ShareTokenUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type ShareTokenScalarWhereInput = {
+    AND?: ShareTokenScalarWhereInput | ShareTokenScalarWhereInput[]
+    OR?: ShareTokenScalarWhereInput[]
+    NOT?: ShareTokenScalarWhereInput | ShareTokenScalarWhereInput[]
+    id?: StringFilter<"ShareToken"> | string
+    token?: StringFilter<"ShareToken"> | string
+    studyId?: StringFilter<"ShareToken"> | string
+    createdById?: StringNullableFilter<"ShareToken"> | string | null
+    expiresAt?: DateTimeFilter<"ShareToken"> | Date | string
+    password?: StringNullableFilter<"ShareToken"> | string | null
+    allowDownload?: BoolFilter<"ShareToken"> | boolean
+    createdAt?: DateTimeFilter<"ShareToken"> | Date | string
+  }
+
+  export type TenantCreateWithoutMembersInput = {
+    id?: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    apiKeys?: ApiKeyCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
+    branding?: BrandingCreateNestedOneWithoutTenantInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutTenantInput
+    studies?: StudyCreateNestedManyWithoutTenantInput
+    subscription?: SubscriptionCreateNestedOneWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutMembersInput = {
+    id?: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
+    branding?: BrandingUncheckedCreateNestedOneWithoutTenantInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutTenantInput
+    studies?: StudyUncheckedCreateNestedManyWithoutTenantInput
+    subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutMembersInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutMembersInput, TenantUncheckedCreateWithoutMembersInput>
   }
 
   export type UserCreateWithoutMembershipsInput = {
@@ -25622,9 +27748,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    reports?: ReportCreateNestedManyWithoutAuthorInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutInvitedByInput
+    reports?: ReportCreateNestedManyWithoutAuthorInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    Study?: StudyCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -25636,9 +27765,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutInvitedByInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    Study?: StudyUncheckedCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -25646,33 +27778,41 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutMembershipsInput, UserUncheckedCreateWithoutMembershipsInput>
   }
 
-  export type TenantCreateWithoutMembersInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-    studies?: StudyCreateNestedManyWithoutTenantInput
-    subscription?: SubscriptionCreateNestedOneWithoutTenantInput
-    auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
-    apiKeys?: ApiKeyCreateNestedManyWithoutTenantInput
-    branding?: BrandingCreateNestedOneWithoutTenantInput
-  }
-
-  export type TenantUncheckedCreateWithoutMembersInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-    studies?: StudyUncheckedCreateNestedManyWithoutTenantInput
-    subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
-    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
-    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutTenantInput
-    branding?: BrandingUncheckedCreateNestedOneWithoutTenantInput
-  }
-
-  export type TenantCreateOrConnectWithoutMembersInput = {
-    where: TenantWhereUniqueInput
+  export type TenantUpsertWithoutMembersInput = {
+    update: XOR<TenantUpdateWithoutMembersInput, TenantUncheckedUpdateWithoutMembersInput>
     create: XOR<TenantCreateWithoutMembersInput, TenantUncheckedCreateWithoutMembersInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutMembersInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutMembersInput, TenantUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type TenantUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiKeys?: ApiKeyUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
+    branding?: BrandingUpdateOneWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutTenantNestedInput
+    studies?: StudyUpdateManyWithoutTenantNestedInput
+    subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
+    branding?: BrandingUncheckedUpdateOneWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutTenantNestedInput
+    studies?: StudyUncheckedUpdateManyWithoutTenantNestedInput
+    subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type UserUpsertWithoutMembershipsInput = {
@@ -25695,9 +27835,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    reports?: ReportUpdateManyWithoutAuthorNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    Study?: StudyUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -25709,44 +27852,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-  }
-
-  export type TenantUpsertWithoutMembersInput = {
-    update: XOR<TenantUpdateWithoutMembersInput, TenantUncheckedUpdateWithoutMembersInput>
-    create: XOR<TenantCreateWithoutMembersInput, TenantUncheckedCreateWithoutMembersInput>
-    where?: TenantWhereInput
-  }
-
-  export type TenantUpdateToOneWithWhereWithoutMembersInput = {
-    where?: TenantWhereInput
-    data: XOR<TenantUpdateWithoutMembersInput, TenantUncheckedUpdateWithoutMembersInput>
-  }
-
-  export type TenantUpdateWithoutMembersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    studies?: StudyUpdateManyWithoutTenantNestedInput
-    subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
-    auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
-    apiKeys?: ApiKeyUpdateManyWithoutTenantNestedInput
-    branding?: BrandingUpdateOneWithoutTenantNestedInput
-  }
-
-  export type TenantUncheckedUpdateWithoutMembersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    studies?: StudyUncheckedUpdateManyWithoutTenantNestedInput
-    subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
-    auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
-    apiKeys?: ApiKeyUncheckedUpdateManyWithoutTenantNestedInput
-    branding?: BrandingUncheckedUpdateOneWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    Study?: StudyUncheckedUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -25757,10 +27868,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sessions?: SessionCreateNestedManyWithoutUserInput
     memberships?: MembershipCreateNestedManyWithoutUserInput
-    reports?: ReportCreateNestedManyWithoutAuthorInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutInvitedByInput
+    reports?: ReportCreateNestedManyWithoutAuthorInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    Study?: StudyCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -25771,10 +27885,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     memberships?: MembershipUncheckedCreateNestedManyWithoutUserInput
-    reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutInvitedByInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    Study?: StudyUncheckedCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -25801,10 +27918,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sessions?: SessionUpdateManyWithoutUserNestedInput
     memberships?: MembershipUpdateManyWithoutUserNestedInput
-    reports?: ReportUpdateManyWithoutAuthorNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    Study?: StudyUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -25815,10 +27935,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     memberships?: MembershipUncheckedUpdateManyWithoutUserNestedInput
-    reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    Study?: StudyUncheckedUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -25831,8 +27954,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
     memberships?: MembershipCreateNestedManyWithoutUserInput
-    reports?: ReportCreateNestedManyWithoutAuthorInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutInvitedByInput
+    reports?: ReportCreateNestedManyWithoutAuthorInput
+    Study?: StudyCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -25845,8 +27971,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     memberships?: MembershipUncheckedCreateNestedManyWithoutUserInput
-    reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutInvitedByInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
+    Study?: StudyUncheckedCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -25875,8 +28004,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     memberships?: MembershipUpdateManyWithoutUserNestedInput
-    reports?: ReportUpdateManyWithoutAuthorNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUpdateManyWithoutAuthorNestedInput
+    Study?: StudyUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -25889,67 +28021,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     memberships?: MembershipUncheckedUpdateManyWithoutUserNestedInput
-    reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-  }
-
-  export type TenantCreateWithoutStudiesInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-    members?: MembershipCreateNestedManyWithoutTenantInput
-    subscription?: SubscriptionCreateNestedOneWithoutTenantInput
-    auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
-    apiKeys?: ApiKeyCreateNestedManyWithoutTenantInput
-    branding?: BrandingCreateNestedOneWithoutTenantInput
-  }
-
-  export type TenantUncheckedCreateWithoutStudiesInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-    members?: MembershipUncheckedCreateNestedManyWithoutTenantInput
-    subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
-    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
-    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutTenantInput
-    branding?: BrandingUncheckedCreateNestedOneWithoutTenantInput
-  }
-
-  export type TenantCreateOrConnectWithoutStudiesInput = {
-    where: TenantWhereUniqueInput
-    create: XOR<TenantCreateWithoutStudiesInput, TenantUncheckedCreateWithoutStudiesInput>
-  }
-
-  export type SeriesCreateWithoutStudyInput = {
-    id?: string
-    seriesUid: string
-    seriesNumber?: number | null
-    modality?: string | null
-    instanceCount?: number
-    createdAt?: Date | string
-    instances?: InstanceCreateNestedManyWithoutSeriesInput
-  }
-
-  export type SeriesUncheckedCreateWithoutStudyInput = {
-    id?: string
-    seriesUid: string
-    seriesNumber?: number | null
-    modality?: string | null
-    instanceCount?: number
-    createdAt?: Date | string
-    instances?: InstanceUncheckedCreateNestedManyWithoutSeriesInput
-  }
-
-  export type SeriesCreateOrConnectWithoutStudyInput = {
-    where: SeriesWhereUniqueInput
-    create: XOR<SeriesCreateWithoutStudyInput, SeriesUncheckedCreateWithoutStudyInput>
-  }
-
-  export type SeriesCreateManyStudyInputEnvelope = {
-    data: SeriesCreateManyStudyInput | SeriesCreateManyStudyInput[]
-    skipDuplicates?: boolean
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
+    Study?: StudyUncheckedUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type ReportCreateWithoutStudyInput = {
@@ -25978,6 +28054,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SeriesCreateWithoutStudyInput = {
+    id?: string
+    seriesUid: string
+    modality?: string | null
+    instanceCount?: number
+    createdAt?: Date | string
+    seriesNumber?: number | null
+    instances?: InstanceCreateNestedManyWithoutSeriesInput
+  }
+
+  export type SeriesUncheckedCreateWithoutStudyInput = {
+    id?: string
+    seriesUid: string
+    modality?: string | null
+    instanceCount?: number
+    createdAt?: Date | string
+    seriesNumber?: number | null
+    instances?: InstanceUncheckedCreateNestedManyWithoutSeriesInput
+  }
+
+  export type SeriesCreateOrConnectWithoutStudyInput = {
+    where: SeriesWhereUniqueInput
+    create: XOR<SeriesCreateWithoutStudyInput, SeriesUncheckedCreateWithoutStudyInput>
+  }
+
+  export type SeriesCreateManyStudyInputEnvelope = {
+    data: SeriesCreateManyStudyInput | SeriesCreateManyStudyInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ShareTokenCreateWithoutStudyInput = {
     id?: string
     token: string
@@ -25985,11 +28091,13 @@ export namespace Prisma {
     password?: string | null
     allowDownload?: boolean
     createdAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutShareTokensInput
   }
 
   export type ShareTokenUncheckedCreateWithoutStudyInput = {
     id?: string
     token: string
+    createdById?: string | null
     expiresAt: Date | string
     password?: string | null
     allowDownload?: boolean
@@ -26006,39 +28114,90 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type TenantUpsertWithoutStudiesInput = {
-    update: XOR<TenantUpdateWithoutStudiesInput, TenantUncheckedUpdateWithoutStudiesInput>
+  export type TenantCreateWithoutStudiesInput = {
+    id?: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    apiKeys?: ApiKeyCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
+    branding?: BrandingCreateNestedOneWithoutTenantInput
+    members?: MembershipCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutTenantInput
+    subscription?: SubscriptionCreateNestedOneWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutStudiesInput = {
+    id?: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
+    branding?: BrandingUncheckedCreateNestedOneWithoutTenantInput
+    members?: MembershipUncheckedCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutTenantInput
+    subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutStudiesInput = {
+    where: TenantWhereUniqueInput
     create: XOR<TenantCreateWithoutStudiesInput, TenantUncheckedCreateWithoutStudiesInput>
-    where?: TenantWhereInput
   }
 
-  export type TenantUpdateToOneWithWhereWithoutStudiesInput = {
-    where?: TenantWhereInput
-    data: XOR<TenantUpdateWithoutStudiesInput, TenantUncheckedUpdateWithoutStudiesInput>
+  export type UserCreateWithoutStudyInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    memberships?: MembershipCreateNestedManyWithoutUserInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutInvitedByInput
+    reports?: ReportCreateNestedManyWithoutAuthorInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenCreateNestedManyWithoutCreatedByInput
   }
 
-  export type TenantUpdateWithoutStudiesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MembershipUpdateManyWithoutTenantNestedInput
-    subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
-    auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
-    apiKeys?: ApiKeyUpdateManyWithoutTenantNestedInput
-    branding?: BrandingUpdateOneWithoutTenantNestedInput
+  export type UserUncheckedCreateWithoutStudyInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    memberships?: MembershipUncheckedCreateNestedManyWithoutUserInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutInvitedByInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
-  export type TenantUncheckedUpdateWithoutStudiesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MembershipUncheckedUpdateManyWithoutTenantNestedInput
-    subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
-    auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
-    apiKeys?: ApiKeyUncheckedUpdateManyWithoutTenantNestedInput
-    branding?: BrandingUncheckedUpdateOneWithoutTenantNestedInput
+  export type UserCreateOrConnectWithoutStudyInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutStudyInput, UserUncheckedCreateWithoutStudyInput>
+  }
+
+  export type ReportUpsertWithWhereUniqueWithoutStudyInput = {
+    where: ReportWhereUniqueInput
+    update: XOR<ReportUpdateWithoutStudyInput, ReportUncheckedUpdateWithoutStudyInput>
+    create: XOR<ReportCreateWithoutStudyInput, ReportUncheckedCreateWithoutStudyInput>
+  }
+
+  export type ReportUpdateWithWhereUniqueWithoutStudyInput = {
+    where: ReportWhereUniqueInput
+    data: XOR<ReportUpdateWithoutStudyInput, ReportUncheckedUpdateWithoutStudyInput>
+  }
+
+  export type ReportUpdateManyWithWhereWithoutStudyInput = {
+    where: ReportScalarWhereInput
+    data: XOR<ReportUpdateManyMutationInput, ReportUncheckedUpdateManyWithoutStudyInput>
   }
 
   export type SeriesUpsertWithWhereUniqueWithoutStudyInput = {
@@ -26063,27 +28222,11 @@ export namespace Prisma {
     NOT?: SeriesScalarWhereInput | SeriesScalarWhereInput[]
     id?: StringFilter<"Series"> | string
     seriesUid?: StringFilter<"Series"> | string
-    seriesNumber?: IntNullableFilter<"Series"> | number | null
     modality?: StringNullableFilter<"Series"> | string | null
     instanceCount?: IntFilter<"Series"> | number
     studyId?: StringFilter<"Series"> | string
     createdAt?: DateTimeFilter<"Series"> | Date | string
-  }
-
-  export type ReportUpsertWithWhereUniqueWithoutStudyInput = {
-    where: ReportWhereUniqueInput
-    update: XOR<ReportUpdateWithoutStudyInput, ReportUncheckedUpdateWithoutStudyInput>
-    create: XOR<ReportCreateWithoutStudyInput, ReportUncheckedCreateWithoutStudyInput>
-  }
-
-  export type ReportUpdateWithWhereUniqueWithoutStudyInput = {
-    where: ReportWhereUniqueInput
-    data: XOR<ReportUpdateWithoutStudyInput, ReportUncheckedUpdateWithoutStudyInput>
-  }
-
-  export type ReportUpdateManyWithWhereWithoutStudyInput = {
-    where: ReportScalarWhereInput
-    data: XOR<ReportUpdateManyMutationInput, ReportUncheckedUpdateManyWithoutStudyInput>
+    seriesNumber?: IntNullableFilter<"Series"> | number | null
   }
 
   export type ShareTokenUpsertWithWhereUniqueWithoutStudyInput = {
@@ -26102,54 +28245,86 @@ export namespace Prisma {
     data: XOR<ShareTokenUpdateManyMutationInput, ShareTokenUncheckedUpdateManyWithoutStudyInput>
   }
 
-  export type ShareTokenScalarWhereInput = {
-    AND?: ShareTokenScalarWhereInput | ShareTokenScalarWhereInput[]
-    OR?: ShareTokenScalarWhereInput[]
-    NOT?: ShareTokenScalarWhereInput | ShareTokenScalarWhereInput[]
-    id?: StringFilter<"ShareToken"> | string
-    token?: StringFilter<"ShareToken"> | string
-    studyId?: StringFilter<"ShareToken"> | string
-    expiresAt?: DateTimeFilter<"ShareToken"> | Date | string
-    password?: StringNullableFilter<"ShareToken"> | string | null
-    allowDownload?: BoolFilter<"ShareToken"> | boolean
-    createdAt?: DateTimeFilter<"ShareToken"> | Date | string
+  export type TenantUpsertWithoutStudiesInput = {
+    update: XOR<TenantUpdateWithoutStudiesInput, TenantUncheckedUpdateWithoutStudiesInput>
+    create: XOR<TenantCreateWithoutStudiesInput, TenantUncheckedCreateWithoutStudiesInput>
+    where?: TenantWhereInput
   }
 
-  export type StudyCreateWithoutSeriesInput = {
-    id?: string
-    studyUid: string
-    patientId?: string | null
-    patientName?: string | null
-    modality?: string | null
-    slices?: number
-    status?: $Enums.StudyStatus
-    description?: string | null
-    studyDate?: string | null
-    createdAt?: Date | string
-    tenant: TenantCreateNestedOneWithoutStudiesInput
-    reports?: ReportCreateNestedManyWithoutStudyInput
-    shareTokens?: ShareTokenCreateNestedManyWithoutStudyInput
+  export type TenantUpdateToOneWithWhereWithoutStudiesInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutStudiesInput, TenantUncheckedUpdateWithoutStudiesInput>
   }
 
-  export type StudyUncheckedCreateWithoutSeriesInput = {
-    id?: string
-    tenantId: string
-    studyUid: string
-    patientId?: string | null
-    patientName?: string | null
-    modality?: string | null
-    slices?: number
-    status?: $Enums.StudyStatus
-    description?: string | null
-    studyDate?: string | null
-    createdAt?: Date | string
-    reports?: ReportUncheckedCreateNestedManyWithoutStudyInput
-    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutStudyInput
+  export type TenantUpdateWithoutStudiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiKeys?: ApiKeyUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
+    branding?: BrandingUpdateOneWithoutTenantNestedInput
+    members?: MembershipUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutTenantNestedInput
+    subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
   }
 
-  export type StudyCreateOrConnectWithoutSeriesInput = {
-    where: StudyWhereUniqueInput
-    create: XOR<StudyCreateWithoutSeriesInput, StudyUncheckedCreateWithoutSeriesInput>
+  export type TenantUncheckedUpdateWithoutStudiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
+    branding?: BrandingUncheckedUpdateOneWithoutTenantNestedInput
+    members?: MembershipUncheckedUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutTenantNestedInput
+    subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+  }
+
+  export type UserUpsertWithoutStudyInput = {
+    update: XOR<UserUpdateWithoutStudyInput, UserUncheckedUpdateWithoutStudyInput>
+    create: XOR<UserCreateWithoutStudyInput, UserUncheckedCreateWithoutStudyInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutStudyInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutStudyInput, UserUncheckedUpdateWithoutStudyInput>
+  }
+
+  export type UserUpdateWithoutStudyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    memberships?: MembershipUpdateManyWithoutUserNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutStudyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    memberships?: MembershipUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type InstanceCreateWithoutSeriesInput = {
@@ -26182,47 +28357,49 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type StudyUpsertWithoutSeriesInput = {
-    update: XOR<StudyUpdateWithoutSeriesInput, StudyUncheckedUpdateWithoutSeriesInput>
+  export type StudyCreateWithoutSeriesInput = {
+    id?: string
+    studyUid: string
+    title?: string | null
+    patientId?: string | null
+    patientName?: string | null
+    modality?: string | null
+    slices?: number
+    status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
+    description?: string | null
+    studyDate?: string | null
+    createdAt?: Date | string
+    visible?: boolean
+    reports?: ReportCreateNestedManyWithoutStudyInput
+    shareTokens?: ShareTokenCreateNestedManyWithoutStudyInput
+    tenant: TenantCreateNestedOneWithoutStudiesInput
+    User?: UserCreateNestedOneWithoutStudyInput
+  }
+
+  export type StudyUncheckedCreateWithoutSeriesInput = {
+    id?: string
+    tenantId: string
+    studyUid: string
+    title?: string | null
+    patientId?: string | null
+    patientName?: string | null
+    modality?: string | null
+    slices?: number
+    status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
+    description?: string | null
+    studyDate?: string | null
+    createdAt?: Date | string
+    uploadedById?: string | null
+    visible?: boolean
+    reports?: ReportUncheckedCreateNestedManyWithoutStudyInput
+    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutStudyInput
+  }
+
+  export type StudyCreateOrConnectWithoutSeriesInput = {
+    where: StudyWhereUniqueInput
     create: XOR<StudyCreateWithoutSeriesInput, StudyUncheckedCreateWithoutSeriesInput>
-    where?: StudyWhereInput
-  }
-
-  export type StudyUpdateToOneWithWhereWithoutSeriesInput = {
-    where?: StudyWhereInput
-    data: XOR<StudyUpdateWithoutSeriesInput, StudyUncheckedUpdateWithoutSeriesInput>
-  }
-
-  export type StudyUpdateWithoutSeriesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    studyUid?: StringFieldUpdateOperationsInput | string
-    patientId?: NullableStringFieldUpdateOperationsInput | string | null
-    patientName?: NullableStringFieldUpdateOperationsInput | string | null
-    modality?: NullableStringFieldUpdateOperationsInput | string | null
-    slices?: IntFieldUpdateOperationsInput | number
-    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tenant?: TenantUpdateOneRequiredWithoutStudiesNestedInput
-    reports?: ReportUpdateManyWithoutStudyNestedInput
-    shareTokens?: ShareTokenUpdateManyWithoutStudyNestedInput
-  }
-
-  export type StudyUncheckedUpdateWithoutSeriesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
-    studyUid?: StringFieldUpdateOperationsInput | string
-    patientId?: NullableStringFieldUpdateOperationsInput | string | null
-    patientName?: NullableStringFieldUpdateOperationsInput | string | null
-    modality?: NullableStringFieldUpdateOperationsInput | string | null
-    slices?: IntFieldUpdateOperationsInput | number
-    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    reports?: ReportUncheckedUpdateManyWithoutStudyNestedInput
-    shareTokens?: ShareTokenUncheckedUpdateManyWithoutStudyNestedInput
   }
 
   export type InstanceUpsertWithWhereUniqueWithoutSeriesInput = {
@@ -26255,24 +28432,75 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Instance"> | Date | string
   }
 
+  export type StudyUpsertWithoutSeriesInput = {
+    update: XOR<StudyUpdateWithoutSeriesInput, StudyUncheckedUpdateWithoutSeriesInput>
+    create: XOR<StudyCreateWithoutSeriesInput, StudyUncheckedCreateWithoutSeriesInput>
+    where?: StudyWhereInput
+  }
+
+  export type StudyUpdateToOneWithWhereWithoutSeriesInput = {
+    where?: StudyWhereInput
+    data: XOR<StudyUpdateWithoutSeriesInput, StudyUncheckedUpdateWithoutSeriesInput>
+  }
+
+  export type StudyUpdateWithoutSeriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    patientId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    slices?: IntFieldUpdateOperationsInput | number
+    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visible?: BoolFieldUpdateOperationsInput | boolean
+    reports?: ReportUpdateManyWithoutStudyNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutStudyNestedInput
+    tenant?: TenantUpdateOneRequiredWithoutStudiesNestedInput
+    User?: UserUpdateOneWithoutStudyNestedInput
+  }
+
+  export type StudyUncheckedUpdateWithoutSeriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    patientId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    slices?: IntFieldUpdateOperationsInput | number
+    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    visible?: BoolFieldUpdateOperationsInput | boolean
+    reports?: ReportUncheckedUpdateManyWithoutStudyNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutStudyNestedInput
+  }
+
   export type SeriesCreateWithoutInstancesInput = {
     id?: string
     seriesUid: string
-    seriesNumber?: number | null
     modality?: string | null
     instanceCount?: number
     createdAt?: Date | string
+    seriesNumber?: number | null
     study: StudyCreateNestedOneWithoutSeriesInput
   }
 
   export type SeriesUncheckedCreateWithoutInstancesInput = {
     id?: string
     seriesUid: string
-    seriesNumber?: number | null
     modality?: string | null
     instanceCount?: number
     studyId: string
     createdAt?: Date | string
+    seriesNumber?: number | null
   }
 
   export type SeriesCreateOrConnectWithoutInstancesInput = {
@@ -26294,21 +28522,21 @@ export namespace Prisma {
   export type SeriesUpdateWithoutInstancesInput = {
     id?: StringFieldUpdateOperationsInput | string
     seriesUid?: StringFieldUpdateOperationsInput | string
-    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     instanceCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
     study?: StudyUpdateOneRequiredWithoutSeriesNestedInput
   }
 
   export type SeriesUncheckedUpdateWithoutInstancesInput = {
     id?: StringFieldUpdateOperationsInput | string
     seriesUid?: StringFieldUpdateOperationsInput | string
-    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     instanceCount?: IntFieldUpdateOperationsInput | number
     studyId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type TenantCreateWithoutSubscriptionInput = {
@@ -26316,11 +28544,12 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
-    members?: MembershipCreateNestedManyWithoutTenantInput
-    studies?: StudyCreateNestedManyWithoutTenantInput
-    auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
     apiKeys?: ApiKeyCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
     branding?: BrandingCreateNestedOneWithoutTenantInput
+    members?: MembershipCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutTenantInput
+    studies?: StudyCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutSubscriptionInput = {
@@ -26328,11 +28557,12 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
-    members?: MembershipUncheckedCreateNestedManyWithoutTenantInput
-    studies?: StudyUncheckedCreateNestedManyWithoutTenantInput
-    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
     branding?: BrandingUncheckedCreateNestedOneWithoutTenantInput
+    members?: MembershipUncheckedCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutTenantInput
+    studies?: StudyUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutSubscriptionInput = {
@@ -26356,11 +28586,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MembershipUpdateManyWithoutTenantNestedInput
-    studies?: StudyUpdateManyWithoutTenantNestedInput
-    auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
     branding?: BrandingUpdateOneWithoutTenantNestedInput
+    members?: MembershipUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutTenantNestedInput
+    studies?: StudyUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutSubscriptionInput = {
@@ -26368,48 +28599,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MembershipUncheckedUpdateManyWithoutTenantNestedInput
-    studies?: StudyUncheckedUpdateManyWithoutTenantNestedInput
-    auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
     branding?: BrandingUncheckedUpdateOneWithoutTenantNestedInput
-  }
-
-  export type StudyCreateWithoutReportsInput = {
-    id?: string
-    studyUid: string
-    patientId?: string | null
-    patientName?: string | null
-    modality?: string | null
-    slices?: number
-    status?: $Enums.StudyStatus
-    description?: string | null
-    studyDate?: string | null
-    createdAt?: Date | string
-    tenant: TenantCreateNestedOneWithoutStudiesInput
-    series?: SeriesCreateNestedManyWithoutStudyInput
-    shareTokens?: ShareTokenCreateNestedManyWithoutStudyInput
-  }
-
-  export type StudyUncheckedCreateWithoutReportsInput = {
-    id?: string
-    tenantId: string
-    studyUid: string
-    patientId?: string | null
-    patientName?: string | null
-    modality?: string | null
-    slices?: number
-    status?: $Enums.StudyStatus
-    description?: string | null
-    studyDate?: string | null
-    createdAt?: Date | string
-    series?: SeriesUncheckedCreateNestedManyWithoutStudyInput
-    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutStudyInput
-  }
-
-  export type StudyCreateOrConnectWithoutReportsInput = {
-    where: StudyWhereUniqueInput
-    create: XOR<StudyCreateWithoutReportsInput, StudyUncheckedCreateWithoutReportsInput>
+    members?: MembershipUncheckedUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutTenantNestedInput
+    studies?: StudyUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type UserCreateWithoutReportsInput = {
@@ -26421,9 +28616,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
     memberships?: MembershipCreateNestedManyWithoutUserInput
     notificationPreference?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutInvitedByInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    Study?: StudyCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutReportsInput = {
@@ -26435,9 +28633,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     memberships?: MembershipUncheckedCreateNestedManyWithoutUserInput
     notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutInvitedByInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    Study?: StudyUncheckedCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutReportsInput = {
@@ -26445,47 +28646,49 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutReportsInput, UserUncheckedCreateWithoutReportsInput>
   }
 
-  export type StudyUpsertWithoutReportsInput = {
-    update: XOR<StudyUpdateWithoutReportsInput, StudyUncheckedUpdateWithoutReportsInput>
+  export type StudyCreateWithoutReportsInput = {
+    id?: string
+    studyUid: string
+    title?: string | null
+    patientId?: string | null
+    patientName?: string | null
+    modality?: string | null
+    slices?: number
+    status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
+    description?: string | null
+    studyDate?: string | null
+    createdAt?: Date | string
+    visible?: boolean
+    series?: SeriesCreateNestedManyWithoutStudyInput
+    shareTokens?: ShareTokenCreateNestedManyWithoutStudyInput
+    tenant: TenantCreateNestedOneWithoutStudiesInput
+    User?: UserCreateNestedOneWithoutStudyInput
+  }
+
+  export type StudyUncheckedCreateWithoutReportsInput = {
+    id?: string
+    tenantId: string
+    studyUid: string
+    title?: string | null
+    patientId?: string | null
+    patientName?: string | null
+    modality?: string | null
+    slices?: number
+    status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
+    description?: string | null
+    studyDate?: string | null
+    createdAt?: Date | string
+    uploadedById?: string | null
+    visible?: boolean
+    series?: SeriesUncheckedCreateNestedManyWithoutStudyInput
+    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutStudyInput
+  }
+
+  export type StudyCreateOrConnectWithoutReportsInput = {
+    where: StudyWhereUniqueInput
     create: XOR<StudyCreateWithoutReportsInput, StudyUncheckedCreateWithoutReportsInput>
-    where?: StudyWhereInput
-  }
-
-  export type StudyUpdateToOneWithWhereWithoutReportsInput = {
-    where?: StudyWhereInput
-    data: XOR<StudyUpdateWithoutReportsInput, StudyUncheckedUpdateWithoutReportsInput>
-  }
-
-  export type StudyUpdateWithoutReportsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    studyUid?: StringFieldUpdateOperationsInput | string
-    patientId?: NullableStringFieldUpdateOperationsInput | string | null
-    patientName?: NullableStringFieldUpdateOperationsInput | string | null
-    modality?: NullableStringFieldUpdateOperationsInput | string | null
-    slices?: IntFieldUpdateOperationsInput | number
-    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tenant?: TenantUpdateOneRequiredWithoutStudiesNestedInput
-    series?: SeriesUpdateManyWithoutStudyNestedInput
-    shareTokens?: ShareTokenUpdateManyWithoutStudyNestedInput
-  }
-
-  export type StudyUncheckedUpdateWithoutReportsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
-    studyUid?: StringFieldUpdateOperationsInput | string
-    patientId?: NullableStringFieldUpdateOperationsInput | string | null
-    patientName?: NullableStringFieldUpdateOperationsInput | string | null
-    modality?: NullableStringFieldUpdateOperationsInput | string | null
-    slices?: IntFieldUpdateOperationsInput | number
-    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    series?: SeriesUncheckedUpdateManyWithoutStudyNestedInput
-    shareTokens?: ShareTokenUncheckedUpdateManyWithoutStudyNestedInput
   }
 
   export type UserUpsertWithoutReportsInput = {
@@ -26508,9 +28711,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
     memberships?: MembershipUpdateManyWithoutUserNestedInput
     notificationPreference?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutInvitedByNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    Study?: StudyUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportsInput = {
@@ -26522,46 +28728,147 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     memberships?: MembershipUncheckedUpdateManyWithoutUserNestedInput
     notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    Study?: StudyUncheckedUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type StudyUpsertWithoutReportsInput = {
+    update: XOR<StudyUpdateWithoutReportsInput, StudyUncheckedUpdateWithoutReportsInput>
+    create: XOR<StudyCreateWithoutReportsInput, StudyUncheckedCreateWithoutReportsInput>
+    where?: StudyWhereInput
+  }
+
+  export type StudyUpdateToOneWithWhereWithoutReportsInput = {
+    where?: StudyWhereInput
+    data: XOR<StudyUpdateWithoutReportsInput, StudyUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type StudyUpdateWithoutReportsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    patientId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    slices?: IntFieldUpdateOperationsInput | number
+    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visible?: BoolFieldUpdateOperationsInput | boolean
+    series?: SeriesUpdateManyWithoutStudyNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutStudyNestedInput
+    tenant?: TenantUpdateOneRequiredWithoutStudiesNestedInput
+    User?: UserUpdateOneWithoutStudyNestedInput
+  }
+
+  export type StudyUncheckedUpdateWithoutReportsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    patientId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    slices?: IntFieldUpdateOperationsInput | number
+    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    visible?: BoolFieldUpdateOperationsInput | boolean
+    series?: SeriesUncheckedUpdateManyWithoutStudyNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutStudyNestedInput
   }
 
   export type StudyCreateWithoutShareTokensInput = {
     id?: string
     studyUid: string
+    title?: string | null
     patientId?: string | null
     patientName?: string | null
     modality?: string | null
     slices?: number
     status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
     description?: string | null
     studyDate?: string | null
     createdAt?: Date | string
-    tenant: TenantCreateNestedOneWithoutStudiesInput
-    series?: SeriesCreateNestedManyWithoutStudyInput
+    visible?: boolean
     reports?: ReportCreateNestedManyWithoutStudyInput
+    series?: SeriesCreateNestedManyWithoutStudyInput
+    tenant: TenantCreateNestedOneWithoutStudiesInput
+    User?: UserCreateNestedOneWithoutStudyInput
   }
 
   export type StudyUncheckedCreateWithoutShareTokensInput = {
     id?: string
     tenantId: string
     studyUid: string
+    title?: string | null
     patientId?: string | null
     patientName?: string | null
     modality?: string | null
     slices?: number
     status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
     description?: string | null
     studyDate?: string | null
     createdAt?: Date | string
-    series?: SeriesUncheckedCreateNestedManyWithoutStudyInput
+    uploadedById?: string | null
+    visible?: boolean
     reports?: ReportUncheckedCreateNestedManyWithoutStudyInput
+    series?: SeriesUncheckedCreateNestedManyWithoutStudyInput
   }
 
   export type StudyCreateOrConnectWithoutShareTokensInput = {
     where: StudyWhereUniqueInput
     create: XOR<StudyCreateWithoutShareTokensInput, StudyUncheckedCreateWithoutShareTokensInput>
+  }
+
+  export type UserCreateWithoutShareTokensInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    memberships?: MembershipCreateNestedManyWithoutUserInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutInvitedByInput
+    reports?: ReportCreateNestedManyWithoutAuthorInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    Study?: StudyCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutShareTokensInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    memberships?: MembershipUncheckedCreateNestedManyWithoutUserInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutInvitedByInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    Study?: StudyUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutShareTokensInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutShareTokensInput, UserUncheckedCreateWithoutShareTokensInput>
   }
 
   export type StudyUpsertWithoutShareTokensInput = {
@@ -26578,33 +28885,86 @@ export namespace Prisma {
   export type StudyUpdateWithoutShareTokensInput = {
     id?: StringFieldUpdateOperationsInput | string
     studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     patientId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     slices?: IntFieldUpdateOperationsInput | number
     status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tenant?: TenantUpdateOneRequiredWithoutStudiesNestedInput
-    series?: SeriesUpdateManyWithoutStudyNestedInput
+    visible?: BoolFieldUpdateOperationsInput | boolean
     reports?: ReportUpdateManyWithoutStudyNestedInput
+    series?: SeriesUpdateManyWithoutStudyNestedInput
+    tenant?: TenantUpdateOneRequiredWithoutStudiesNestedInput
+    User?: UserUpdateOneWithoutStudyNestedInput
   }
 
   export type StudyUncheckedUpdateWithoutShareTokensInput = {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
     studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     patientId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     modality?: NullableStringFieldUpdateOperationsInput | string | null
     slices?: IntFieldUpdateOperationsInput | number
     status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    series?: SeriesUncheckedUpdateManyWithoutStudyNestedInput
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    visible?: BoolFieldUpdateOperationsInput | boolean
     reports?: ReportUncheckedUpdateManyWithoutStudyNestedInput
+    series?: SeriesUncheckedUpdateManyWithoutStudyNestedInput
+  }
+
+  export type UserUpsertWithoutShareTokensInput = {
+    update: XOR<UserUpdateWithoutShareTokensInput, UserUncheckedUpdateWithoutShareTokensInput>
+    create: XOR<UserCreateWithoutShareTokensInput, UserUncheckedCreateWithoutShareTokensInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutShareTokensInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutShareTokensInput, UserUncheckedUpdateWithoutShareTokensInput>
+  }
+
+  export type UserUpdateWithoutShareTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    memberships?: MembershipUpdateManyWithoutUserNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    Study?: StudyUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutShareTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    memberships?: MembershipUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    Study?: StudyUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TenantCreateWithoutApiKeysInput = {
@@ -26612,11 +28972,12 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
-    members?: MembershipCreateNestedManyWithoutTenantInput
-    studies?: StudyCreateNestedManyWithoutTenantInput
-    subscription?: SubscriptionCreateNestedOneWithoutTenantInput
     auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
     branding?: BrandingCreateNestedOneWithoutTenantInput
+    members?: MembershipCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutTenantInput
+    studies?: StudyCreateNestedManyWithoutTenantInput
+    subscription?: SubscriptionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutApiKeysInput = {
@@ -26624,11 +28985,12 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
-    members?: MembershipUncheckedCreateNestedManyWithoutTenantInput
-    studies?: StudyUncheckedCreateNestedManyWithoutTenantInput
-    subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
     branding?: BrandingUncheckedCreateNestedOneWithoutTenantInput
+    members?: MembershipUncheckedCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutTenantInput
+    studies?: StudyUncheckedCreateNestedManyWithoutTenantInput
+    subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutApiKeysInput = {
@@ -26652,11 +29014,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MembershipUpdateManyWithoutTenantNestedInput
-    studies?: StudyUpdateManyWithoutTenantNestedInput
-    subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
     auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
     branding?: BrandingUpdateOneWithoutTenantNestedInput
+    members?: MembershipUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutTenantNestedInput
+    studies?: StudyUpdateManyWithoutTenantNestedInput
+    subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutApiKeysInput = {
@@ -26664,11 +29027,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MembershipUncheckedUpdateManyWithoutTenantNestedInput
-    studies?: StudyUncheckedUpdateManyWithoutTenantNestedInput
-    subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
     branding?: BrandingUncheckedUpdateOneWithoutTenantNestedInput
+    members?: MembershipUncheckedUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutTenantNestedInput
+    studies?: StudyUncheckedUpdateManyWithoutTenantNestedInput
+    subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantCreateWithoutBrandingInput = {
@@ -26676,11 +29040,12 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
+    apiKeys?: ApiKeyCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
     members?: MembershipCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutTenantInput
     studies?: StudyCreateNestedManyWithoutTenantInput
     subscription?: SubscriptionCreateNestedOneWithoutTenantInput
-    auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
-    apiKeys?: ApiKeyCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutBrandingInput = {
@@ -26688,11 +29053,12 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
     members?: MembershipUncheckedCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutTenantInput
     studies?: StudyUncheckedCreateNestedManyWithoutTenantInput
     subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
-    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
-    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutBrandingInput = {
@@ -26716,11 +29082,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiKeys?: ApiKeyUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
     members?: MembershipUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutTenantNestedInput
     studies?: StudyUpdateManyWithoutTenantNestedInput
     subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
-    auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
-    apiKeys?: ApiKeyUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutBrandingInput = {
@@ -26728,11 +29095,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
     members?: MembershipUncheckedUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutTenantNestedInput
     studies?: StudyUncheckedUpdateManyWithoutTenantNestedInput
     subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
-    auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
-    apiKeys?: ApiKeyUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type UserCreateWithoutNotificationPreferenceInput = {
@@ -26744,9 +29112,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
     memberships?: MembershipCreateNestedManyWithoutUserInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutInvitedByInput
     reports?: ReportCreateNestedManyWithoutAuthorInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    Study?: StudyCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
@@ -26758,9 +29129,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     memberships?: MembershipUncheckedCreateNestedManyWithoutUserInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutInvitedByInput
     reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    Study?: StudyUncheckedCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationPreferenceInput = {
@@ -26788,9 +29162,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
     memberships?: MembershipUpdateManyWithoutUserNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutInvitedByNestedInput
     reports?: ReportUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    Study?: StudyUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
@@ -26802,9 +29179,164 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     memberships?: MembershipUncheckedUpdateManyWithoutUserNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutInvitedByNestedInput
     reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    Study?: StudyUncheckedUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type TenantCreateWithoutPendingInvitesInput = {
+    id?: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    apiKeys?: ApiKeyCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogCreateNestedManyWithoutTenantInput
+    branding?: BrandingCreateNestedOneWithoutTenantInput
+    members?: MembershipCreateNestedManyWithoutTenantInput
+    studies?: StudyCreateNestedManyWithoutTenantInput
+    subscription?: SubscriptionCreateNestedOneWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutPendingInvitesInput = {
+    id?: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutTenantInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutTenantInput
+    branding?: BrandingUncheckedCreateNestedOneWithoutTenantInput
+    members?: MembershipUncheckedCreateNestedManyWithoutTenantInput
+    studies?: StudyUncheckedCreateNestedManyWithoutTenantInput
+    subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutPendingInvitesInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutPendingInvitesInput, TenantUncheckedCreateWithoutPendingInvitesInput>
+  }
+
+  export type UserCreateWithoutPendingInvitesInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    memberships?: MembershipCreateNestedManyWithoutUserInput
+    notificationPreference?: NotificationPreferenceCreateNestedOneWithoutUserInput
+    reports?: ReportCreateNestedManyWithoutAuthorInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    Study?: StudyCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutPendingInvitesInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    memberships?: MembershipUncheckedCreateNestedManyWithoutUserInput
+    notificationPreference?: NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAuthorInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    Study?: StudyUncheckedCreateNestedManyWithoutUserInput
+    shareTokens?: ShareTokenUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutPendingInvitesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPendingInvitesInput, UserUncheckedCreateWithoutPendingInvitesInput>
+  }
+
+  export type TenantUpsertWithoutPendingInvitesInput = {
+    update: XOR<TenantUpdateWithoutPendingInvitesInput, TenantUncheckedUpdateWithoutPendingInvitesInput>
+    create: XOR<TenantCreateWithoutPendingInvitesInput, TenantUncheckedCreateWithoutPendingInvitesInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutPendingInvitesInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutPendingInvitesInput, TenantUncheckedUpdateWithoutPendingInvitesInput>
+  }
+
+  export type TenantUpdateWithoutPendingInvitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiKeys?: ApiKeyUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutTenantNestedInput
+    branding?: BrandingUpdateOneWithoutTenantNestedInput
+    members?: MembershipUpdateManyWithoutTenantNestedInput
+    studies?: StudyUpdateManyWithoutTenantNestedInput
+    subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutPendingInvitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutTenantNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutTenantNestedInput
+    branding?: BrandingUncheckedUpdateOneWithoutTenantNestedInput
+    members?: MembershipUncheckedUpdateManyWithoutTenantNestedInput
+    studies?: StudyUncheckedUpdateManyWithoutTenantNestedInput
+    subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+  }
+
+  export type UserUpsertWithoutPendingInvitesInput = {
+    update: XOR<UserUpdateWithoutPendingInvitesInput, UserUncheckedUpdateWithoutPendingInvitesInput>
+    create: XOR<UserCreateWithoutPendingInvitesInput, UserUncheckedCreateWithoutPendingInvitesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPendingInvitesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPendingInvitesInput, UserUncheckedUpdateWithoutPendingInvitesInput>
+  }
+
+  export type UserUpdateWithoutPendingInvitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    memberships?: MembershipUpdateManyWithoutUserNestedInput
+    notificationPreference?: NotificationPreferenceUpdateOneWithoutUserNestedInput
+    reports?: ReportUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    Study?: StudyUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPendingInvitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    memberships?: MembershipUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreference?: NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAuthorNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    Study?: StudyUncheckedUpdateManyWithoutUserNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type TenantCreateWithoutAuditLogsInput = {
@@ -26812,11 +29344,12 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
-    members?: MembershipCreateNestedManyWithoutTenantInput
-    studies?: StudyCreateNestedManyWithoutTenantInput
-    subscription?: SubscriptionCreateNestedOneWithoutTenantInput
     apiKeys?: ApiKeyCreateNestedManyWithoutTenantInput
     branding?: BrandingCreateNestedOneWithoutTenantInput
+    members?: MembershipCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteCreateNestedManyWithoutTenantInput
+    studies?: StudyCreateNestedManyWithoutTenantInput
+    subscription?: SubscriptionCreateNestedOneWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutAuditLogsInput = {
@@ -26824,11 +29357,12 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
-    members?: MembershipUncheckedCreateNestedManyWithoutTenantInput
-    studies?: StudyUncheckedCreateNestedManyWithoutTenantInput
-    subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutTenantInput
     branding?: BrandingUncheckedCreateNestedOneWithoutTenantInput
+    members?: MembershipUncheckedCreateNestedManyWithoutTenantInput
+    pendingInvites?: PendingInviteUncheckedCreateNestedManyWithoutTenantInput
+    studies?: StudyUncheckedCreateNestedManyWithoutTenantInput
+    subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutAuditLogsInput = {
@@ -26852,11 +29386,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MembershipUpdateManyWithoutTenantNestedInput
-    studies?: StudyUpdateManyWithoutTenantNestedInput
-    subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutTenantNestedInput
     branding?: BrandingUpdateOneWithoutTenantNestedInput
+    members?: MembershipUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUpdateManyWithoutTenantNestedInput
+    studies?: StudyUpdateManyWithoutTenantNestedInput
+    subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutAuditLogsInput = {
@@ -26864,30 +29399,20 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MembershipUncheckedUpdateManyWithoutTenantNestedInput
-    studies?: StudyUncheckedUpdateManyWithoutTenantNestedInput
-    subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutTenantNestedInput
     branding?: BrandingUncheckedUpdateOneWithoutTenantNestedInput
+    members?: MembershipUncheckedUpdateManyWithoutTenantNestedInput
+    pendingInvites?: PendingInviteUncheckedUpdateManyWithoutTenantNestedInput
+    studies?: StudyUncheckedUpdateManyWithoutTenantNestedInput
+    subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
   }
 
-  export type MembershipCreateManyTenantInput = {
+  export type ApiKeyCreateManyTenantInput = {
     id?: string
-    userId: string
-    role?: $Enums.Role
-    createdAt?: Date | string
-  }
-
-  export type StudyCreateManyTenantInput = {
-    id?: string
-    studyUid: string
-    patientId?: string | null
-    patientName?: string | null
-    modality?: string | null
-    slices?: number
-    status?: $Enums.StudyStatus
-    description?: string | null
-    studyDate?: string | null
+    name: string
+    prefix: string
+    hash: string
+    lastUsedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -26900,78 +29425,61 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type ApiKeyCreateManyTenantInput = {
+  export type MembershipCreateManyTenantInput = {
     id?: string
-    name: string
-    prefix: string
-    hash: string
-    lastUsedAt?: Date | string | null
+    userId: string
+    role?: string
     createdAt?: Date | string
   }
 
-  export type MembershipUpdateWithoutTenantInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
+  export type PendingInviteCreateManyTenantInput = {
+    id?: string
+    email: string
+    invitedById: string
+    createdAt?: Date | string
   }
 
-  export type MembershipUncheckedUpdateWithoutTenantInput = {
+  export type StudyCreateManyTenantInput = {
+    id?: string
+    studyUid: string
+    title?: string | null
+    patientId?: string | null
+    patientName?: string | null
+    modality?: string | null
+    slices?: number
+    status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
+    description?: string | null
+    studyDate?: string | null
+    createdAt?: Date | string
+    uploadedById?: string | null
+    visible?: boolean
+  }
+
+  export type ApiKeyUpdateWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    name?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    hash?: StringFieldUpdateOperationsInput | string
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type MembershipUncheckedUpdateManyWithoutTenantInput = {
+  export type ApiKeyUncheckedUpdateWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    name?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    hash?: StringFieldUpdateOperationsInput | string
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type StudyUpdateWithoutTenantInput = {
+  export type ApiKeyUncheckedUpdateManyWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    studyUid?: StringFieldUpdateOperationsInput | string
-    patientId?: NullableStringFieldUpdateOperationsInput | string | null
-    patientName?: NullableStringFieldUpdateOperationsInput | string | null
-    modality?: NullableStringFieldUpdateOperationsInput | string | null
-    slices?: IntFieldUpdateOperationsInput | number
-    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    series?: SeriesUpdateManyWithoutStudyNestedInput
-    reports?: ReportUpdateManyWithoutStudyNestedInput
-    shareTokens?: ShareTokenUpdateManyWithoutStudyNestedInput
-  }
-
-  export type StudyUncheckedUpdateWithoutTenantInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    studyUid?: StringFieldUpdateOperationsInput | string
-    patientId?: NullableStringFieldUpdateOperationsInput | string | null
-    patientName?: NullableStringFieldUpdateOperationsInput | string | null
-    modality?: NullableStringFieldUpdateOperationsInput | string | null
-    slices?: IntFieldUpdateOperationsInput | number
-    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    series?: SeriesUncheckedUpdateManyWithoutStudyNestedInput
-    reports?: ReportUncheckedUpdateManyWithoutStudyNestedInput
-    shareTokens?: ShareTokenUncheckedUpdateManyWithoutStudyNestedInput
-  }
-
-  export type StudyUncheckedUpdateManyWithoutTenantInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    studyUid?: StringFieldUpdateOperationsInput | string
-    patientId?: NullableStringFieldUpdateOperationsInput | string | null
-    patientName?: NullableStringFieldUpdateOperationsInput | string | null
-    modality?: NullableStringFieldUpdateOperationsInput | string | null
-    slices?: IntFieldUpdateOperationsInput | number
-    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    hash?: StringFieldUpdateOperationsInput | string
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -27002,31 +29510,103 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ApiKeyUpdateWithoutTenantInput = {
+  export type MembershipUpdateWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    prefix?: StringFieldUpdateOperationsInput | string
-    hash?: StringFieldUpdateOperationsInput | string
-    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
+  }
+
+  export type MembershipUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ApiKeyUncheckedUpdateWithoutTenantInput = {
+  export type MembershipUncheckedUpdateManyWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    prefix?: StringFieldUpdateOperationsInput | string
-    hash?: StringFieldUpdateOperationsInput | string
-    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ApiKeyUncheckedUpdateManyWithoutTenantInput = {
+  export type PendingInviteUpdateWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    prefix?: StringFieldUpdateOperationsInput | string
-    hash?: StringFieldUpdateOperationsInput | string
-    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invitedBy?: UserUpdateOneRequiredWithoutPendingInvitesNestedInput
+  }
+
+  export type PendingInviteUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    invitedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PendingInviteUncheckedUpdateManyWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    invitedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StudyUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    patientId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    slices?: IntFieldUpdateOperationsInput | number
+    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visible?: BoolFieldUpdateOperationsInput | boolean
+    reports?: ReportUpdateManyWithoutStudyNestedInput
+    series?: SeriesUpdateManyWithoutStudyNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutStudyNestedInput
+    User?: UserUpdateOneWithoutStudyNestedInput
+  }
+
+  export type StudyUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    patientId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    slices?: IntFieldUpdateOperationsInput | number
+    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    visible?: BoolFieldUpdateOperationsInput | boolean
+    reports?: ReportUncheckedUpdateManyWithoutStudyNestedInput
+    series?: SeriesUncheckedUpdateManyWithoutStudyNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutStudyNestedInput
+  }
+
+  export type StudyUncheckedUpdateManyWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    patientId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    slices?: IntFieldUpdateOperationsInput | number
+    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    visible?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountCreateManyUserInput = {
@@ -27043,16 +29623,17 @@ export namespace Prisma {
     session_state?: string | null
   }
 
-  export type SessionCreateManyUserInput = {
-    id?: string
-    sessionToken: string
-    expires: Date | string
-  }
-
   export type MembershipCreateManyUserInput = {
     id?: string
     tenantId: string
-    role?: $Enums.Role
+    role?: string
+    createdAt?: Date | string
+  }
+
+  export type PendingInviteCreateManyInvitedByInput = {
+    id?: string
+    email: string
+    tenantId: string
     createdAt?: Date | string
   }
 
@@ -27061,6 +29642,39 @@ export namespace Prisma {
     studyId: string
     status?: $Enums.ReportStatus
     content?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SessionCreateManyUserInput = {
+    id?: string
+    sessionToken: string
+    expires: Date | string
+  }
+
+  export type StudyCreateManyUserInput = {
+    id?: string
+    tenantId: string
+    studyUid: string
+    title?: string | null
+    patientId?: string | null
+    patientName?: string | null
+    modality?: string | null
+    slices?: number
+    status?: $Enums.StudyStatus
+    reportedAt?: Date | string | null
+    description?: string | null
+    studyDate?: string | null
+    createdAt?: Date | string
+    visible?: boolean
+  }
+
+  export type ShareTokenCreateManyCreatedByInput = {
+    id?: string
+    token: string
+    studyId: string
+    expiresAt: Date | string
+    password?: string | null
+    allowDownload?: boolean
     createdAt?: Date | string
   }
 
@@ -27106,27 +29720,9 @@ export namespace Prisma {
     session_state?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type SessionUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sessionToken?: StringFieldUpdateOperationsInput | string
-    expires?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SessionUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sessionToken?: StringFieldUpdateOperationsInput | string
-    expires?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SessionUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sessionToken?: StringFieldUpdateOperationsInput | string
-    expires?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type MembershipUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutMembersNestedInput
   }
@@ -27134,14 +29730,35 @@ export namespace Prisma {
   export type MembershipUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MembershipUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PendingInviteUpdateWithoutInvitedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutPendingInvitesNestedInput
+  }
+
+  export type PendingInviteUncheckedUpdateWithoutInvitedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PendingInviteUncheckedUpdateManyWithoutInvitedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -27169,13 +29786,109 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type SeriesCreateManyStudyInput = {
-    id?: string
-    seriesUid: string
-    seriesNumber?: number | null
-    modality?: string | null
-    instanceCount?: number
-    createdAt?: Date | string
+  export type SessionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionToken?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionToken?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionToken?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StudyUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    patientId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    slices?: IntFieldUpdateOperationsInput | number
+    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visible?: BoolFieldUpdateOperationsInput | boolean
+    reports?: ReportUpdateManyWithoutStudyNestedInput
+    series?: SeriesUpdateManyWithoutStudyNestedInput
+    shareTokens?: ShareTokenUpdateManyWithoutStudyNestedInput
+    tenant?: TenantUpdateOneRequiredWithoutStudiesNestedInput
+  }
+
+  export type StudyUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    patientId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    slices?: IntFieldUpdateOperationsInput | number
+    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visible?: BoolFieldUpdateOperationsInput | boolean
+    reports?: ReportUncheckedUpdateManyWithoutStudyNestedInput
+    series?: SeriesUncheckedUpdateManyWithoutStudyNestedInput
+    shareTokens?: ShareTokenUncheckedUpdateManyWithoutStudyNestedInput
+  }
+
+  export type StudyUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    studyUid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    patientId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    slices?: IntFieldUpdateOperationsInput | number
+    status?: EnumStudyStatusFieldUpdateOperationsInput | $Enums.StudyStatus
+    reportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visible?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ShareTokenUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    allowDownload?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    study?: StudyUpdateOneRequiredWithoutShareTokensNestedInput
+  }
+
+  export type ShareTokenUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    studyId?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    allowDownload?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ShareTokenUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    studyId?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    allowDownload?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReportCreateManyStudyInput = {
@@ -27186,42 +29899,23 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type SeriesCreateManyStudyInput = {
+    id?: string
+    seriesUid: string
+    modality?: string | null
+    instanceCount?: number
+    createdAt?: Date | string
+    seriesNumber?: number | null
+  }
+
   export type ShareTokenCreateManyStudyInput = {
     id?: string
     token: string
+    createdById?: string | null
     expiresAt: Date | string
     password?: string | null
     allowDownload?: boolean
     createdAt?: Date | string
-  }
-
-  export type SeriesUpdateWithoutStudyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    seriesUid?: StringFieldUpdateOperationsInput | string
-    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    modality?: NullableStringFieldUpdateOperationsInput | string | null
-    instanceCount?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    instances?: InstanceUpdateManyWithoutSeriesNestedInput
-  }
-
-  export type SeriesUncheckedUpdateWithoutStudyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    seriesUid?: StringFieldUpdateOperationsInput | string
-    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    modality?: NullableStringFieldUpdateOperationsInput | string | null
-    instanceCount?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    instances?: InstanceUncheckedUpdateManyWithoutSeriesNestedInput
-  }
-
-  export type SeriesUncheckedUpdateManyWithoutStudyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    seriesUid?: StringFieldUpdateOperationsInput | string
-    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    modality?: NullableStringFieldUpdateOperationsInput | string | null
-    instanceCount?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReportUpdateWithoutStudyInput = {
@@ -27248,6 +29942,35 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SeriesUpdateWithoutStudyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    seriesUid?: StringFieldUpdateOperationsInput | string
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    instanceCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    instances?: InstanceUpdateManyWithoutSeriesNestedInput
+  }
+
+  export type SeriesUncheckedUpdateWithoutStudyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    seriesUid?: StringFieldUpdateOperationsInput | string
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    instanceCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    instances?: InstanceUncheckedUpdateManyWithoutSeriesNestedInput
+  }
+
+  export type SeriesUncheckedUpdateManyWithoutStudyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    seriesUid?: StringFieldUpdateOperationsInput | string
+    modality?: NullableStringFieldUpdateOperationsInput | string | null
+    instanceCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    seriesNumber?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
   export type ShareTokenUpdateWithoutStudyInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
@@ -27255,11 +29978,13 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     allowDownload?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutShareTokensNestedInput
   }
 
   export type ShareTokenUncheckedUpdateWithoutStudyInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     allowDownload?: BoolFieldUpdateOperationsInput | boolean
@@ -27269,6 +29994,7 @@ export namespace Prisma {
   export type ShareTokenUncheckedUpdateManyWithoutStudyInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     password?: NullableStringFieldUpdateOperationsInput | string | null
     allowDownload?: BoolFieldUpdateOperationsInput | boolean

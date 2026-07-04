@@ -4,6 +4,12 @@ import { RegisterForm } from "./RegisterForm";
 
 vi.mock("@/lib/firebase/auth", () => ({
   signUpWithEmail: vi.fn(),
+  sendVerificationEmail: vi.fn(),
+}));
+
+vi.mock("firebase/auth", () => ({
+  getAuth: vi.fn(() => ({})),
+  signOut: vi.fn(),
 }));
 
 import { signUpWithEmail } from "@/lib/firebase/auth";
@@ -36,7 +42,7 @@ describe("RegisterForm", () => {
     expect(await screen.findByText("Password must be at least 6 characters.")).toBeInTheDocument();
   });
 
-  it("calls signUpWithEmail and redirects on success", async () => {
+  it("calls signUpWithEmail and shows verification card on success", async () => {
     const fakeUser = { getIdToken: vi.fn().mockResolvedValue("tok") };
     vi.mocked(signUpWithEmail).mockResolvedValue(fakeUser as any);
     global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
@@ -49,7 +55,7 @@ describe("RegisterForm", () => {
 
     await waitFor(() => {
       expect(signUpWithEmail).toHaveBeenCalledWith("a@b.com", "secret123", "John Doe");
-      expect(window.location.href).toBe("/dashboard");
+      expect(screen.getByTestId("verify-email-card")).toBeInTheDocument();
     });
   });
 

@@ -7,13 +7,14 @@ import { toast } from "sonner";
 import {
   Search, FileText, Eye, Calendar, Activity, Share2,
   ArrowUpDown, ArrowUp, ArrowDown, CheckSquare, Square,
-  Trash2, ChevronLeft, ChevronRight,
+  Trash2, ChevronLeft, ChevronRight, GitCompareArrows,
 } from "lucide-react";
 
 interface StudyItem {
   id: string;
   studyUid: string;
   patientName: string | null;
+  title?: string | null;
   patientId: string | null;
   modality: string | null;
   studyDate: string | null;
@@ -83,7 +84,7 @@ export function StudiesGrid({ studies, page, totalPages }: { studies: StudyItem[
     let result = studies.filter((s) => {
       if (search) {
         const q = search.toLowerCase();
-        const name = (s.patientName ?? "").toLowerCase();
+        const name = (s.title ?? s.patientName ?? "").toLowerCase();
         const desc = (s.description ?? "").toLowerCase();
         const uid = s.studyUid.toLowerCase();
         if (!name.includes(q) && !desc.includes(q) && !uid.includes(q)) return false;
@@ -96,7 +97,7 @@ export function StudiesGrid({ studies, page, totalPages }: { studies: StudyItem[
       let cmp = 0;
       switch (sortField) {
         case "patientName":
-          cmp = (a.patientName ?? "").localeCompare(b.patientName ?? "");
+          cmp = (a.title ?? a.patientName ?? "").localeCompare(b.title ?? b.patientName ?? "");
           break;
         case "studyDate":
           cmp = (a.studyDate ?? "").localeCompare(b.studyDate ?? "");
@@ -228,6 +229,15 @@ export function StudiesGrid({ studies, page, totalPages }: { studies: StudyItem[
               >
                 Clear
               </button>
+              {selected.size === 2 && (
+                <Link
+                  href={`/compare?study1=${filtered.find(s => s.id === [...selected][0])?.studyUid}&study2=${filtered.find(s => s.id === [...selected][1])?.studyUid}`}
+                  className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-3 py-1 text-[10px] font-semibold text-white shadow-sm transition-all hover:from-blue-500 hover:to-blue-400 active:scale-95"
+                >
+                  <GitCompareArrows className="h-3 w-3" />
+                  Compare
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={batchDelete}
@@ -291,7 +301,7 @@ export function StudiesGrid({ studies, page, totalPages }: { studies: StudyItem[
                       </div>
                       <div className="min-w-0 flex-1">
                         <h3 className="truncate text-sm font-semibold text-white transition-colors group-hover:text-emerald-400">
-                          {study.patientName || "Unknown Patient"}
+                          {study.title ?? study.patientName ?? "Unknown Patient"}
                         </h3>
                         {study.patientId && (
                           <p className="mt-0.5 text-xs text-slate-600">ID: {study.patientId}</p>

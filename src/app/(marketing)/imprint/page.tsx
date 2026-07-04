@@ -17,48 +17,23 @@ export default function ImprintPage() {
         </Link>
 
         <h1 className="text-2xl font-semibold tracking-tight text-white">Imprint</h1>
-        <p className="mt-2 text-xs text-slate-500">Angaben gemäß § 5 TMG</p>
 
         <div className="mt-10 space-y-8 text-sm text-slate-400 leading-relaxed">
           <section>
             <h2 className="text-base font-semibold text-white mb-3">Company Information</h2>
             <p className="text-slate-300">
-              CoreVita GmbH
+              CoreVita
             </p>
             <p>
-              Musterstraße 123<br />
-              10115 Berlin<br />
-              Germany
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-base font-semibold text-white mb-3">Commercial Register</h2>
-            <p>
-              Registered at: Amtsgericht Berlin-Charlottenburg<br />
-              Registration number: HRB 123456
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-base font-semibold text-white mb-3">Represented by</h2>
-            <p>
-              Managing Director: John Doe
+              Adam Zrigui<br />
+              zriguiadam@gmail.com
             </p>
           </section>
 
           <section>
             <h2 className="text-base font-semibold text-white mb-3">Contact</h2>
             <p>
-              Email: hello@corevita.com<br />
-              Phone: +49 30 12345678
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-base font-semibold text-white mb-3">VAT ID</h2>
-            <p>
-              VAT identification number according to § 27a UStG: DE123456789
+              Email: zriguiadam@gmail.com
             </p>
           </section>
 
@@ -81,15 +56,14 @@ export default function ImprintPage() {
             </p>
             <h3 className="text-sm font-semibold text-slate-300 mt-4 mb-2">Copyright</h3>
             <p>
-              The content and works created by the site operators on these pages are subject to German copyright law. Duplication, processing, distribution, or any form of commercialization of such material beyond the scope of the copyright law requires the prior written consent of its respective author or creator.
+              The content and works created by the site operators on these pages are subject to applicable copyright law. Duplication, processing, distribution, or any form of commercialization of such material beyond the scope of the copyright law requires the prior written consent of its respective author or creator.
             </p>
           </section>
 
           <section>
             <h2 className="text-base font-semibold text-white mb-3">Dispute Resolution</h2>
             <p>
-              The European Commission provides a platform for online dispute resolution (OS): <a href="https://ec.europa.eu/consumers/odr/" className="text-blue-400 hover:text-blue-300 transition-colors" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr/</a>.<br />
-              We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board.
+              The European Commission provides a platform for online dispute resolution (OS): <a href="https://ec.europa.eu/consumers/odr/" className="text-blue-400 hover:text-blue-300 transition-colors" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr/</a>.
             </p>
           </section>
         </div>

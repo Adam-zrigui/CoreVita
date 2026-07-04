@@ -1,53 +1,14 @@
 import { Clock, Activity, FileText, Radio } from "lucide-react";
-import { ActivityFeed } from "./ActivityFeed";
+import { ActivityFeed, type Activity as ActivityFeedItem } from "./ActivityFeed";
 import { Suspense } from "react";
-import { prisma } from "@/lib/prisma";
-import { getDefaultTenant } from "@/lib/db";
 
-async function getStudyStatusData() {
-  const tenant = await getDefaultTenant();
-  const [studiesByStatus, teamMembers, recentStudies] = await Promise.all([
-    prisma.study.groupBy({
-      by: ["status"],
-      where: { tenantId: tenant.id },
-      _count: true,
-    }),
-    prisma.membership.count({ where: { tenantId: tenant.id } }),
-    prisma.study.findMany({
-      where: { tenantId: tenant.id },
-      select: { id: true, studyUid: true, patientName: true, createdAt: true, status: true },
-      take: 10,
-      orderBy: { createdAt: "desc" },
-    }),
-  ]);
+type StudyStatusSectionProps = {
+  studiesByStatus: Array<{ label: string; value: number; percentage: number }>;
+  teamMembers: number;
+  activities: ActivityFeedItem[];
+};
 
-  const pendingCount = studiesByStatus.find((s) => s.status === "PENDING")?._count ?? 0;
-  const readingCount = studiesByStatus.find((s) => s.status === "READING")?._count ?? 0;
-  const reportedCount = studiesByStatus.find((s) => s.status === "REPORTED")?._count ?? 0;
-  const total = pendingCount + readingCount + reportedCount;
-
-  const activities = recentStudies.map((s) => ({
-    id: `study-${s.id}`,
-    type: "study_created" as const,
-    description: `Study created for ${s.patientName ?? "Unknown"}`,
-    timestamp: s.createdAt.toISOString(),
-  }));
-
-  return {
-    studiesByStatus: studiesByStatus.map((s) => ({
-      label: s.status,
-      value: s._count,
-      percentage: total > 0 ? (s._count / total) * 100 : 0,
-    })),
-    teamMembers,
-    totalStudies: total,
-    activities,
-  };
-}
-
-async function StudyStatusSectionContent() {
-  const data = await getStudyStatusData();
-
+function StudyStatusSectionContent({ data }: { data: StudyStatusSectionProps }) {
   return (
     <div>
       <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 transition-all hover:border-white/[0.09]">
@@ -105,7 +66,7 @@ async function StudyStatusSectionContent() {
   );
 }
 
-export function StudyStatusSection() {
+export function StudyStatusSection({ data }: { data: StudyStatusSectionProps }) {
   return (
     <Suspense fallback={
       <div className="space-y-4">
@@ -137,7 +98,7 @@ export function StudyStatusSection() {
         </div>
       </div>
     }>
-      <StudyStatusSectionContent />
+      <StudyStatusSectionContent data={data} />
     </Suspense>
   );
 }

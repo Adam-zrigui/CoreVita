@@ -124,10 +124,10 @@ describe("MetadataPanel", () => {
     expect(screen.getByText("400 images")).toBeInTheDocument();
   });
 
-  it("shows quick report textarea", () => {
+  it("shows upgrade prompt for quick report on starter plan", () => {
     render(<MetadataPanel series={mockSeries} plan="starter" />);
     expect(
-      screen.getByPlaceholderText("Add findings...")
+      screen.getByText(/upgrade to pro/i)
     ).toBeInTheDocument();
   });
 });

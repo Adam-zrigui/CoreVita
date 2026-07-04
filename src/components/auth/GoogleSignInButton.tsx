@@ -16,6 +16,7 @@ export default function GoogleSignInButton() {
         const idToken = await user.getIdToken(/* forceRefresh */ true);
         const res = await fetch("/api/auth/session", {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ idToken }),
         });

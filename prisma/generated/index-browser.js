@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.5.0
- * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 Prisma.prismaVersion = {
-  client: "7.5.0",
-  engine: "280c870be64f457428992c43c1f6d557fab6e29e"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -177,24 +177,28 @@ exports.Prisma.StudyScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
   studyUid: 'studyUid',
+  title: 'title',
   patientId: 'patientId',
   patientName: 'patientName',
   modality: 'modality',
   slices: 'slices',
   status: 'status',
+  reportedAt: 'reportedAt',
   description: 'description',
   studyDate: 'studyDate',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  uploadedById: 'uploadedById',
+  visible: 'visible'
 };
 
 exports.Prisma.SeriesScalarFieldEnum = {
   id: 'id',
   seriesUid: 'seriesUid',
-  seriesNumber: 'seriesNumber',
   modality: 'modality',
   instanceCount: 'instanceCount',
   studyId: 'studyId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  seriesNumber: 'seriesNumber'
 };
 
 exports.Prisma.InstanceScalarFieldEnum = {
@@ -233,6 +237,7 @@ exports.Prisma.ShareTokenScalarFieldEnum = {
   id: 'id',
   token: 'token',
   studyId: 'studyId',
+  createdById: 'createdById',
   expiresAt: 'expiresAt',
   password: 'password',
   allowDownload: 'allowDownload',
@@ -264,6 +269,14 @@ exports.Prisma.NotificationPreferenceScalarFieldEnum = {
   browser: 'browser',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PendingInviteScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  tenantId: 'tenantId',
+  invitedById: 'invitedById',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.AuditLogScalarFieldEnum = {
@@ -301,13 +314,6 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
-exports.Role = exports.$Enums.Role = {
-  ADMIN: 'ADMIN',
-  RADIOLOGIST: 'RADIOLOGIST',
-  ASSISTANT: 'ASSISTANT',
-  VIEWER: 'VIEWER'
-};
-
 exports.StudyStatus = exports.$Enums.StudyStatus = {
   PENDING: 'PENDING',
   READING: 'READING',
@@ -335,6 +341,7 @@ exports.Prisma.ModelName = {
   ApiKey: 'ApiKey',
   Branding: 'Branding',
   NotificationPreference: 'NotificationPreference',
+  PendingInvite: 'PendingInvite',
   AuditLog: 'AuditLog'
 };
 

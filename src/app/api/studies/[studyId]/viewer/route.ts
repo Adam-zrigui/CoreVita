@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getCurrentPlan } from "@/lib/plans";
-import { requireRole, getActorTenant } from "@/lib/rbac";
+import { getActorTenant } from "@/lib/rbac";
 import { getB2Prefix, getDicomMetadata } from "@/lib/storage";
 import { formatUnknownError } from "@/lib/format-error";
 import { readDicomSortMetadata, type DicomSortMetadata } from "@/lib/dicom-validation";
@@ -65,25 +65,25 @@ export async function GET(
     }
 
     const planInfo = await getCurrentPlan(session);
-    if (planInfo.status === "none") {
+    if (planInfo.status === "none" && planInfo.plan !== "starter") {
       return NextResponse.json({ error: "Subscription required", redirect: "/services/pricing" }, { status: 402 });
     }
     const plan = planInfo.plan;
-
-    const roleCheck = await requireRole("studies.view", session);
-    if (roleCheck instanceof Response) return roleCheck;
 
     const { studyId } = await params;
     const actorInfo = await getActorTenant(session);
     if (actorInfo instanceof Response) return actorInfo;
 
     const study = await prisma.study.findFirst({
-      where: { studyUid: studyId, tenantId: actorInfo.tenantId },
+      where: { studyUid: studyId, tenantId: actorInfo.tenantId, uploadedById: session.user.id },
       select: {
+        id: true,
         studyUid: true,
         patientName: true,
+        title: true,
         studyDate: true,
         description: true,
+        status: true,
         createdAt: true,
         series: {
           orderBy: [{ seriesNumber: { sort: "asc", nulls: "last" } }, { createdAt: "asc" }],
@@ -114,10 +114,12 @@ export async function GET(
       return NextResponse.json({ error: "This study has expired. Upgrade to Pro to access older studies." }, { status: 403 });
     }
 
-    prisma.study.updateMany({
-      where: { studyUid: studyId, status: "PENDING" },
-      data: { status: "READING" },
-    }).catch((e) => console.error("[viewer] status update failed:", e));
+    if (plan !== "starter" && study.status === "PENDING") {
+      prisma.study.update({
+        where: { id: study.id },
+        data: { status: "READING" },
+      }).catch((e) => console.error("[viewer] status update failed:", e));
+    }
 
     const instances = await Promise.all(
       study.series.flatMap((series, seriesIndex) =>
@@ -195,13 +197,18 @@ export async function GET(
       equipment: equipmentBySeries[i] ?? {},
     }));
 
+    const updatedStatus = plan !== "starter" && study.status === "PENDING" ? "READING" : study.status;
+
     return NextResponse.json(
       {
         study: {
+          id: study.id,
           studyUid: study.studyUid,
           patientName: study.patientName,
+          title: study.title,
           studyDate: study.studyDate,
           description: study.description,
+          status: updatedStatus,
           series: seriesWithThumbnail,
         },
         imageIds: imageIds.map((e) => e.imageId),

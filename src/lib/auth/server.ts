@@ -1,9 +1,10 @@
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { getAdminAuth } from "@/lib/firebase/admin";
 import { prisma } from "@/lib/prisma";
-import { getDefaultTenant } from "@/lib/db";
+import { ensureUserTenant } from "@/lib/db";
 
-export type AppRole = "ADMIN" | "RADIOLOGIST" | "ASSISTANT" | "VIEWER";
+const SESSION_COOKIE_NAME = process.env.NODE_ENV === "production" ? "__Host-__session" : "__session";
 
 export interface AuthSession {
   user: {
@@ -11,24 +12,23 @@ export interface AuthSession {
     name?: string | null;
     email?: string | null;
     image?: string | null;
-    role?: AppRole;
   } | null;
 }
 
-export async function getServerSession(): Promise<AuthSession> {
+async function getServerSessionImpl(): Promise<AuthSession> {
   try {
     const adminAuth = getAdminAuth();
     if (!adminAuth) return { user: null };
 
     const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get("__session")?.value;
-    if (!sessionCookie) return { user: null };
+  const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value
+    ?? cookieStore.get("__Host-__session")?.value
+    ?? cookieStore.get("__session")?.value;
 
+    if (!sessionCookie) return { user: null };
     const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie, true);
     const uid = decodedClaims.uid;
     if (!uid) return { user: null };
-
-    const tenant = await getDefaultTenant();
 
     const email = decodedClaims.email ?? null;
     let user = await prisma.user.findUnique({ where: { id: uid } });
@@ -43,14 +43,7 @@ export async function getServerSession(): Promise<AuthSession> {
       });
     }
 
-    let membership = await prisma.membership.findUnique({
-      where: { userId_tenantId: { userId: user.id, tenantId: tenant.id } },
-    });
-    if (!membership) {
-      membership = await prisma.membership.create({
-        data: { userId: user.id, tenantId: tenant.id, role: "VIEWER" },
-      });
-    }
+    await ensureUserTenant(user.id);
 
     return {
       user: {
@@ -58,7 +51,6 @@ export async function getServerSession(): Promise<AuthSession> {
         name: user.name,
         email: user.email,
         image: user.image,
-        role: (membership.role as AppRole) ?? "VIEWER",
       },
     };
   } catch (error) {
@@ -66,3 +58,5 @@ export async function getServerSession(): Promise<AuthSession> {
     return { user: null };
   }
 }
+
+export const getServerSession = cache(getServerSessionImpl);

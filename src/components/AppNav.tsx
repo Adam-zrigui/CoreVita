@@ -8,13 +8,14 @@ import { NotificationDropdown } from "@/components/NotificationDropdown";
 const sharedLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/studies", label: "Studies" },
+  { href: "/patients", label: "Patients" },
   { href: "/upload", label: "Upload" },
   { href: "/dashboard/reports", label: "Reports" },
   { href: "/dashboard/team", label: "Team" },
   { href: "/dashboard/settings", label: "Settings" },
 ];
 
-export function AppNav({ name, role, hasAuditLog }: { name?: string | null; role?: string | null; hasAuditLog?: boolean }) {
+export function AppNav({ name, hasAuditLog }: { name?: string | null; hasAuditLog?: boolean }) {
   const pathname = usePathname();
   const links = [
     ...sharedLinks,
@@ -62,7 +63,7 @@ export function AppNav({ name, role, hasAuditLog }: { name?: string | null; role
 
         <div className="flex items-center gap-2.5">
           <NotificationDropdown />
-          <UserMenu name={name} role={role} />
+          <UserMenu name={name} />
         </div>
       </div>
     </header>

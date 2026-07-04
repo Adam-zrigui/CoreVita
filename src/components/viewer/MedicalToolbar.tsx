@@ -9,6 +9,7 @@ import {
   Camera,
   RotateCcw,
   Contrast,
+  FileDown,
 } from "lucide-react";
 
 const baseTools = [
@@ -19,6 +20,7 @@ const baseTools = [
   { id: "reset", label: "Reset", icon: RotateCcw },
   { id: "download", label: "DICOM", icon: Download },
   { id: "export", label: "Snapshot", icon: Camera },
+  { id: "pdf", label: "PDF", icon: FileDown },
   { id: "report", label: "Report", icon: FileText },
 ];
 
@@ -34,7 +36,7 @@ export function MedicalToolbar({
   return (
     <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2 py-1.5">
       {baseTools.map((tool) => {
-        const gated = !isAdvanced && (tool.id === "export" || tool.id === "measure" || tool.id === "annotate");
+        const gated = !isAdvanced && (tool.id === "export" || tool.id === "pdf" || tool.id === "measure" || tool.id === "annotate");
         return (
           <button
             key={tool.id}
