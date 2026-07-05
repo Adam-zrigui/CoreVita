@@ -57,6 +57,11 @@
     "tailwind-merge": "^3.5.0",
     "zod": "^4.3.6"
   },
+  "pnpm": {
+    "overrides": {
+      "jose": "5.9.6"
+    }
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",

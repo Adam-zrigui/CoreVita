@@ -5,7 +5,7 @@ CoreVita is a production medical imaging platform for hospitals, clinics, and ra
 ## Features
 
 ### DICOM Study Management
-Upload DICOMDIR or individual files via drag-and-drop. Automatic extraction of patient, study, series, and equipment metadata. Organize studies by patient with full search and history.
+Upload DICOMDIR or individual files via drag-and-drop. Files upload directly to Backblaze B2 via presigned URLs, bypassing Vercel's 4.5 MB function payload limit. Automatic extraction of patient, study, series, and equipment metadata. Organize studies by patient with full search and history.
 
 ### Medical Imaging Viewer (Cornerstone3D)
 Full-featured DICOM viewer with window/level, pan, zoom, measurements, annotations, and cine loop. Supports CT, MRI, Ultrasound, X-ray, and other modalities. Keyboard shortcuts for power users.
@@ -56,7 +56,7 @@ Upload your logo and set brand colors for your organization.
 - **Backend**: Next.js API routes, Prisma ORM, PostgreSQL (Neon)
 - **Auth**: NextAuth.js with Google OAuth
 - **Payments**: Stripe (Checkout, webhooks, customer portal)
-- **Storage**: Backblaze B2 (S3-compatible)
+- **Storage**: Backblaze B2 (S3-compatible, presigned URLs via @aws-sdk/s3-request-presigner)
 - **Email**: Resend
 - **Monitoring**: Sentry
 - **Testing**: Vitest, jsdom, @testing-library/react (127 tests)
@@ -109,8 +109,9 @@ src/
 - **No Redis dependency** — in-memory rate limiting for simplicity
 - **Client-side PDF generation** — jsPDF + html2canvas, no server overhead
 - **Lazy email client** — Resend client initialized only on first send
+- **Presigned URL upload** — browsers upload DICOM files directly to B2, avoiding Vercel's 4.5 MB function body limit; only file metadata touches the API after upload completes
 
 ## Support
 
-- **Issues**: [github.com/anomalyco/corevita/issues](https://github.com/anomalyco/corevita/issues)
+- **Issues**: [github.com/Adam-zrigui/corevita/issues](https://github.com/Adam-zrigui/corevita/issues)
 - **Email**: zriguiadam@gmail.com

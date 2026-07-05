@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, useRef, useEffect } from "react";
+import { useCallback, useState, useRef } from "react";
 import { toast } from "sonner";
 import { UploadZone } from "@/components/upload/UploadZone";
 import dynamic from "next/dynamic";
@@ -18,14 +18,11 @@ import {
   RefreshCw,
   ExternalLink,
   FileWarning,
-  FolderOpen,
 } from "lucide-react";
 
 type FileStatus = "pending" | "uploading" | "done" | "error";
 
-type UploadResponse = { error?: string; queued?: boolean; studyUid?: string } | null;
-
-const DICOM_PREFIX = new Uint8Array([0x44, 0x49, 0x43, 0x4d]); // "DICM"
+const DICOM_PREFIX = new Uint8Array([0x44, 0x49, 0x43, 0x4d]);
 
 function looksLikeDicom(file: File): Promise<boolean> {
   return new Promise((resolve) => {
@@ -46,13 +43,11 @@ export default function UploadPage() {
   const [busy, setBusy] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [studyUid, setStudyUid] = useState<string | null>(null);
-  const [uploadSpeed, setUploadSpeed] = useState("");
   const [showNonDicomWarning, setShowNonDicomWarning] = useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [studyTitle, setStudyTitle] = useState("");
-  const xhrRef = useRef<XMLHttpRequest | null>(null);
+  const abortRef = useRef(false);
   const statusMap = useRef<Map<string, FileStatus>>(new Map()).current;
-  const speedSamples = useRef<{ time: number; loaded: number }[]>([]);
   const [, forceRender] = useState(0);
 
   const rerender = useCallback(() => forceRender((n) => n + 1), []);
@@ -69,7 +64,6 @@ export default function UploadPage() {
     async (list: File[]) => {
       setStudyUid(null);
       setUploadProgress(0);
-      setUploadSpeed("");
       statusMap.clear();
       const valid: File[] = [];
       let hasNonDicom = false;
@@ -99,10 +93,8 @@ export default function UploadPage() {
   );
 
   const cancelUpload = useCallback(() => {
-    xhrRef.current?.abort();
-    xhrRef.current = null;
+    abortRef.current = true;
     setBusy(false);
-    setUploadProgress(0);
     files.forEach((f) => {
       const key = f.name + f.size + f.lastModified;
       if (statusMap.get(key) === "uploading") {
@@ -114,100 +106,132 @@ export default function UploadPage() {
 
   const handleSubmit = async () => {
     if (!files.length) return;
+
+    const presignStart = Date.now();
+
+    const fileInfos = files.map((f) => ({
+      name: f.name,
+      size: f.size,
+      key: f.name + f.size + f.lastModified,
+    }));
+
+    // Phase 1: Get presigned URLs
+    const presignRes = await fetch("/api/upload/presign", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ files: fileInfos.map((f) => ({ name: f.name, size: f.size })) }),
+    });
+
+    if (!presignRes.ok) {
+      const errData = await presignRes.json().catch(() => ({ error: "Failed to get upload URLs" }));
+      toast.error(errData.error || "Failed to get upload URLs");
+      if (errData.error?.includes("limit") || errData.error?.includes("Upgrade") || errData.error?.includes("upgrade")) {
+        setUpgradeModalOpen(true);
+      }
+      return;
+    }
+
+    const { entries, tenantId } = await presignRes.json();
+    const presignElapsed = Date.now() - presignStart;
+
     setBusy(true);
     setUploadProgress(0);
     setStudyUid(null);
+    abortRef.current = false;
+
     files.forEach((f) => statusMap.set(f.name + f.size + f.lastModified, "uploading"));
     rerender();
 
-    const form = new FormData();
-    if (studyTitle.trim()) form.append("title", studyTitle.trim());
-    files.forEach((file) => form.append("files", file));
+    // Phase 2: Upload each file directly to B2 using presigned PUT URL
+    const totalFiles = fileInfos.length;
+    let completedFiles = 0;
+    let failedFiles = 0;
+    const uploadResults: { name: string; storageKey: string; size: number }[] = [];
 
-    const xhr = new XMLHttpRequest();
-    xhrRef.current = xhr;
+    await Promise.all(
+      fileInfos.map(async (info, idx) => {
+        if (abortRef.current) return;
 
-    try {
-      speedSamples.current = [];
-      const result = await new Promise<{ ok: boolean; data: UploadResponse }>(
-        (resolve, reject) => {
-          xhr.upload.addEventListener("progress", (e) => {
-            if (e.lengthComputable) {
-              setUploadProgress(Math.round((e.loaded / e.total) * 100));
-              const now = Date.now();
-              speedSamples.current.push({ time: now, loaded: e.loaded });
-              if (speedSamples.current.length > 20) speedSamples.current.shift();
-              if (speedSamples.current.length >= 2) {
-                const first = speedSamples.current[0];
-                const last = speedSamples.current[speedSamples.current.length - 1];
-                const dt = (last.time - first.time) / 1000;
-                if (dt > 0) {
-                  const bytesPerSec = (last.loaded - first.loaded) / dt;
-                  const speed = bytesPerSec / 1024 / 1024;
-                  const remaining = ((e.total - e.loaded) / bytesPerSec);
-                  const label = speed >= 1 ? `${speed.toFixed(1)} MB/s` : `${(speed * 1024).toFixed(0)} KB/s`;
-                  if (remaining >= 60) {
-                    setUploadSpeed(`${label} · ${Math.round(remaining / 60)}m remaining`);
-                  } else if (remaining >= 1) {
-                    setUploadSpeed(`${label} · ${Math.round(remaining)}s remaining`);
-                  } else {
-                    setUploadSpeed(label);
-                  }
-                }
+        const entry = entries[idx];
+        const file = files.find((f) => f.name + f.size + f.lastModified === info.key);
+        if (!entry || !file) {
+          setStatus(info.key, "error");
+          failedFiles++;
+          return;
+        }
+
+        try {
+          const xhr = new XMLHttpRequest();
+          const result = await new Promise<void>((resolve, reject) => {
+            xhr.upload.addEventListener("progress", (e) => {
+              if (abortRef.current) {
+                xhr.abort();
+                reject(new Error("Cancelled"));
+                return;
               }
-            }
+            });
+
+            xhr.addEventListener("load", () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                resolve();
+              } else {
+                reject(new Error(`Upload failed: ${xhr.status}`));
+              }
+            });
+
+            xhr.addEventListener("error", () => reject(new Error("Network error")));
+            xhr.addEventListener("abort", () => reject(new Error("Cancelled")));
+
+            xhr.open("PUT", entry.uploadUrl);
+            xhr.setRequestHeader("Content-Type", "application/dicom");
+            xhr.send(file);
           });
 
-          xhr.addEventListener("load", () => {
-            const text = xhr.responseText;
-            let data: UploadResponse;
-            try {
-              data = text.trim() ? JSON.parse(text) : null;
-            } catch {
-              data = { error: text };
-            }
-            resolve({ ok: xhr.status >= 200 && xhr.status < 300, data });
-          });
+          uploadResults.push({ name: info.name, storageKey: entry.storageKey, size: info.size });
+          setStatus(info.key, "done");
+          completedFiles++;
+        } catch (err) {
+          if ((err as Error).message === "Cancelled") return;
+          setStatus(info.key, "error");
+          failedFiles++;
+        }
 
-          xhr.addEventListener("error", () => reject(new Error("Network error")));
-          xhr.addEventListener("abort", () => reject(new Error("Upload cancelled")));
+        const done = completedFiles + failedFiles;
+        setUploadProgress(Math.round((done / totalFiles) * 100));
+      }),
+    );
 
-          xhr.open("POST", "/api/upload");
-          xhr.send(form);
-        },
-      );
+    if (abortRef.current) {
+      setBusy(false);
+      toast.info("Upload cancelled");
+      return;
+    }
 
-      files.forEach((f) => {
-        setStatus(f.name + f.size + f.lastModified, result.ok ? "done" : "error");
+    // Phase 3: Complete upload — register study in DB
+    if (completedFiles > 0) {
+      const completeRes = await fetch("/api/upload/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          entries: uploadResults,
+          title: studyTitle.trim() || undefined,
+          tenantId,
+        }),
       });
 
-      if (result.ok) {
-        const suid = result.data?.studyUid ?? null;
+      if (completeRes.ok) {
+        const data = await completeRes.json();
+        const suid = data.studyUid ?? null;
         setStudyUid(suid);
         setUploadProgress(100);
-        toast.success(result.data?.queued ? "Upload queued for processing" : "Upload complete");
+        toast.success("Upload complete");
       } else {
-        toast.error(result.data?.error || "Upload failed");
-        if (result.data?.error?.includes("limit") || result.data?.error?.includes("Upgrade")) {
-          setUpgradeModalOpen(true);
-        }
+        const errData = await completeRes.json().catch(() => ({ error: "Failed to register study" }));
+        toast.error(errData.error || "Failed to register study");
       }
-    } catch (err) {
-      if (err instanceof Error && err.message === "Upload cancelled") {
-        toast.info("Upload cancelled");
-      } else {
-        files.forEach((f) => {
-          const key = f.name + f.size + f.lastModified;
-          if (statusMap.get(key) === "uploading") {
-            setStatus(key, "error");
-          }
-        });
-        toast.error("Network error");
-      }
-    } finally {
-      xhrRef.current = null;
-      setBusy(false);
     }
+
+    setBusy(false);
   };
 
   const totalSize = files.reduce((a, f) => a + f.size, 0);
@@ -309,7 +333,6 @@ export default function UploadPage() {
                               : "border-transparent bg-white/[0.03] hover:bg-white/[0.05]"
                       }`}
                     >
-                      {/* Status accent bar */}
                       <div className={`absolute left-0 top-0 h-full w-0.5 transition-opacity ${
                         s === "done" ? "bg-gradient-to-b from-emerald-400 to-emerald-600 opacity-100" :
                         s === "error" ? "bg-gradient-to-b from-red-400 to-red-600 opacity-100" :
@@ -326,11 +349,6 @@ export default function UploadPage() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 shrink-0 ml-2">
-                        {s === "uploading" && (
-                          <span className="text-[10px] text-emerald-400 font-medium tabular-nums">
-                            {uploadProgress}%
-                          </span>
-                        )}
                         {s === "error" && (
                           <button
                             type="button"
@@ -395,9 +413,6 @@ export default function UploadPage() {
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
-                {uploadSpeed && (
-                  <p className="mt-1 text-[10px] text-slate-600 tabular-nums">{uploadSpeed}</p>
-                )}
               </div>
             )}
 

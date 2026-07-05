@@ -1,6 +1,7 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import type { PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { randomUUID } from "crypto";
 import { Upload } from "@aws-sdk/lib-storage";
 import { Readable } from "stream";
 import { formatUnknownError } from "@/lib/format-error";
@@ -132,6 +133,19 @@ export async function getB2SignedUrl(key: string, ttlSeconds = 900) {
   if (!client || !bucket) return null;
   const command = new GetObjectCommand({ Bucket: bucket, Key: key });
   return getSignedUrl(client, command, { expiresIn: ttlSeconds });
+}
+
+export async function getB2PutSignedUrl(key: string, ttlSeconds = 3600) {
+  const client = getB2Client();
+  const bucket = process.env.DICOM_S3_BUCKET;
+  if (!client || !bucket) return null;
+  const command = new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: "application/dicom" });
+  return getSignedUrl(client, command, { expiresIn: ttlSeconds });
+}
+
+export function generateStorageKey(originalName: string): string {
+  const ext = originalName.endsWith(".dcm") ? ".dcm" : "";
+  return `uploads/${randomUUID()}${ext}`;
 }
 
 export async function getFromB2(key: string) {

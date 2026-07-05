@@ -547,7 +547,7 @@ function ApiKeysSection({ usage, origin }: { usage: Usage | null; origin: string
             <span>API endpoint</span>
           </div>
           <code className="rounded bg-white/[0.04] px-2.5 py-1 text-[11px] font-mono text-slate-400">
-            {origin || "https://app.corevita.com"}/api
+            {origin || "https://corevita.vercel.app"}/api
           </code>
         </div>
       </div>
