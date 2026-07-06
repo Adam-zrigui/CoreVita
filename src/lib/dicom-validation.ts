@@ -1,14 +1,21 @@
 import dicomParser from "dicom-parser";
 
 export type DicomSortMetadata = {
+  studyUid?: string;
+  seriesUid?: string;
+  sopInstanceUid?: string;
   acquisitionNumber?: number;
   instanceNumber?: number;
+  seriesNumber?: number;
+  seriesDescription?: string;
+  studyDescription?: string;
   imagePosition?: [number, number, number];
   sliceLocation?: number;
   transferSyntaxUid?: string;
   hasPixelData?: boolean;
   modality?: string;
   patientName?: string;
+  patientId?: string;
   description?: string;
   studyDate?: string;
 };
@@ -65,8 +72,14 @@ export function readDicomSortMetadata(buffer: Buffer): DicomSortMetadata {
     const z = dataSet.floatString("x00200032", 2);
 
     return {
+      studyUid: dataSet.string("x0020000D")?.trim(),
+      seriesUid: dataSet.string("x0020000E")?.trim(),
+      sopInstanceUid: dataSet.string("x00080018")?.trim(),
       acquisitionNumber: dataSet.intString("x00200012"),
       instanceNumber: dataSet.intString("x00200013"),
+      seriesNumber: dataSet.intString("x00200011"),
+      seriesDescription: dataSet.string("x0008103E")?.trim(),
+      studyDescription: dataSet.string("x00081030")?.trim(),
       imagePosition:
         x !== undefined && y !== undefined && z !== undefined ? [x, y, z] : undefined,
       sliceLocation: dataSet.floatString("x00201041"),
@@ -74,6 +87,7 @@ export function readDicomSortMetadata(buffer: Buffer): DicomSortMetadata {
       hasPixelData: Boolean(dataSet.elements.x7fe00010),
       modality: dataSet.string("x00080060")?.trim(),
       patientName: dataSet.string("x00100010")?.trim(),
+      patientId: dataSet.string("x00100020")?.trim(),
       description: dataSet.string("x00081030")?.trim(),
       studyDate: dataSet.string("x00080020")?.trim(),
     };

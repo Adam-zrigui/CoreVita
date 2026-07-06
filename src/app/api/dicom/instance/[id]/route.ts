@@ -25,7 +25,7 @@ export async function GET(
   });
   if (instance instanceof NextResponse) return instance;
   if (!instance) return new NextResponse(null, { status: 404 });
-  if (instance.storageDriver !== "b2") {
+  if (instance.storageDriver !== "b2" && instance.storageDriver !== "vercel-blob") {
     return new NextResponse("Storage driver not supported", { status: 400 });
   }
 

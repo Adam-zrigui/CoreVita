@@ -1,7 +1,13 @@
 "use client";
 
-import { FirebaseError } from "firebase/app";
 import { useState, useEffect } from "react";
+
+function getFirebaseError(error: unknown): { code: string; message: string; customData?: unknown; stack?: string } | null {
+  if (error && typeof error === "object" && "code" in error) {
+    return error as { code: string; message: string; customData?: unknown; stack?: string };
+  }
+  return null;
+}
 
 type FirebaseSession = {
   user: {
@@ -27,13 +33,13 @@ async function getFirebaseAuth() {
     const { initializeApp, getApps } = await import("firebase/app");
     const { getAuth } = await import("firebase/auth");
     const firebaseConfig = {
-      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
-      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
-      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
-      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
-      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
-      measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID!,
+      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.trim()!,
+      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN?.trim()!,
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.trim()!,
+      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET?.trim()!,
+      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID?.trim()!,
+      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID?.trim()!,
+      measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID?.trim()!,
     };
     const apps = getApps();
     const app = apps.length ? apps[0] : initializeApp(firebaseConfig);
@@ -64,7 +70,7 @@ export const signUpWithEmail = async (email: string, password: string, displayNa
     }
     return cred.user;
   } catch (error) {
-    const authError = error instanceof FirebaseError ? error : null;
+    const authError = getFirebaseError(error);
     console.error("[firebase] Sign-up error:", {
       code: authError?.code,
       message: authError?.message,
@@ -90,7 +96,7 @@ export const signInWithEmail = async (email: string, password: string) => {
     const cred = await signInWithEmailAndPassword(fbAuth, email, password);
     return cred.user;
   } catch (error) {
-    const authError = error instanceof FirebaseError ? error : null;
+    const authError = getFirebaseError(error);
     console.error("[firebase] Email sign-in error:", {
       code: authError?.code,
       message: authError?.message,
@@ -115,7 +121,7 @@ export const resetPassword = async (email: string) => {
     if (!fbAuth) throw new Error("Firebase auth not available");
     await sendPasswordResetEmail(fbAuth, email);
   } catch (error) {
-    const authError = error instanceof FirebaseError ? error : null;
+    const authError = getFirebaseError(error);
     console.error("[firebase] Password reset error:", {
       code: authError?.code,
       message: authError?.message,
@@ -141,7 +147,7 @@ export const signIn = async (provider: any) => {
     }
     await signInWithRedirect(fbAuth, provider);
   } catch (error) {
-    const authError = error instanceof FirebaseError ? error : null;
+    const authError = getFirebaseError(error);
     if (authError?.code === "auth/popup-closed-by-user") {
       throw new Error("Sign-in was cancelled. Please try again.");
     }
@@ -149,12 +155,7 @@ export const signIn = async (provider: any) => {
       await signInWithRedirect(fbAuth, new GoogleAuthProvider());
       throw new Error("Popup was blocked. Redirecting to Google sign-in...");
     }
-    console.error("[firebase] Full sign-in error:", {
-      code: authError?.code,
-      message: authError?.message,
-      customData: authError?.customData,
-      stack: authError?.stack,
-    });
+    console.error("[firebase] Full sign-in error:", authError?.code, authError?.message);
     throw new Error(`Authentication failed [${authError?.code ?? "unknown"}]: ${authError?.message ?? "Unknown error"}`);
   }
 };

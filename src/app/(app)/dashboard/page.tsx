@@ -18,6 +18,7 @@ export default async function DashboardPage() {
     getCurrentPlan(session),
   ]);
   if (actorInfo instanceof Response) notFound();
+
   const dashboardData = await getDashboardData(actorInfo.tenantId, 8, planResult.plan, actorInfo.actorId).catch(() => null);
   const dashboardDataWithFallback = dashboardData ?? {
     totalStudies: 0,
@@ -33,6 +34,7 @@ export default async function DashboardPage() {
     recentStudies: [],
     recentShares: [],
   };
+
   const { plan, used, limit, status } = planResult;
 
   const totalByStatus = dashboardDataWithFallback.studiesByStatus.reduce((sum, s) => sum + s._count, 0) || 1;

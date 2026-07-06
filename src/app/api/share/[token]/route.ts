@@ -172,16 +172,16 @@ export async function GET(
       }
     }
 
-    const allowedStorage = share.allowDownload ? undefined : "b2";
+    const allowedStorage: string[] = share.allowDownload ? [] : ["b2", "vercel-blob"];
     const origin = req.nextUrl.origin;
     const filteredInstances = study.series.map((s) =>
-      s.instances.filter((i) => !allowedStorage || i.storageDriver === allowedStorage)
+      s.instances.filter((i) => allowedStorage.length === 0 || allowedStorage.includes(i.storageDriver))
     );
 
     const equipment = await Promise.all(
       study.series.map(async (s) => {
         const first = s.instances[0];
-        if (!first || first.storageDriver !== "b2") return {};
+        if (!first || (first.storageDriver !== "b2" && first.storageDriver !== "vercel-blob")) return {};
         const prefix = await getB2Prefix(first.storageKey, EQUIPMENT_PREFIX_BYTES).catch(() => null);
         return prefix ? readDicomEquipmentMetadata(prefix) : {};
       })
@@ -196,7 +196,7 @@ export async function GET(
 
     const b2InstanceIds = filteredInstances
       .flat()
-      .filter((i) => i.storageDriver === "b2")
+      .filter((i) => i.storageDriver === "b2" || i.storageDriver === "vercel-blob")
       .map((i) => i.id);
 
     const imageIds: string[] = [];
@@ -210,7 +210,7 @@ export async function GET(
     const series = study.series.map((s, i) => {
       const first = filteredInstances[i]?.[0];
       let firstImageId: string | null = null;
-      if (first && first.storageDriver === "b2") {
+      if (first && (first.storageDriver === "b2" || first.storageDriver === "vercel-blob")) {
         const token = signDicomToken(first.id, ttlSeconds);
         if (token) {
           firstImageId = `wadouri:${origin}/api/dicom/instance/${first.id}?token=${token}`;
@@ -228,7 +228,7 @@ export async function GET(
 
     const instances = filteredInstances.flat().map((i) => {
       let signedUrl: string | null = null;
-      if (i.storageDriver === "b2") {
+      if (i.storageDriver === "b2" || i.storageDriver === "vercel-blob") {
         const token = signDicomToken(i.id, ttlSeconds);
         if (token) {
           signedUrl = `${origin}/api/dicom/instance/${i.id}?token=${token}`;

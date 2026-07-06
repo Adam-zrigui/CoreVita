@@ -3,7 +3,7 @@ import { getServerSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getCurrentPlan } from "@/lib/plans";
 import { getActorTenant } from "@/lib/rbac";
-import { getB2Prefix, getDicomMetadata } from "@/lib/storage";
+import { getB2Prefix, getDicomMetadata, getStorageDriver, getVercelBlobDownloadUrl } from "@/lib/storage";
 import { formatUnknownError } from "@/lib/format-error";
 import { readDicomSortMetadata, type DicomSortMetadata } from "@/lib/dicom-validation";
 import { readDicomEquipmentMetadata, type DicomEquipmentMetadata } from "@/lib/dicom-equipment";
@@ -125,7 +125,7 @@ export async function GET(
       study.series.flatMap((series, seriesIndex) =>
         series.instances.map(async (instance, fallbackIndex) => {
           let metadata: DicomSortMetadata = {};
-          if (instance.storageDriver === "b2") {
+          if (instance.storageDriver === "b2" || instance.storageDriver === "vercel-blob") {
             const storedMetadata = await getDicomMetadata(instance.storageKey).catch(() => null);
             if (storedMetadata) {
               metadata = storedMetadata;
@@ -147,20 +147,31 @@ export async function GET(
 
     instances.sort(compareInstanceOrder);
 
-    const b2Instances = instances.filter((i) => i.storageDriver === "b2");
+    const currentDriver = getStorageDriver();
+    const b2Instances = instances.filter((i) => i.storageDriver === currentDriver);
 
     const ttlSeconds = Number(process.env.DICOM_URL_TTL_SECONDS ?? 900);
     const origin = req.nextUrl.origin;
     const hasSigningSecret = Boolean(process.env.DICOM_SIGNING_SECRET);
 
-    const imageIds = b2Instances
-      .map((inst) => {
-        const token = signDicomToken(inst.id, ttlSeconds, "default");
-        return { instanceId: inst.id, _seriesIndex: inst._seriesIndex, imageId: token ? `wadouri:${origin}/api/dicom/instance/${inst.id}?token=${token}` : null };
-      })
-      .filter((x) => x.imageId) as { instanceId: string; _seriesIndex: number; imageId: string }[];
+    const imageIds = (
+      await Promise.all(
+        b2Instances.map(async (inst) => {
+          let imageId: string | null = null;
+          if (inst.storageDriver === "vercel-blob") {
+            const url = await getVercelBlobDownloadUrl(inst.storageKey);
+            if (url) imageId = `wadouri:${url}`;
+          } else {
+            const token = signDicomToken(inst.id, ttlSeconds, actorInfo.tenantId);
+            if (token) imageId = `wadouri:${origin}/api/dicom/instance/${inst.id}?token=${token}`;
+          }
+          return { instanceId: inst.id, _seriesIndex: inst._seriesIndex, imageId };
+        })
+      )
+    ).filter((x) => x.imageId) as { instanceId: string; _seriesIndex: number; imageId: string }[];
 
-    if (b2Instances.length > 0 && !hasSigningSecret) {
+    const needsSigning = b2Instances.some((i) => i.storageDriver !== "vercel-blob");
+    if (needsSigning && !hasSigningSecret) {
       return NextResponse.json(
         { error: "DICOM signing is not configured. Add DICOM_SIGNING_SECRET to .env and restart the dev server." },
         { status: 500 }

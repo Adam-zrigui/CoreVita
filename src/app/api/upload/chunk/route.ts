@@ -4,7 +4,7 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import { getServerSession } from "@/lib/auth";
-import { uploadToB2, uploadDicomMetadata } from "@/lib/storage";
+import { getStorageDriver, uploadToB2, uploadDicomMetadata } from "@/lib/storage";
 import { enqueueUpload } from "@/lib/queue";
 import { isDicomPart10, readDicomSortMetadata } from "@/lib/dicom-validation";
 import { parseInstanceNumber, parseSeriesNumber, parseSeriesUid } from "@/lib/dicom-instance-number";
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
     const fileEntry = {
       name: filename,
       storageKey: key,
-      driver: "b2",
+      driver: getStorageDriver(),
       originalPath: filename,
       instanceNumber: instanceNumber ?? undefined,
     };

@@ -60,7 +60,7 @@ export async function POST(request: Request) {
   try {
     decoded = await adminAuth.verifyIdToken(idToken);
   } catch (error) {
-    console.error("[auth/session] verifyIdToken failed:", error);
+    console.error("[auth/session] verifyIdToken failed:", error instanceof Error ? error.message : String(error), JSON.stringify({ name: error?.constructor?.name, keys: error ? Object.keys(error) : [] }));
     return Response.json({ error: "Invalid token" }, { status: 401 });
   }
 

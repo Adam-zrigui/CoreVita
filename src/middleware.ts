@@ -178,14 +178,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Do not auto-redirect auth pages based on a cookie-only check.
-  // This prevents redirect loops when the session cookie is present but invalid.
-  const response = NextResponse.next();
-  response.headers.set(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.firebaseio.com https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://*.firebaseio.com https://identitytoolkit.googleapis.com wss://*.firebaseio.com; font-src 'self' data:; frame-src 'self' https://*.firebaseio.com https://apis.google.com; object-src 'none'; base-uri 'self'; form-action 'self'"
-  );
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {

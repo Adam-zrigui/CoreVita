@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
             "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: 'wasm-unsafe-eval' https://apis.google.com",
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: blob:",
-            "connect-src 'self' https: blob: https://identitytoolkit.googleapis.com https://securetoken.googleapis.com",
+            "connect-src 'self' https: blob: https://vercel.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com",
             "font-src 'self' data:",
             "frame-src 'none' https://accounts.google.com https://corevita-cd882.firebaseapp.com",
             "object-src 'none'",

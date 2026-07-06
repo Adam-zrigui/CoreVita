@@ -49,8 +49,8 @@ export async function POST(req: Request) {
 
     const uploadId = randomUUID();
   const storageDriver = getStorageDriver();
-  if (storageDriver !== "b2") {
-    return NextResponse.json({ error: "Storage driver must be b2" }, { status: 400 });
+  if (storageDriver !== "b2" && storageDriver !== "vercel-blob") {
+    return NextResponse.json({ error: "Unsupported storage driver" }, { status: 400 });
   }
   const actorTenant = await getActorTenant(session);
   if (actorTenant instanceof Response) return actorTenant;
@@ -104,7 +104,7 @@ export async function POST(req: Request) {
       files.push({
         name: originalPath,
         storageKey: key,
-        driver: "b2",
+        driver: storageDriver,
         originalPath: normalizedPath,
         instanceNumber: instanceNumber ?? undefined,
         seriesUid: seriesUid ?? undefined,

@@ -3,7 +3,7 @@ import { getServerSession } from "@/lib/auth";
 import { getCurrentPlan } from "@/lib/plans";
 import { getActorTenant } from "@/lib/rbac";
 import { rateLimit } from "@/lib/rate-limit";
-import { getB2PutSignedUrl, generateStorageKey } from "@/lib/storage";
+import { getB2PutSignedUrl, generateStorageKey, getStorageDriver } from "@/lib/storage";
 import { z } from "zod";
 
 export const runtime = "nodejs";
@@ -54,7 +54,8 @@ export async function POST(req: Request) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
-    console.error("[upload/presign] failed:", error);
-    return NextResponse.json({ error: "Failed to generate upload URLs" }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[upload/presign] failed:", msg, error instanceof Error ? error.stack : "");
+    return NextResponse.json({ error: `Failed to generate upload URLs: ${msg}` }, { status: 500 });
   }
 }

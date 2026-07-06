@@ -73,7 +73,7 @@ async function processDicomdir(userId: string, tenantId: string, parsed: z.infer
 
   const storageKeyMap = new Map(parsed.entries.map((e) => [e.name, e.storageKey]));
 
-  const studyUid = structured.studyUid || "";
+  const studyUid = structured.studyUid || randomUUID();
   const patientName = structured.patientName || "";
   const patientId = "";
   const studyDate = structured.studyDate || "";
@@ -149,12 +149,15 @@ async function extractMetadata(entries: z.infer<typeof bodySchema>["entries"]): 
     if (entry.name.toUpperCase() === "DICOMDIR") continue;
     try {
       const file = await getFromB2(entry.storageKey);
-      if (!file) continue;
+      if (!file) {
+        console.warn("[upload/complete] blob not found for:", entry.storageKey);
+        continue;
+      }
       if (!isDicomPart10(file.buffer)) continue;
       const meta = readDicomSortMetadata(file.buffer);
       results.push({ ...entry, meta });
     } catch {
-      // skip invalid files
+      console.warn("[upload/complete] failed to read blob for:", entry.storageKey);
     }
   }
   return results;
@@ -177,6 +180,9 @@ async function createStudyFromEntries(
   },
 ) {
   const metaEntries = await extractMetadata(entries);
+  if (metaEntries.length === 0) {
+    return NextResponse.json({ error: "No valid DICOM files found in storage. Upload may have failed." }, { status: 400 });
+  }
   const seriesMap = new Map<string, { uid: string; modality: string; instances: MetaEntry[]; seriesNumber?: number; seriesDescription?: string }>();
 
   for (const entry of metaEntries) {

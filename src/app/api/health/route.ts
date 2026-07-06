@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getRedis } from "@/lib/redis";
-import { getB2Client } from "@/lib/storage";
+import { getB2Client, getStorageDriver } from "@/lib/storage";
 import { getAdminAuth } from "@/lib/firebase/admin";
 import { ListBucketsCommand } from "@aws-sdk/client-s3";
 
@@ -21,7 +21,16 @@ export async function GET() {
   const [database, redis, storage, auth] = await Promise.all([
     check(() => prisma.$queryRaw`SELECT 1`, "ok", "unreachable"),
     check(async () => { const r = getRedis(); if (r) await r.ping(); else throw new Error("not-configured"); }, "ok", getRedis() ? "unreachable" : "not-configured"),
-    check(async () => { const b = getB2Client(); if (b) await b.send(new ListBucketsCommand({})); else throw new Error("not-configured"); }, "ok", getB2Client() ? "unreachable" : "not-configured"),
+    check(async () => {
+      const driver = getStorageDriver();
+      if (driver === "vercel-blob") {
+        if (!process.env.BLOB_READ_WRITE_TOKEN) throw new Error("not-configured");
+        return;
+      }
+      const b = getB2Client();
+      if (b) await b.send(new ListBucketsCommand({}));
+      else throw new Error("not-configured");
+    }, "ok", "unreachable"),
     check(() => { const a = getAdminAuth(); if (!a) throw new Error("not-configured"); return Promise.resolve(); }, "ok", getAdminAuth() ? "unreachable" : "not-configured"),
   ]);
 
